@@ -21,19 +21,24 @@ app.get("/bookings", (request, response)=>{
 });
 
 app.post("/bookings/add", (req, res)=>{
-  const {title, fistName: firstName, surname, email, roomId, checkInDate, checkOutDate} = req.body
-const booking = {
-  "id" :Math.floor(Math.random()*1000000),
-  "title":title,
-  "fistName":firstName,
-  "surname":surname,
-  "email":email,
-  "roomId":roomId,
-  "checkInDate":checkInDate,
-  "checkOutDate":checkOutDate
-}
-bookings.push(booking)
-res.send(bookings)
+  const {title, firstName: firstName, surname, email, roomId, checkInDate, checkOutDate} = req.body
+  if(title && firstName && firstName && surname && email && roomId && checkInDate && checkOutDate){
+    const booking = {
+      "id" :Math.floor(Math.random()*1000000),
+      "title":title,
+      "firstName":firstName,
+      "surname":surname,
+      "email":email,
+      "roomId":roomId,
+      "checkInDate":checkInDate,
+      "checkOutDate":checkOutDate
+    }
+    bookings.push(booking)
+    res.send(bookings)
+  }else{
+    res.status(400).send('bad request')
+  };
+
 })
 
 
