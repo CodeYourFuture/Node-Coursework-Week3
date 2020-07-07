@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require('body-parser')
+const moment = require('moment')
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.post("/bookings/add", (req, res)=>{
       "checkInDate":checkInDate,
       "checkOutDate":checkOutDate
     }
+    console.log(booking.checkInDate)
     bookings.push(booking)
     res.send(bookings)
   }else{
@@ -41,6 +43,15 @@ app.post("/bookings/add", (req, res)=>{
 
 })
 
+app.get("/bookings/search", (req, res)=>{
+  const date = req.query.date;
+  const searchedBooking =  bookings.filter(booking => booking.checkInDate === date || booking.checkOutDate === date)
+  if (searchedBooking.length >0){
+    res.send(searchedBooking)
+  }else{
+    res.status(400).send("Not found!");
+  }
+})
 
 app.put("/bookings/:id", (req, res)=>{
   const bookingId = Number(req.params.id);
