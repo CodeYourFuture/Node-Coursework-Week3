@@ -21,14 +21,14 @@ app.get("/bookings", (request, response)=>{
 });
 
 app.post("/bookings/add", (req, res)=>{
-  const {title, fistName: firstName, surname, email, checkInDate, checkOutDate} = req.body
+  const {title, fistName: firstName, surname, email, roomId, checkInDate, checkOutDate} = req.body
 const booking = {
   "id" :Math.floor(Math.random()*1000000),
   "title":title,
   "fistName":firstName,
   "surname":surname,
   "email":email,
-  "roomId":Math.floor(Math.random()*100),
+  "roomId":roomId,
   "checkInDate":checkInDate,
   "checkOutDate":checkOutDate
 }
@@ -47,6 +47,7 @@ app.put("/bookings/:id", (req, res)=>{
     booking.firstName = firstName ? firstName: booking.firstName;
     booking.surname = surname ? surname: booking.surname;
     booking.email = email ? email: booking.email;
+    booking.roomId = roomId ? roomId: booking.roomId;
     booking.checkInDate = checkInDate ? checkInDate: booking.checkInDate;
     booking.checkOutDate = checkOutDate ? checkOutDate: booking.checkOutDate;
     res.json(bookings)
