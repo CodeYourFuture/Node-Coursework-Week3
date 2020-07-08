@@ -1,20 +1,48 @@
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const app = express();
+app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.json());
 
 //Use this array as your (in-memory) data store.
-const bookings = require("./bookings.json");
+let bookings = require("./bookings.json");
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
+app.get("/bookings", (req, res) => {
+  res.json(bookings);
+});
+
+app.get("/bookings/:bookingId", (req, res) => {
+  const { bookingId } = req.params;
+  const searchedBooking = bookings.find((booking) => booking.id == bookingId);
+  if (searchedBooking) {
+    res.json(searchedBooking);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
+app.post("/bookings", (req, res) => {
+  bookings.push(req.body);
+});
+
+app.delete("/bookings/:id", (req, res) => {
+  const bookingId = Number(req.params.id);
+  const checkLength = bookings.length
+  bookings = bookings.filter(booking => booking.id != bookingId);
+  if (checkLength > bookings.length) {res.json({ "Booking deleted": true })}
+  else {res.sendStatus(404)};
+});
 // TODO add your routes and helper functions here
 
-const listener = app.listen(process.env.PORT, function () {
+const listener = app.listen(process.env.PORT || 3000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
