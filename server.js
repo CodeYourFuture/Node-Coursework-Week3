@@ -1,16 +1,21 @@
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
-
+// Configuring body parser middleware
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 //Use this array as your (in-memory) data store.
 const bookings = require('./bookings.json');
 
 app.get('/', function (request, response) {
-  response.send('Hotel booking server.  Ask for /bookings, etc.');
+  response.send(
+    'Hotel booking server.  Ask for /bookings, /bookings/search?term=jones, /bookings/search?date=2019-05-20 etc.'
+  );
 });
 
 // Read all bookings
@@ -50,6 +55,24 @@ app.post('/bookings', (request, response) => {
     response
       .status(201)
       .json(` Successfully A new chat with Id number ${newId}  is created.`);
+  }
+});
+
+// free-text search
+app.get('/bookings/search', (request, response) => {
+  const searchTerm = request.query.term;
+  const searchResult = bookings.filter((element) => {
+    return (
+      element.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      element.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      element.surname.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+  console.log(searchResult);
+  if (searchResult) {
+    response.json(searchResult);
+  } else {
+    response.sendStatus(404);
   }
 });
 
