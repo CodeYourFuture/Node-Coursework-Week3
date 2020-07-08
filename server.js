@@ -76,21 +76,21 @@ app.get('/bookings/search', (request, response) => {
   const searchTerm = request.query.term;
   const date = request.query.date;
   if (searchTerm) {
-    const searchedBooking = bookings.filter((booking) => {
+    const searchedBooking = bookings.find((booking) => {
       return (
         booking.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
         booking.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         booking.surname.toLowerCase().includes(searchTerm.toLowerCase())
       );
     });
-    searchedBooking.length > 0
+    searchedBooking
       ? response.json(searchedBooking)
       : response.status(404).send('Not found!');
   } else {
-    const searchedBooking = bookings.filter(
+    const searchedBooking = bookings.find(
       (booking) => booking.checkInDate === date || booking.checkOutDate === date
     );
-    searchedBooking.length > 0
+    searchedBooking
       ? response.json(searchedBooking)
       : response.status(404).send('Not found!');
   }
