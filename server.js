@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const moment = require('moment');
 
 const app = express();
 
@@ -27,6 +28,10 @@ app.get('/bookings', function (request, response) {
 const validateId = (id) => {
   return bookings.some((booking) => booking.id === id);
 };
+const validateEmail = (email) => {
+  const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  return !re.test(email);
+};
 
 const validateRequest = (request) => {
   return (
@@ -46,8 +51,16 @@ app.post('/bookings', (request, response) => {
   if (newIdExist) {
     newId++;
   }
-  const requestValidated = validateRequest(request);
-  if (requestValidated) {
+  const duration = moment(request.body.checkOutDate).diff(
+    request.body.checkInDate,
+    'days'
+  );
+
+  if (
+    validateEmail(request.body.email) ||
+    validateRequest(request) ||
+    duration < 0
+  ) {
     response.status(400).json('Please Fill all the form fields, thanks!');
   } else {
     request.body.id = newId;
@@ -64,7 +77,7 @@ app.get('/bookings/search/bydate', (request, response) => {
   const searchedBooking = bookings.filter(
     (booking) => booking.checkInDate === date || booking.checkOutDate === date
   );
-  if (searchedBooking.length>0) {
+  if (searchedBooking.length > 0) {
     response.json(searchedBooking);
   } else {
     response.status(404).send('Not found!');
@@ -81,7 +94,7 @@ app.get('/bookings/search', (request, response) => {
       booking.surname.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
-  if (searchedBooking.length>0) {
+  if (searchedBooking.length > 0) {
     response.json(searchedBooking);
   } else {
     response.status(404).send('Not found!');
