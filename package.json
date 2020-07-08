@@ -11,8 +11,10 @@
     "dev": "nodemon server.js"
   },
   "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "express": "^4.16.4",
-    "cors": "^2.8.5"
+    "moment": "^2.27.0"
   },
   "engines": {
     "node": "8.x"
