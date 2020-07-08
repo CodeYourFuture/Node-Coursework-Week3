@@ -15,7 +15,7 @@ const bookings = require('./bookings.json');
 
 app.get('/', function (request, response) {
   response.send(
-    'Hotel booking server.  Ask for /bookings, /bookings/search?term=jones, /bookings/search/bydate?date=2019-05-20 etc.'
+    'Hotel booking server.  Ask for /bookings, /bookings/3, /bookings/search?term=jones, /bookings/search?date=2017-11-21 etc.'
   );
 });
 
@@ -71,33 +71,28 @@ app.post('/bookings', (request, response) => {
   }
 });
 
-// search by date
-app.get('/bookings/search/bydate', (request, response) => {
-  const date = request.query.date;
-  const searchedBooking = bookings.filter(
-    (booking) => booking.checkInDate === date || booking.checkOutDate === date
-  );
-  if (searchedBooking.length > 0) {
-    response.json(searchedBooking);
-  } else {
-    response.status(404).send('Not found!');
-  }
-});
-
-// free-text search
+// free-text search and search by date
 app.get('/bookings/search', (request, response) => {
   const searchTerm = request.query.term;
-  const searchedBooking = bookings.filter((booking) => {
-    return (
-      booking.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      booking.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      booking.surname.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-  });
-  if (searchedBooking.length > 0) {
-    response.json(searchedBooking);
+  const date = request.query.date;
+  if (searchTerm) {
+    const searchedBooking = bookings.filter((booking) => {
+      return (
+        booking.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        booking.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        booking.surname.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    });
+    searchedBooking.length > 0
+      ? response.json(searchedBooking)
+      : response.status(404).send('Not found!');
   } else {
-    response.status(404).send('Not found!');
+    const searchedBooking = bookings.filter(
+      (booking) => booking.checkInDate === date || booking.checkOutDate === date
+    );
+    searchedBooking.length > 0
+      ? response.json(searchedBooking)
+      : response.status(404).send('Not found!');
   }
 });
 
