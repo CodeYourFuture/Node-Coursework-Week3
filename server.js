@@ -14,7 +14,7 @@ const bookings = require('./bookings.json');
 
 app.get('/', function (request, response) {
   response.send(
-    'Hotel booking server.  Ask for /bookings, /bookings/search?term=jones, /bookings/search?date=2019-05-20 etc.'
+    'Hotel booking server.  Ask for /bookings, /bookings/search?term=jones, /bookings/search/bydate?date=2019-05-20 etc.'
   );
 });
 
@@ -58,21 +58,33 @@ app.post('/bookings', (request, response) => {
   }
 });
 
+// search by date
+app.get('/bookings/search/bydate', (request, response) => {
+  const date = request.query.date;
+  const searchedBooking = bookings.filter(
+    (booking) => booking.checkInDate === date || booking.checkOutDate === date
+  );
+  if (searchedBooking.length>0) {
+    response.json(searchedBooking);
+  } else {
+    response.status(404).send('Not found!');
+  }
+});
+
 // free-text search
 app.get('/bookings/search', (request, response) => {
   const searchTerm = request.query.term;
-  const searchResult = bookings.filter((element) => {
+  const searchedBooking = bookings.filter((booking) => {
     return (
-      element.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      element.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      element.surname.toLowerCase().includes(searchTerm.toLowerCase())
+      booking.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      booking.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      booking.surname.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
-  console.log(searchResult);
-  if (searchResult) {
-    response.json(searchResult);
+  if (searchedBooking.length>0) {
+    response.json(searchedBooking);
   } else {
-    response.sendStatus(404);
+    response.status(404).send('Not found!');
   }
 });
 
