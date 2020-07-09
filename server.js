@@ -29,7 +29,7 @@ app.get("/bookings", function (request, response) {
 //read one booking
 
 app.get("/bookings/:id", (req, res) => {
-  const bookingId = req.params.id;
+  const bookingId = Number(req.params.id);
   const selectById = bookings.find((item) => item.id === bookingId);
   selectById ? res.send(selectById) : res.status(404).send("No booking found");
 });
