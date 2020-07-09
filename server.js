@@ -15,13 +15,25 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 
-//read all messages
+//create new  booking
 app.post("/bookings", (req, res) => {
   bookings.push(req.body);
   res.send({ success: true });
 });
+
+// read all bookings
 app.get("/bookings", function (request, response) {
   response.send(bookings);
+});
+
+//read one booking
+
+app.get("/bookings/:id", (req, res) => {
+  const bookingId = Number(req.params.id);
+  const selectById = bookings.find((item) => item.id === personId);
+  selectById
+    ? response.send(selectById)
+    : response.status(404).send("No booking found");
 });
 
 const port = process.env.PORT || 5000;
