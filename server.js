@@ -40,7 +40,7 @@ app.delete("/bookings/:id", (req, res) => {
   const bookingId = Number(req.params.id);
   const foundId = bookings.filter((item) => item.id !== bookingId);
   foundId
-    ? res.send(foundId, { success: true })
+    ? res.send(foundId)
     : res.status(404).send("No booking found");
 });
 
