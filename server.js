@@ -31,8 +31,18 @@ app.get("/bookings/:bookingId", (req, res) => {
 });
 
 app.post("/bookings", (req, res) => {
-  bookings.push(req.body);
-});
+  if (
+    "title" in req.body &&
+    "firstName" in req.body &&
+    "surname" in req.body &&
+    "roomId" in req.body &&
+    "email" in req.body
+  ) {
+    bookings.push(req.body);
+  } else {
+    res.send("Please fill the form");
+  }
+})
 
 app.delete("/bookings/:id", (req, res) => {
   const bookingId = Number(req.params.id);
