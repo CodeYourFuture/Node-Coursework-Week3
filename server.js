@@ -35,7 +35,7 @@ app.get("/bookings/:id", (req, res) => {
 });
 
 //delete by Id
-app.delete("/bookings/:id", (req, res) {
+app.delete("/bookings/:id", (req, res) =>{
   const bookingId = Number(req.params.id);
   bookings = bookings.filter(item => item.id !== personId);
   res.send({ success: true })
