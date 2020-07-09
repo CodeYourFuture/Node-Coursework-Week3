@@ -30,7 +30,7 @@ app.get("/bookings", function (request, response) {
 
 app.get("/bookings/:id", (req, res) => {
   const bookingId = Number(req.params.id);
-  const selectById = bookings.find((item) => item.id === personId);
+  const selectById = bookings.find((item) => item.id === bookingId);
   selectById
     ? response.send(selectById)
     : response.status(404).send("No booking found");
