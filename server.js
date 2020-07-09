@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require('body-parser')
 const moment = require('moment')
+const validator = require('email-validator')
 
 const app = express();
 
@@ -23,7 +24,11 @@ app.get("/bookings", (request, response)=>{
 
 app.post("/bookings/add", (req, res)=>{
   const {title, firstName: firstName, surname, email, roomId, checkInDate, checkOutDate} = req.body
-  if(title && firstName && firstName && surname && email && roomId && checkInDate && checkOutDate){
+  const isEmailOk = validator.validate(email)
+  const isDateOk = (moment(checkInDate) < moment(checkOutDate))? true : false;
+
+  if(title && firstName && firstName && surname && isEmailOk && isDateOk && roomId && checkInDate && checkOutDate){
+    
     const booking = {
       "id" :Math.floor(Math.random()*1000000),
       "title":title,
@@ -34,9 +39,9 @@ app.post("/bookings/add", (req, res)=>{
       "checkInDate":checkInDate,
       "checkOutDate":checkOutDate
     }
-    console.log(booking.checkInDate)
     bookings.push(booking)
     res.send(bookings)
+  
   }else{
     res.status(400).send('bad request')
   };

@@ -13,6 +13,8 @@
   "dependencies": {
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
+    "email-validator": "^2.0.4",
+    "email-verifier": "^0.4.1",
     "express": "^4.16.4",
     "moment": "^2.27.0",
     "nodemon": "^2.0.4"
