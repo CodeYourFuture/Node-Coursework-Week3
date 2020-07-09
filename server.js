@@ -38,8 +38,10 @@ app.get("/bookings/:id", (req, res) => {
 //delete by Id
 app.delete("/bookings/:id", (req, res) => {
   const bookingId = Number(req.params.id);
-  bookings = bookings.filter((item) => item.id !== bookingId);
-  res.send({ success: true });
+  const foundId = bookings.filter((item) => item.id !== bookingId);
+  foundId
+    ? res.send(foundId, { success: true })
+    : res.status(404).send("No booking found");
 });
 
 const port = process.env.PORT || 5000;
