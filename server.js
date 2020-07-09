@@ -26,6 +26,13 @@ app.get("/bookings", function (request, response) {
   response.send(bookings);
 });
 
+//delete by Id
+app.delete("/bookings/:id", (req, res) => {
+  const bookingId = Number(req.params.id);
+  bookings = bookings.filter((item) => item.id !== bookingId);
+  res.send({ success: true });
+});
+
 //read one booking
 
 app.get("/bookings/:id", (req, res) => {
@@ -34,12 +41,7 @@ app.get("/bookings/:id", (req, res) => {
   selectById ? res.send(selectById) : res.status(404).send("No booking found");
 });
 
-//delete by Id
-app.delete("/bookings/:id", (req, res) => {
-  const bookingId = Number(req.params.id);
-  bookings = bookings.filter((item) => item.id !== bookingId);
-  res.send({ success: true });
-});
+
 
 const port = process.env.PORT || 5000;
 app.listen(port);
