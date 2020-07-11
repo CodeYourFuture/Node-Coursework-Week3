@@ -58,7 +58,7 @@ app.post("/bookings/add", (req, res) => {
     bookings.push(booking);
     res.send(bookings);
   } else {
-    res.status(400).send("bad request");
+    res.status(400).send("check the inputs, something is wrong ! ");
   }
 });
 
