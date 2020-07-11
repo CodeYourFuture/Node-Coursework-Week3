@@ -120,7 +120,7 @@ app.delete("/bookings/:id", (req, res) => {
 app.get("/bookings/:id", (req, res) => {
   const bookingId = Number(req.params.id);
   const booking = bookings.find((booking) => booking.id === bookingId);
-  if (booking.length > 0) {
+  if (Object.entries(booking).length > 0) {
     res.send(booking);
   } else {
     res.status(404).send("not found");
