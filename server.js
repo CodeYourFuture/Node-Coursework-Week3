@@ -33,8 +33,8 @@ app.post("/bookings", (request, response) => {
 });
 
 app.get("/bookings/:id", (request, response) => {
-  const bookingId = request.params.id
-  const chosenBooking = bookings.find(booking => booking.id == bookingId)
+  const bookingId = Number(request.params.id)
+  const chosenBooking = bookings.find(booking => booking.id === bookingId)
   response.json(chosenBooking)
 })
 
