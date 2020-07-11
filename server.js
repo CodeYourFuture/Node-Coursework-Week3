@@ -38,7 +38,6 @@ app.post("/bookings/add", (req, res) => {
   if (
     title &&
     firstName &&
-    firstName &&
     surname &&
     isEmailOk &&
     isDateOk &&
