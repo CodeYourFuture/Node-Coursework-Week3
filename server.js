@@ -25,7 +25,31 @@ app.get("/bookings", function (req, res) {
 app.get("/bookings/:bookingId", (req, res) => {
   const { bookingId } = req.params;
   const searchResult = bookings.find((booking) => booking.id == bookingId);
-  searchResult ? res.json(searchResult) : res.sendStatus(404);
+  searchResult ? res.json(searchResult) : res.status(404).send("ID not found");
+});
+
+//Create a new booking
+app.post("/bookings", (req, res) => {
+  if (
+    //mandatory fields
+    "title" in req.body &&
+    "firstName" in req.body &&
+    "surname" in req.body &&
+    "roomId" in req.body &&
+    "email" in req.body
+  ) {
+    bookings.push(req.body);
+    res.send({ success: true, bookings });
+  } else {
+    res.status(400).send("Please fill the form: title, first name, surname, room id and email are mandatory");
+  }
+});
+
+// Delete a booking, specified by an ID
+app.delete("/bookings/:id",(req,res)=>{
+  const bookingId = Number(req.params.id);
+  bookings = bookings.filter((booking)=>booking.id != bookingId)
+res.send({ success: true });
 });
 
 const PORT = process.env.PORT || 5000;
