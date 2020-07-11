@@ -21,11 +21,15 @@ app.get("/bookings", (request, response) => {
 });
 
 app.post("/bookings", (request, response) => {
+  if(request.body.title ==="" ||request.body.firstName ===""||request.body.surname ===""||request.body.email ===""||request.body.roomId ===""||request.body.checkInDate ===""||request.body.checkOutDate ===""){
+    response.send(400)
+  } else {
   console.log(request.body)
   const addedId = bookings.length + 1;
   request.body.id = addedId
   bookings.push(request.body);
   response.json({ success: true });
+  }
 });
 
 app.get("/bookings/:id", (request, response) => {
