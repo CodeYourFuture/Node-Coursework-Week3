@@ -1,7 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const moment = require('moment')
+const validator = require("email-validator");
+const moment = require("moment");
 
 const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -21,11 +22,10 @@ app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
-// checkInDate": "2018-02-15",
-// "checkOutDate": "2018-02-28"
+
 app.get("/bookings/search", (req, res) => {
   const date = req.query.date;
-  console.log(date)
+  console.log(date);
   const searchDate = bookings.filter(
     (booking) => booking.checkInDate === date || booking.checkOutDate === date
   );
@@ -52,9 +52,23 @@ app.post("/bookings", (req, res) => {
     "firstName" in req.body &&
     "surname" in req.body &&
     "roomId" in req.body &&
-    "email" in req.body
+    "email" in req.body &&
+    req.body.title !== "" &&
+    req.body.firstName !== "" &&
+    req.body.surname !== "" &&
+    req.body.roomId !== "" &&
+    req.body.email !== "" &&
+    req.body.checkInDate !== "" &&
+    req.body.checkOutDate !== "" &&
+    validator.validate(req.body.email)
   ) {
-    bookings.push(req.body);
+    if (moment(req.body.checkOutDate) > moment(req.body.checkInDate)) {
+      bookings.push(req.body);
+    } else {
+      res.send(
+        "You put an earlier check-out date than check-in date, please check the dates!"
+      );
+    }
   } else {
     res.send("Please fill the form");
   }
