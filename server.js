@@ -39,7 +39,7 @@ app.get("/bookings/:id", (request, response) => {
 })
 
 app.delete("/bookings/:id", (request, response) => {
-  const bookingId = request.params.id
+  const bookingId = Number(request.params.id)
   bookings = bookings.filter(booking => booking.id !== bookingId)
   response.json({success: true})
 })
