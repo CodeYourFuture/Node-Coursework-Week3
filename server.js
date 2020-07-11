@@ -53,6 +53,8 @@ app.post("/bookings", (req, res) => {
     "surname" in req.body &&
     "roomId" in req.body &&
     "email" in req.body &&
+    "checkInDate" in req.body &&
+    "checkOutDate" in req.body &&
     req.body.title !== "" &&
     req.body.firstName !== "" &&
     req.body.surname !== "" &&
