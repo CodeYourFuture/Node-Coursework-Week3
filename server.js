@@ -18,8 +18,20 @@ app.get("/", function (request, response) {
 
 //create new  booking
 app.post("/bookings", (req, res) => {
-  bookings.push(req.body);
-  res.send({ success: true });
+  let { title, firstName, surname, email, roomId, checkInDate, checkOutDate } = req.body;
+  if (
+    title.length > 0 &&
+    firstName.length > 0 &&
+    surname.length > 0 &&
+    email.length > 0 &&
+    roomId.length > 0 &&
+    checkInDate.length > 0 &&
+    checkOutDate.length > 0) {
+    bookings.push(req.body);
+    res.send({ booking: "success" })
+  } else {
+    res.status(404).send("Please complete the form")
+  }
 });
 
 // read all bookings
