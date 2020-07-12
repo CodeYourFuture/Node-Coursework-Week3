@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser")
+const moment = require("moment")
 
 const app = express();
 
@@ -31,6 +32,12 @@ app.post("/bookings", (request, response) => {
   response.json({ success: true });
   }
 });
+
+app.get("/bookings/search", (request, response) => {
+  const date = request.query.date
+  const FilteredDates = bookings.filter(booking => moment(date).isBetween(booking.checkInDate, booking.CheckOutDate))
+  response.json(FilteredDates)
+})
 
 app.get("/bookings/:id", (request, response) => {
   const bookingId = Number(request.params.id)
