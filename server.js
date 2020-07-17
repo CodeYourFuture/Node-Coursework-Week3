@@ -41,17 +41,32 @@ app.post("/bookings", (req, res) => {
     bookings.push(req.body);
     res.send({ success: true, bookings });
   } else {
-    res.status(400).send("Please fill the form: title, first name, surname, room id and email are mandatory");
+    res
+      .status(400)
+      .send(
+        "Please fill the form: title, first name, surname, room id and email are mandatory"
+      );
   }
 });
 
 // Delete a booking, specified by an ID
-app.delete("/bookings/:id",(req,res)=>{
+app.delete("/bookings/:id", (req, res) => {
   const bookingId = Number(req.params.id);
-  bookings = bookings.filter((booking)=>booking.id != bookingId)
-res.send({ success: true });
+  bookings = bookings.filter((booking) => booking.id != bookingId);
+  res.send({ success: true });
 });
 
+app.get("/bookings/search", (req, res) => {
+  const searchDate = moment(req.query.date);
+  if (searchDate) {
+    const foundBooking = bookings.find(
+      (item) => item.checkInDate === searchDate
+    );
+    res.send(foundBooking);
+  } else {
+    res.send(404, "No booking found");
+  }
+});
 const PORT = process.env.PORT || 5000;
 
 const listener = app.listen(PORT, function () {
