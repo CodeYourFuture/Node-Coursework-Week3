@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const moment = require("moment")
 
 const app = express();
 
@@ -59,6 +60,18 @@ app.delete("/bookings/:id", (req, res) => {
     res.status(404).send("No booking found");
   }
 });
+app.get("/bookings/search", (req,res)=>{
+const searchDate = moment(req.query.date);
+if(searchDate) {
+  const foundBooking = bookings.find(item => 
+    item.checkInDate === searchDate);
+    res.send(foundBooking)
+}
+else{
+  res.send(404, "No booking found")
+}
+
+})
 
 const port = process.env.PORT || 5000;
 app.listen(port);
