@@ -88,6 +88,10 @@ app.get("/booking/search", (request, response) => {
         moment(booking.checkOutDate) >= moment(date)
     );
   }
+  // Check Result
+  if(result.length === 0){
+    return response.status(404).send("Not found!")
+  }
   // Send booking to the client
   response.status(200).json(result);
 });
