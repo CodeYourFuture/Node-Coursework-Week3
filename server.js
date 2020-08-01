@@ -1,6 +1,6 @@
 const express = require("express");
 const moment = require("moment");
-const bodyParser = require("body-Parser");
+const bodyParser = require("body-parser");
 const validator = require("email-validator");
 const cors = require("cors");
 const app = express();
