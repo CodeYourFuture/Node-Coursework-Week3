@@ -2,7 +2,6 @@ const express = require("express");
 const mongodb = require("mongodb");
 const cors = require("cors");
 require("dotenv").config();
-const bodyParser = require("body-parser");
 const moment = require("moment");
 
 const app = express();
@@ -84,6 +83,64 @@ client.connect(() => {
       } else {
         response.status(201).json(result.ops[0]);
       }
+    });
+  });
+
+  // free-text search and search by date
+  app.get("/bookings/search", (request, response) => {
+    const searchTerm = request.query.term;
+    const date = request.query.date;
+    if (searchTerm === undefined && date === undefined) {
+      return response.status(400).send("please, try again!");
+    }
+    const searchObject = { $or: [{ searchTerm: searchTerm }, { date: date }] };
+
+    collection.find(searchObject).toArray((error, results) => {
+      if (error) {
+        response.status(500).send(error);
+      } else {
+        results.length > 0
+          ? response.status(200).send(results)
+          : response.status(404).send("search not found!");
+      }
+    });
+  });
+
+  //  Read one booking specified by an ID
+  app.get("/bookings/:id", (request, response) => {
+    if (!mongodb.ObjectId.isValid(request.params.id)) {
+      return response.sendStatus(400);
+    }
+
+    collection.findOne({ _id: request.params.id }, (error, result) => {
+      if (error) {
+        return response.status(500).send(error);
+      } else if (result) {
+        response.status(200).send(result);
+      } else {
+        response.status(404).send("your search not found!");
+      }
+    });
+  });
+
+  //  Delete a booking by ID
+  app.delete("/bookings/:id", (request, response) => {
+    if (!mongodb.ObjectId.isValid(request.params.id)) {
+      return response.sendStatus(400);
+    }
+
+    const searchObject = { _id: mongodb.ObjectId(request.params.id) };
+
+    collection.deleteOne(searchObject, function (error, result) {
+      if (error) {
+        response.status(500).send(error);
+      } else if (result.deletedCount) {
+        response.sendStatus(204);
+      } else {
+        response.sendStatus(404);
+      }
+
+      client.close();
     });
   });
 });
