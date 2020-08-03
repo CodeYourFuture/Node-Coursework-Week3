@@ -34,6 +34,58 @@ client.connect(() => {
       }
     });
   });
+
+  const validateEmail = (email) => {
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return !re.test(email);
+  };
+
+  //  Create a new bookings
+  app.post("/bookings", (request, response) => {
+    const missingParams = [
+      "title",
+      "firstName",
+      "email",
+      "roomId",
+      "checkInDate",
+      "checkOutDate",
+      "surname",
+    ].filter((key) => !(key in request.body));
+    if (missingParams.length > 0) {
+      return response
+        .status(400)
+        .send("Uri params missing:" + missingParams.join(", "));
+    }
+
+    const duration = moment(request.body.checkOutDate).diff(
+      request.body.checkInDate,
+      "days"
+    );
+    const booking = {
+      title: request.body.title,
+      firstName: request.body.firstName,
+      surname: request.body.surname,
+      email: request.body.email,
+      roomId: Number(request.body.roomId),
+      checkInDate: request.body.checkInDate,
+      checkOutDate: request.body.checkOutDate,
+      duration: duration,
+    };
+
+    if (validateEmail(request.body.email) || duration < 0) {
+      return response
+        .status(400)
+        .json("Please Fill all the form fields, thanks!");
+    }
+
+    collection.insertOne(booking, (error, result) => {
+      if (error) {
+        response.status(500).send(error);
+      } else {
+        response.status(201).json(result.ops[0]);
+      }
+    });
+  });
 });
 
 const portNumber = process.env.PORT || 5001;
