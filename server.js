@@ -112,7 +112,7 @@ client.connect(() => {
       return response.sendStatus(400);
     }
 
-    collection.findOne({ _id: request.params.id }, (error, result) => {
+    collection.findOne({ _id: mongodb.ObjectId(request.params.id) }, (error, result) => {
       if (error) {
         return response.status(500).send(error);
       } else if (result) {
