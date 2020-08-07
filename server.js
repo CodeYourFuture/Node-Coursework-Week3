@@ -76,6 +76,32 @@ client.connect(() => {
       }
     });
   });
+
+  app.get("/bookings/search", (req, res) => {
+    const { date, term } = req.query;
+    if (!date && !term) {
+      return res.status(400).send("please try again!");
+    }
+    collection.find().toArray((err, results) => {
+      if (err) {
+        return res.status(500).json(err);
+      } else {
+        const searchedBookings = results.filter(
+          (booking) =>
+            date?booking.checkInDate === date ||
+            booking.checkOutDate === date:null ||
+            term?booking.firstName.toLowerCase().includes(term.toLowerCase()) ||
+            booking.surname.toLowerCase().includes(term.toLowerCase()) ||
+            booking.email.toLowerCase().includes(term.toLowerCase()):null
+        );
+        if (searchedBookings.length > 0) {
+          return res.json(searchedBookings);
+        } else {
+          res.status(400).send("Not found!");
+        }
+      }
+    });
+  });
 });
 
 const port = process.env.PORT || 3000;
