@@ -86,19 +86,64 @@ client.connect(() => {
       if (err) {
         return res.status(500).json(err);
       } else {
-        const searchedBookings = results.filter(
-          (booking) =>
-            date?booking.checkInDate === date ||
-            booking.checkOutDate === date:null ||
-            term?booking.firstName.toLowerCase().includes(term.toLowerCase()) ||
-            booking.surname.toLowerCase().includes(term.toLowerCase()) ||
-            booking.email.toLowerCase().includes(term.toLowerCase()):null
+        const searchedBookings = results.filter((booking) =>
+          date
+            ? booking.checkInDate === date || booking.checkOutDate === date
+            : null || term
+            ? booking.firstName.toLowerCase().includes(term.toLowerCase()) ||
+              booking.surname.toLowerCase().includes(term.toLowerCase()) ||
+              booking.email.toLowerCase().includes(term.toLowerCase())
+            : null
         );
         if (searchedBookings.length > 0) {
           return res.json(searchedBookings);
         } else {
           res.status(400).send("Not found!");
         }
+      }
+    });
+  });
+
+  app.put("/bookings/:id", (req, res) => {
+    const bookingId = req.params.id;
+    if (!mongodb.ObjectID.isValid(bookingId)) {
+      return res.status(400).json("the ID is not valid");
+    }
+    const id = mongodb.ObjectID(bookingId);
+    const {
+      title,
+      firstName,
+      surname,
+      email,
+      checkInDate,
+      checkOutDate,
+    } = req.body;
+
+    if (
+      !title ||
+      !firstName ||
+      !surname ||
+      !email ||
+      !checkInDate ||
+      !checkOutDate
+    ) {
+      return res.status(400).json("please complete all info and try again!");
+    }
+    const booking = {
+      $set: {
+        title: title,
+        firstName: firstName,
+        surname: surname,
+        email: email,
+        checkInDate: checkOutDate,
+        checkOutDate: checkOutDate,
+      },
+    };
+    collection.findOneAndUpdate({ _id: id }, booking, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
       }
     });
   });
