@@ -147,6 +147,21 @@ client.connect(() => {
       }
     });
   });
+
+  app.delete("/bookings/:id", (req, res) => {
+    const bookingId = req.params.id;
+    if (!mongodb.ObjectID.isValid(bookingId)) {
+      return res.status(400).json("the ID is not valid");
+    }
+    const id = mongodb.ObjectID(bookingId);
+    collection.findOneAndDelete({ _id: id }, (err, result) => {
+      if (err) {
+        res.status(500).json(err);
+      } else {
+        res.status(200).json(result);
+      }
+    });
+  });
 });
 
 const port = process.env.PORT || 3000;
