@@ -15,6 +15,40 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 
-const listener = app.listen(process.env.PORT, function () {
+// Get all bookings
+
+app.get("/bookings", (req, res) => {
+  res.json(bookings);
+});
+
+// Post new booking
+
+app.post("/bookings", (req, res) => {
+  const newBooking = {
+    id: req.body.id,
+    title: req.body.title,
+    firstName: req.body.firstName,
+    surname: req.body.surname,
+    email: req.body.email,
+    roomId: req.body.roomId,
+    checkInDate: req.body.checkInDate,
+    checkOutDate: req.body.checkOutDate,
+  };
+
+  bookings.push(newBooking);
+  res.json(bookings);
+});
+
+// Get one by id
+
+app.get("/bookings/:id", (req, res) => {
+  const id = Number(req.params.id);
+  selectedBooking = bookings.find((booking) => (booking.id = id));
+  res.json(selectedBooking);
+});
+
+// const port = process.env.PORT || 7070
+
+const listener = app.listen(process.env.PORT || 7070, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
