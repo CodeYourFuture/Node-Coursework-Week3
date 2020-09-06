@@ -22,8 +22,10 @@ app.get("/bookings", (req, res) => {
 
 //Create a new booking
 
+
 app.post("/bookings", (req, res)=>{
 
+ 
     let newBooking = {
 
       id: bookings.length + 1,
