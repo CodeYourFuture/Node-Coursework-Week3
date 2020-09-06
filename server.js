@@ -23,6 +23,7 @@ app.get("/bookings", (req, res) => {
 //Create a new booking
 
 app.post("/bookings", (req, res)=>{
+
     let newBooking = {
 
       id: bookings.length + 1,
@@ -39,6 +40,18 @@ app.post("/bookings", (req, res)=>{
     res.json(newBooking)
   
 })
+
+//Read one booking, specified by an ID
+
+app.get("/bookings/:id", (req, res) => {
+  let id = Number(req.params.id);
+  let foundBooking = bookings.find((booking) => booking.id === id);
+  if (foundBooking) {
+    res.json(foundBooking);
+  } else {
+    res.status(400).json("Sorry, booking not found");
+  }
+});
 
 // TODO add your routes and helper functions here
 
