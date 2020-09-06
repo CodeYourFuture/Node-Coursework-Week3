@@ -15,13 +15,13 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 
-// Get all bookings
+// *******Get all bookings*****
 
 app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
-// Post new booking
+// **** Post new booking *****
 
 app.post("/bookings", (req, res) => {
   const newBooking = {
@@ -39,11 +39,11 @@ app.post("/bookings", (req, res) => {
   res.json(bookings);
 });
 
-// Get one by id
+// ******** Get one by id *******
 
 app.get("/bookings/:id", (req, res) => {
   const id = Number(req.params.id);
-  selectedBooking = bookings.find((booking) => (booking.id = id));
+  selectedBooking = bookings.find((booking) => booking.id === id);
   res.json(selectedBooking);
 });
 
