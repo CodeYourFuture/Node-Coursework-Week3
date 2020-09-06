@@ -20,6 +20,25 @@ app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
+//Create a new booking
+
+app.post("/bookings", (req, res)=>{
+    let newBooking = {
+
+      id: bookings.length + 1,
+      title: req.body.title,
+      firstName: req.body.firstName,
+      surname: req.body.surname,
+      email:req.body.email,
+      roomId: req.body.roomId,
+      checkInDate: req.body.checkInDate,
+      checkOutDate: req.body.checkOutDate
+    }
+  
+    bookings.push(newBooking)
+    res.json(newBooking)
+  
+})
 
 // TODO add your routes and helper functions here
 
