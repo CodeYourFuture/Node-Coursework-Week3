@@ -53,6 +53,18 @@ app.get("/bookings/:id", (req, res) => {
   }
 });
 
+//Delete a booking, specified by an ID
+
+app.delete("/bookings/:id", (req, res) => {
+  let id = parseInt(req.params.id);
+  let bookingIndex = bookings.findIndex((booking) => booking.id === id);
+  if (bookingIndex !== -1) {
+    bookings.splice(bookingIndex, 1);
+    res.json(bookings);
+  } else {
+    res.status(404).json("Please enter valid ID");
+  }
+});
 // TODO add your routes and helper functions here
 
 const listener = app.listen(process.env.PORT || 3001, function () {
