@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-
+const moment = require("moment"); // require
+moment().format("YYYY-MM-DD");
 const app = express();
 
 app.use(express.json());
@@ -15,10 +16,20 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 app.post("/bookings", function (request, response) {
-  const expectedKeys = ["title", "firstName", "surname", "email", "roomId", "checkInDate", "checkOutDate"]
+  const expectedKeys = [
+    "title",
+    "firstName",
+    "surname",
+    "email",
+    "roomId",
+    "checkInDate",
+    "checkOutDate",
+  ];
   for (let item in request.body) {
     if (!request.body[item] || !expectedKeys.includes(item)) {
-      response.status(400).json("Please ensure your are passing the correct fileds")
+      response
+        .status(400)
+        .json("Please ensure your are passing the correct fileds");
       return;
     }
   }
@@ -31,32 +42,49 @@ app.post("/bookings", function (request, response) {
     email: request.body.email,
     roomId: request.body.roomId,
     checkInDate: request.body.checkInDate,
-    checkOutDate: request.body.checkOutDate
-  }
-  bookings.push(newBooking)
-  response.json(bookings)
+    checkOutDate: request.body.checkOutDate,
+  };
+  bookings.push(newBooking);
+  response.json(bookings);
 });
 
 app.get("/bookings", function (request, response) {
   response.send(bookings);
 });
 
+app.get("/bookings/search", function (request, response) {
+  const date = moment(request.query.date).format("YYYY-MM-DD");
+  if (moment(date, "YYYY-MM-DD", true).isValid()) {
+    let results = bookings.filter(
+      (booking) =>
+        date === booking.checkInDate ||
+        moment(date).isBetween(booking.checkInDate, booking.checkOutDate)
+    );
+    results.length > 0
+      ? response.json(results)
+      : response.status(404).json("nothing was found on this date");
+  } else {
+    response
+      .status(400)
+      .json("please ensure your date is in this format: YYYY-MM-DD ");
+  }
+});
+
 app.get("/bookings/:id", function (request, response) {
-  const id = parseInt(request.params.id)
-  let requestedBooking = bookings.find(booking => booking.id === id)
+  const id = parseInt(request.params.id);
+  let requestedBooking = bookings.find((booking) => booking.id === id);
   if (requestedBooking) {
-    response.json(requestedBooking)
+    response.json(requestedBooking);
   } else {
     response.status(404).json("There is no booking with this ID");
-
   }
 });
 app.delete("/bookings/:id", function (request, response) {
-  const id = parseInt(request.params.id)
-  let requestedBooking = bookings.findIndex(booking => booking.id === id)
+  const id = parseInt(request.params.id);
+  let requestedBooking = bookings.findIndex((booking) => booking.id === id);
   if (requestedBooking > -1) {
-    bookings.splice(requestedBooking, 1)
-    response.json(bookings)
+    bookings.splice(requestedBooking, 1);
+    response.json(bookings);
   } else {
     response.status(404).json("There is no booking with this ID");
   }
