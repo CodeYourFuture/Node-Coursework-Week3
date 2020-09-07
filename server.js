@@ -21,11 +21,27 @@ app.get("/bookings", (req, res) => {
 });
 
 //Create a new booking
-
+// simple validation - booking object is missing or empty
 
 app.post("/bookings", (req, res)=>{
 
- 
+  let keys =[
+  
+    "title",
+    "firstName",
+    "surname",
+    "email",
+    "roomId",
+    "checkInDate",
+    "checkOutDate"
+  ]
+  
+    for(let key in req.body){
+      
+      if(!req.body[key] || !keys.includes(key)){
+        res.status(400).send('Please fill in all fields')
+      }
+    }
     let newBooking = {
 
       id: bookings.length + 1,
