@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
+const validator = require("email-validator");
 const app = express();
 
 app.use(express.json());
@@ -76,6 +77,21 @@ app.post("/bookings", (req, res)=>{
         res.status(400).send('Please fill in all fields')
       }
     }
+
+  //validate email format
+    if (!validator.validate(req.body.email)) {
+      res.status(400).json("Please enter a valid email address");
+      return;
+    }
+  //validate checkoutDate is not after checkinDate 
+    if (!moment(req.body.checkInDate).isBefore(req.body.checkOutDate)) {
+    res
+      .status(400)
+      .json("Check in date is after checkout date, please enter valid dates");
+    return;
+  }
+
+  
     let newBooking = {
 
       id: bookings.length + 1,
