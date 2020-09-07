@@ -25,7 +25,7 @@ app.get("/bookings", (req, res) => {
 
 app.post("/bookings", (req, res) => {
   const newBooking = {
-    id: req.body.id,
+    id: bookings.length + 1, // temp solution for now to match with other id, I can use uuid for bigger pros
     title: req.body.title,
     firstName: req.body.firstName,
     surname: req.body.surname,
@@ -43,16 +43,28 @@ app.post("/bookings", (req, res) => {
 
 app.get("/bookings/:id", (req, res) => {
   const id = Number(req.params.id);
-  const selectedBooking = bookings.find((booking) => booking.id === id);
-  res.json(selectedBooking);
+  if (bookings.map((booking) => booking.id).includes(id)) {
+    const selectedBooking = bookings.find((booking) => booking.id === id);
+    res.json(selectedBooking);
+  } else {
+    res
+      .status(404)
+      .send(`Please enter id number between 1 and ${bookings.length}`);
+  }
 });
 
 // ******** Delete one by id *******
 
 app.delete("/bookings/:id", (req, res) => {
   const id = Number(req.params.id);
-  const selectedBooking = bookings.filter((booking) => booking.id !== id);
-  res.json(selectedBooking);
+  if (bookings.map((booking) => booking.id).includes(id)) {
+    const selectedBooking = bookings.filter((booking) => booking.id !== id);
+    res.json({ msg: `Boking with id number ${id} deleted`, selectedBooking });
+  } else {
+    res
+      .status(404)
+      .send(`Please enter id number between 1 and ${bookings.length}`);
+  }
 });
 
 // const port = process.env.PORT || 7070
