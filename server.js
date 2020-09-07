@@ -1,10 +1,11 @@
 const express = require("express");
 const cors = require("cors");
-
+const moment = require("moment");
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+moment().format();
 
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
@@ -18,6 +19,39 @@ app.get("/",  (req, res) => {
 //Read all bookings
 app.get("/bookings", (req, res) => {
   res.json(bookings);
+});
+
+
+
+
+// search by date
+
+app.get("/bookings/search", function (request, response) {
+  const queryDate = request.query.date
+  
+  
+  if (moment(queryDate, 'YYYY-MM-DD', true).isValid()) {
+    
+    let result = bookings.filter(booking => 
+    moment(queryDate).isBetween(booking.checkInDate, booking.checkOutDate)
+    || moment(queryDate).isSame(booking.checkInDate)
+    || moment(queryDate).isSame(booking.checkOutDate))
+
+    result.length > 0 ? response.send(result) : response.send(`No booking exists on the ${queryDate}`)
+  } else {
+    response.status(400).json('Date format is invalid, Please input correct format "YYYY-MM-DD"')
+  }
+});
+//Read one booking, specified by an ID
+
+app.get("/bookings/:id", (req, res) => {
+  let id = Number(req.params.id);
+  let foundBooking = bookings.find((booking) => booking.id === id);
+  if (foundBooking) {
+    res.json(foundBooking);
+  } else {
+    res.status(400).json("Sorry, booking not found");
+  }
 });
 
 //Create a new booking
@@ -58,18 +92,6 @@ app.post("/bookings", (req, res)=>{
     res.json(newBooking)
   
 })
-
-//Read one booking, specified by an ID
-
-app.get("/bookings/:id", (req, res) => {
-  let id = Number(req.params.id);
-  let foundBooking = bookings.find((booking) => booking.id === id);
-  if (foundBooking) {
-    res.json(foundBooking);
-  } else {
-    res.status(400).json("Sorry, booking not found");
-  }
-});
 
 //Delete a booking, specified by an ID
 
