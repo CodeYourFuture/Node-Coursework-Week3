@@ -27,22 +27,47 @@ app.get("/bookings", (req, res) => {
 
 // search by date
 
-app.get("/bookings/search", function (request, response) {
-  const queryDate = request.query.date
+app.get("/bookings/search", function (req, res) {
+  const queryDate = req.query.date;
+  const queryTerm = req.query.term;
+  if (!queryTerm && !queryDate) {
+    res.status(400).json("Try again your search again :)");
+    return;
+  }
   
-  
-  if (moment(queryDate, 'YYYY-MM-DD', true).isValid()) {
-    
-    let result = bookings.filter(booking => 
-    moment(queryDate).isBetween(booking.checkInDate, booking.checkOutDate)
-    || moment(queryDate).isSame(booking.checkInDate)
-    || moment(queryDate).isSame(booking.checkOutDate))
-
-    result.length > 0 ? response.send(result) : response.send(`No booking exists on the ${queryDate}`)
-  } else {
-    response.status(400).json('Date format is invalid, Please input correct format "YYYY-MM-DD"')
+  if (moment(queryDate, "YYYY-MM-DD", true).isValid()) {
+    let result = bookings.filter(
+      (booking) =>
+        moment(queryDate).isBetween(
+          booking.checkInDate,
+          booking.checkOutDate
+        ) ||
+        moment(queryDate).isSame(booking.checkInDate) ||
+        moment(queryDate).isSame(booking.checkOutDate)
+    );
+    result.length > 0
+      ? res.send(result)
+      : res.send(`No booking found on this ${queryDate} date`);
+    return;
+  } else if (queryDate) {
+    res
+      .status(400)
+      .json('Please enter date with correct format "YYYY-MM-DD"');
+    return;
+  }
+ 
+  const searchbooking = bookings.filter((booking) =>
+    `${booking.firstName} ${booking.surname} ${booking.email}`
+      .toLowerCase()
+      .includes(queryTerm.toLowerCase())
+  );
+  if (queryTerm && searchbooking.length > 0) {
+    res.json(searchbooking);
+  } else if (queryTerm) {
+    res.status(400).json(`Sorry, no booking can be found for ${queryTerm}`);
   }
 });
+
 //Read one booking, specified by an ID
 
 app.get("/bookings/:id", (req, res) => {
