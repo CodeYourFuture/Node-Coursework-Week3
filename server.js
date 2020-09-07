@@ -35,25 +35,29 @@ app.post("/bookings", (req, res) => {
     checkOutDate: req.body.checkOutDate,
   };
 
-  // let bookKeys = Object.keys(newBooking);
-  // let checkKeys = bookKeys.filter((p) => p.length > 0);
-
   if (
     newBooking.title.length > 0 &&
     newBooking.firstName.length > 0 &&
     newBooking.surname.length > 0 &&
     newBooking.email.length > 0 &&
-    // newBooking.roomId === typeof "number" > 0 &&
+    typeof newBooking.roomId == "number" &&
     newBooking.checkInDate.length > 0 &&
     newBooking.checkOutDate.length > 0
   ) {
     bookings.push(newBooking);
     res.json(bookings);
   } else {
-    res.status(404).send("Please fill all required properties to book a place");
+    res.status(400).send("Please fill all required properties to book a place");
   }
+
+  //----could not make these methods work----- :(
+
+  // let bookKeys = Object.keys(newBooking);
+  // let checkKeys = bookKeys.filter((p) => p.length > 0);
+  // let emptyProps = bookKeys.find((p) => p.length < 0);
+
   // if (emptyProp) {
-  //   res.status(404).send("Please fill all required properties to book a place");
+  //   res.status(400).send("Please fill all required properties to book a place");
   // } else {
   //   bookings.push(newBooking);
   //   res.json(bookings);
