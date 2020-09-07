@@ -21,7 +21,7 @@ app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
-// **** Post new booking *****
+// **** Create new booking *****
 
 app.post("/bookings", (req, res) => {
   const newBooking = {
@@ -44,6 +44,14 @@ app.post("/bookings", (req, res) => {
 app.get("/bookings/:id", (req, res) => {
   const id = Number(req.params.id);
   const selectedBooking = bookings.find((booking) => booking.id === id);
+  res.json(selectedBooking);
+});
+
+// ******** Delete one by id *******
+
+app.delete("/bookings/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const selectedBooking = bookings.filter((booking) => booking.id !== id);
   res.json(selectedBooking);
 });
 
