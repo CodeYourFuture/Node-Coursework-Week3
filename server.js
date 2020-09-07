@@ -24,8 +24,8 @@ app.get("/bookings", (req, res) => {
 // **** Create new booking *****
 
 app.post("/bookings", (req, res) => {
-  const newBooking = {
-    id: bookings.length + 1, // temp solution for now to match with other id, I can use uuid for bigger pros
+  let newBooking = {
+    //id: bookings.length + 1, // temp solution for now to match with other id, I can use uuid for bigger pros
     title: req.body.title,
     firstName: req.body.firstName,
     surname: req.body.surname,
@@ -35,8 +35,29 @@ app.post("/bookings", (req, res) => {
     checkOutDate: req.body.checkOutDate,
   };
 
-  bookings.push(newBooking);
-  res.json(bookings);
+  // let bookKeys = Object.keys(newBooking);
+  // let checkKeys = bookKeys.filter((p) => p.length > 0);
+
+  if (
+    newBooking.title.length > 0 &&
+    newBooking.firstName.length > 0 &&
+    newBooking.surname.length > 0 &&
+    newBooking.email.length > 0 &&
+    // newBooking.roomId === typeof "number" > 0 &&
+    newBooking.checkInDate.length > 0 &&
+    newBooking.checkOutDate.length > 0
+  ) {
+    bookings.push(newBooking);
+    res.json(bookings);
+  } else {
+    res.status(404).send("Please fill all required properties to book a place");
+  }
+  // if (emptyProp) {
+  //   res.status(404).send("Please fill all required properties to book a place");
+  // } else {
+  //   bookings.push(newBooking);
+  //   res.json(bookings);
+  // }
 });
 
 // ******** Get one by id *******
