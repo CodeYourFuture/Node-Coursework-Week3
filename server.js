@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const booking = require('./bookings.json');
+const bookings = require('./bookings.json');
 const {check, validationResult} = require('express-validator');
 const Moment = require('moment');
 const MomentRange = require('moment-range');
@@ -13,8 +13,6 @@ app.use(cors());
 // app.use(expressValidator());
 
 //Use this array as your (in-memory) data store.
-const bookings = require('./bookings.json');
-const {response} = require('express');
 
 app.get('/', function (request, response) {
   response.send('Hotel booking server.  Ask for /bookings, etc.');
@@ -22,25 +20,25 @@ app.get('/', function (request, response) {
 
 // TODO add your routes and helper functions here
 //get all the booking
-// app.get('/bookings', function (request, response) {
-//   response.send(booking);
-// });
+app.get('/bookings', function (request, response) {
+  response.send(bookings);
+});
 //read one booking specified by an id
-// app.get('/bookings/:id', function (request, response) {
-//   bookingId = request.params.id;
-//   const booking = bookings.find(
-//     (booking) => booking.id === parseInt(bookingId)
-//   );
-//   if (!booking) {
-//     response.status(400).send('Booking not found');
-//   }
-//   response.send(booking);
-// });
+app.get('/bookings/:id', function (request, response) {
+  var bookingId = request.params.id;
+  const booking = bookings.find(
+    (booking) => booking.id === parseInt(bookingId)
+  );
+  if (!booking) {
+    response.status(400).send('Booking not found');
+  }
+  response.send(booking);
+});
 
 //delete one booking by given id
 
 app.delete('/bookings/:id', function (request, response) {
-  bookingId = request.params.id;
+  const bookingId = request.params.id;
   const messgeToDelete = bookings.find(
     (booking) => parseInt(bookingId) === booking.id
   );
@@ -67,14 +65,18 @@ app.post(
       min: 3,
     }),
     check('email').isEmail(),
-    check('checkInDate').isDate(),
-    check('checkOutDate').isDate(),
+
     check('roomId').isInt(),
   ],
   (req, res) => {
     var errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(422).json({errors: errors.array()});
+    }
+    if (Moment(req.body.checkOutDate).isBefore(req.body.checkInDate)) {
+      return res
+        .status(422)
+        .send('Checkout date can not be earlier than check in date');
     }
 
     const booking = {
@@ -103,6 +105,7 @@ app.get('/bookings/search', function (req, res) {
   console.log('date from query string', date);
 
   let isValid = Moment(date).isValid();
+
   console.log('is valid from is valid', isValid);
   if (!isValid) {
     res.status(400).send('please enter valid date');
@@ -115,6 +118,21 @@ app.get('/bookings/search', function (req, res) {
     res.status(400).send('Nothing exist with given dates');
   }
 
+  res.send(foundBookings);
+});
+
+//free search term
+app.get('/bookings/search', function (req, res) {
+  const {term} = req.query;
+  let foundBookings = bookings.filter(
+    (booking) =>
+      booking.firstName.toLowerCase().includes(term) ||
+      booking.surname.toLowerCase().includes(term) ||
+      booking.email.toLowerCase().includes(term)
+  );
+  if (foundBookings.length === 0) {
+    res.status(400).send('nothing exist with this search term');
+  }
   res.send(foundBookings);
 });
 const listener = app.listen(process.env.PORT || 3000, function () {
