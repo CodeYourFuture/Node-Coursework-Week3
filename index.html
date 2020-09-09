@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Welcome to CYF Hotel</title>
+</head>
+
+<body>
+    <h1>
+        CYF Hotel
+    </h1>
+    <h2>
+        ADD BOOKING
+    </h2>
+    <form action="/bookings" method="post">
+        <p>
+            The TITLE: <input type="text" name="title" placeholder="The title" />
+            <br /><br /> The FIRST NAME: <input type="text" name="firstName" placeholder="The first Name" />
+            <br /><br /> The SURNAME: <input type="text" name="surname" placeholder="The surname" />
+            <br /><br /> The EMAIL: <input type="text" name="email" placeholder="The email" />
+            <br /><br /> The ROOMID: <input type="number" name="roomId" placeholder="The roomId" />
+            <br /><br /> The CHECKINDATE: <input type="date" name="checkInDate" placeholder="checkInDate" />
+            <br /><br /> The CHECKOUTDATE:<input type="date" name="checkOutDate" placeholder="checkOutDate" /> <br />
+            <br /><br />
+        </p>
+        <button type="submit">
+        Send
+      </button>
+    </form>
+
+    <a href="/bookings">See all bookings</a>
+</body>
+
+</html>
