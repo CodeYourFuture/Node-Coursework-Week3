@@ -7,11 +7,14 @@
   "description": "A simple Node app built on Express, instantly up and running.",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "dependencies": {
-    "express": "^4.16.4",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "email-validator": "^2.0.4",
+    "express": "^4.17.1",
+    "moment": "^2.27.0",
+    "nodemon": "^2.0.4"
   },
   "engines": {
     "node": "8.x"
