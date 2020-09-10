@@ -15,6 +15,12 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 
-const listener = app.listen(process.env.PORT, function () {
+// 1.Read all bookings
+
+app.get("/bookings", (request, response) => {
+  response.json(bookings);
+});
+
+const listener = app.listen(process.env.PORT || 5000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
