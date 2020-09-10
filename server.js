@@ -118,5 +118,6 @@ app.delete("/bookings/:id", (request, response) => {
 });
 app.get("/bookings");
 
-var port_number = server.listen(process.env.PORT || 3000);
-app.listen(port_number);
+const listener = app.listen(3000, function () {
+  console.log("Your app is listening on port " + listener.address().port);
+});
