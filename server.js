@@ -37,6 +37,25 @@ app.get("/bookings/:id", (request, response) => {
   }
 });
 
+// 4. Delete a booking, specified by Id
+
+app.delete("/bookings/:id", (request, response) => {
+  const id = Number(request.params.id);
+
+  const found = bookings.some((booking) => booking.id === id);
+
+  if (found) {
+    response.json({
+      msg: "Message deleted",
+      bookings: bookings.filter((booking) => booking.id !== id),
+    });
+  } else {
+    response
+      .status(404)
+      .send(`No booking match the id ${id}.Please enter a valid Id.`);
+  }
+});
+
 const listener = app.listen(process.env.PORT || 5000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
