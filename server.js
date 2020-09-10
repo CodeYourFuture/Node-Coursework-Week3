@@ -56,6 +56,7 @@ app.get("/", function (request, response) {
 app.get("/bookings", (request, response) => {
   response.json(bookings);
 });
+//create new booking
 app.post("/bookings", (request, response) => {
   let keys = [
     "title",
@@ -68,12 +69,12 @@ app.post("/bookings", (request, response) => {
   ];
   for (let key in request.body) {
     if (!request.body[key] || !keys.includes(key)) {
-      response.status(400).json("Please fill in all fields");
+      response.status(404).json("Please fill in all fields");
       return;
     }
   }
   if (!validator.validate(request.body.email)) {
-    response.status(400).json("Please enter a valid email address");
+    response.status(404).json("Please enter a valid email address");
     return;
   }
 
@@ -87,8 +88,20 @@ app.post("/bookings", (request, response) => {
     checkInDate: request.body.checkInDate,
     checkOutDate: request.body.checkOutDate,
   };
+  // if (
+  //   newBooking.title &&
+  //   newBooking.firstName &&
+  //   newBooking.surname &&
+  //   newBooking.email &&
+  //   newBooking.roomId &&
+  //   newBooking.checkInDate &&
+  //   newBooking.checkOutDate
+  // ) {
   bookings.push(newBooking);
   response.json(bookings);
+  // } else {
+  //   res.status(404).json(`Please fill all the fields`);
+  // }
 });
 //Read one booking, specified by an ID
 app.get("/bookings/:id", (request, response) => {
