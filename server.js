@@ -35,6 +35,19 @@ app.get("/bookings/search", (req, res) => {
   } else res.send("No bookings found matching the chosen timespan");
 });
 
+//*******Search a word******/ --- First search needs to comment to make this one work---
+
+app.get("/bookings/search", (req, res) => {
+  let term = req.query.term;
+  let bookingsWithTerm = bookings.filter(
+    (book) =>
+      book.email.includes(term) ||
+      book.firstName.includes(term) ||
+      book.surname.includes(term)
+  );
+  res.json(bookingsWithTerm);
+});
+
 // **** Create new booking *****
 
 app.post("/bookings", (req, res) => {
