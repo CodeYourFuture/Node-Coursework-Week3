@@ -6,11 +6,14 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 moment().format();
+
+// TODO add your routes and helper functions here
+
 app.get("/bookings/search", function (request, response) {
   const queryDate = request.query.date;
   const term = request.query.term;
   if (!term && !queryDate) {
-    response.status(400).json("what are you doing here");
+    response.status(400).json("There isn't any match");
     return;
   }
 
@@ -88,20 +91,8 @@ app.post("/bookings", (request, response) => {
     checkInDate: request.body.checkInDate,
     checkOutDate: request.body.checkOutDate,
   };
-  // if (
-  //   newBooking.title &&
-  //   newBooking.firstName &&
-  //   newBooking.surname &&
-  //   newBooking.email &&
-  //   newBooking.roomId &&
-  //   newBooking.checkInDate &&
-  //   newBooking.checkOutDate
-  // ) {
   bookings.push(newBooking);
   response.json(bookings);
-  // } else {
-  //   res.status(404).json(`Please fill all the fields`);
-  // }
 });
 //Read one booking, specified by an ID
 app.get("/bookings/:id", (request, response) => {
@@ -118,7 +109,7 @@ app.get("/bookings/:id", (request, response) => {
 app.delete("/bookings/:id", (request, response) => {
   let id = parseInt(request.params.id);
   let bookingIndex = bookings.findIndex((booking) => booking.id === id);
-  if (bookingIndex !== -1) {
+  if (bookingIndex > -1) {
     bookings.splice(bookingIndex, 1);
     response.json(bookings);
   } else {
@@ -126,7 +117,6 @@ app.delete("/bookings/:id", (request, response) => {
   }
 });
 app.get("/bookings");
-// TODO add your routes and helper functions here
 
 const listener = app.listen(3000, function () {
   console.log("Your app is listening on port " + listener.address().port);
