@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 
 const app = express();
 
@@ -25,13 +26,14 @@ app.get("/bookings", (req, res) => {
 
 app.post("/bookings", (req, res) => {
   let newBooking = {
-    //id: bookings.length + 1, // temp solution for now to match with other id, I can use uuid for bigger pros
+    id: bookings.length + 1, // temp solution for now to match with other id, I can use uuid for bigger pros
     title: req.body.title,
     firstName: req.body.firstName,
     surname: req.body.surname,
     email: req.body.email,
     roomId: req.body.roomId,
     checkInDate: req.body.checkInDate,
+    //checkInDate: moment().format("L"),
     checkOutDate: req.body.checkOutDate,
   };
 
@@ -90,6 +92,20 @@ app.delete("/bookings/:id", (req, res) => {
       .status(404)
       .send(`Please enter id number between 1 and ${bookings.length}`);
   }
+});
+
+// Search booking with time span
+
+app.get("/bookings", (req, res) => {
+  // let startTime = req.body.checkInDate
+  // let endTime = req.body.checkOutDate
+  let date = req.query.date;
+  let matchedBookings = bookings.map(
+    (book) => book.checkInDate <= date && book.checkOutDate >= date
+  );
+  if (matchedBookings !== undefined) {
+    res.json(matchedBookings);
+  } else res.send("No bookings found matching the chosen timespan");
 });
 
 // const port = process.env.PORT || 7070
