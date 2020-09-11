@@ -36,10 +36,11 @@ app.post("/bookings/", (request, response) => {
   };
 
   for (var property in newBooking) {
+    // Level 2 Reject request if any property is missing
     if (!newBooking[property]) {
       return response.status(400).json({ msg: "Please fill in all fields" });
     }
-
+    //level 4 validate email and check-in check-out dates
     if (!validator.validate(request.body.email)) {
       return response.status(400).json("Please enter a valid email address");
     }
