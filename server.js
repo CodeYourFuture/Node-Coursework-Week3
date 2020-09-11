@@ -6,6 +6,10 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+//Body Parser Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
@@ -15,13 +19,36 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 
-// 1.Read all bookings
+// 1. Create a new booking
+
+app.post("/bookings/", (request, response) => {
+  const newBooking = {
+    id: bookings.length + 1,
+    title: request.body.title,
+    firstName: request.body.firstName,
+    surname: request.body.surname,
+    email: request.body.email,
+    roomId: request.body.roomId,
+    checkInDate: request.body.checkInDate,
+    checkOutDate: request.body.checkOutDate,
+  };
+
+  for (var property in newBooking) {
+    if (!newBooking[property]) {
+      return response.status(400).json({ msg: "Please fill in all fields" });
+    }
+  }
+  bookings.push(newBooking);
+  response.json(bookings);
+});
+
+// 2.Read all bookings
 
 app.get("/bookings", (request, response) => {
   response.json(bookings);
 });
 
-// 2.Read one booking, specified by Id
+// 3.Read one booking, specified by Id
 
 app.get("/bookings/:id", (request, response) => {
   const id = Number(request.params.id);
@@ -33,7 +60,7 @@ app.get("/bookings/:id", (request, response) => {
   } else {
     response
       .status(404)
-      .send(`No bookings match the id ${id}. Please enter a valid Id.`);
+      .send(`No bookings match the id ${id}.Please enter a valid Id.`);
   }
 });
 
@@ -52,7 +79,7 @@ app.delete("/bookings/:id", (request, response) => {
   } else {
     response
       .status(404)
-      .send(`No booking match the id ${id}.Please enter a valid Id.`);
+      .send(`No booking match the id ${id}. Please enter a valid Id.`);
   }
 });
 
