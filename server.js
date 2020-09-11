@@ -68,16 +68,23 @@ app.post("/bookings", (request, response) => {
   }
 });
 
-// search terms by date or email/names
-app.get("/bookings/search", (request, response) => {
-  // let checkedDate = request.query.date;
-  // let foudDate = bookings.filter((date) => date.checkInDate === checkedDate);
-  // if (foudDate) {
-  //   response.json(foudDate);
-  // } else {
-  //   response.status(400).json({ message: "not found" });
-  // }
+// search terms by date
+app.get("/bookings/searchs", (request, response) => {
+  let date = request.query.date;
+  console.log(date);
+  if (moment(date, "YYYY-MM-DD", true).isValid()) {
+    let foudDate = bookings.find((d) => moment(date).isSame(d.checkInDate));
+    console.log(foudDate);
+    if (foudDate) {
+      response.json(foudDate);
+    }
+  } else {
+    response.status(400).json({ message: "not found" });
+  }
+});
 
+//// search term by email/names
+app.get("/bookings/search", (request, response) => {
   let term = request.query.term;
   let foundPerson = bookings.filter((p) =>
     (p.firstName + p.surname + p.email)
