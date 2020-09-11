@@ -59,23 +59,8 @@ app.get("/", function (request, response) {
 app.get("/bookings", (request, response) => {
   response.json(bookings);
 });
-//create new booking
+
 app.post("/bookings", (request, response) => {
-  let keys = [
-    "title",
-    "firstName",
-    "surname",
-    "email",
-    "roomId",
-    "checkInDate",
-    "checkOutDate",
-  ];
-  for (let key in request.body) {
-    if (!request.body[key] || !keys.includes(key)) {
-      response.status(404).json("Please fill in all fields");
-      return;
-    }
-  }
   if (!validator.validate(request.body.email)) {
     response.status(404).json("Please enter a valid email address");
     return;
@@ -91,8 +76,20 @@ app.post("/bookings", (request, response) => {
     checkInDate: request.body.checkInDate,
     checkOutDate: request.body.checkOutDate,
   };
-  bookings.push(newBooking);
-  response.json(bookings);
+  if (
+    newBooking.title &&
+    newBooking.firstName &&
+    newBooking.surname &&
+    newBooking.email &&
+    newBooking.roomId &&
+    newBooking.checkInDate &&
+    newBooking.checkOutDate
+  ) {
+    bookings.push(newBooking);
+    response.json(bookings);
+  } else {
+    response.status(400).send("Please fill all the fields");
+  }
 });
 //Read one booking, specified by an ID
 app.get("/bookings/:id", (request, response) => {
@@ -105,7 +102,6 @@ app.get("/bookings/:id", (request, response) => {
   }
 });
 //Delete a booking, specified by an ID
-//add more validation including checking for decimal ids.
 app.delete("/bookings/:id", (request, response) => {
   let id = parseInt(request.params.id);
   let bookingIndex = bookings.findIndex((booking) => booking.id === id);
@@ -113,11 +109,11 @@ app.delete("/bookings/:id", (request, response) => {
     bookings.splice(bookingIndex, 1);
     response.json(bookings);
   } else {
-    response.status(404).json("Please enter valid ID");
+    response.status(404).json("Please enter a valid ID");
   }
 });
 app.get("/bookings");
 
-const listener = app.listen(process.env.PORT || 3000, function () {
+const listener = app.listen(process.env.PORT || 3001, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
