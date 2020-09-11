@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const validator = require("email-validator");
+const moment = require("moment");
 
 const app = express();
 
@@ -37,6 +39,14 @@ app.post("/bookings/", (request, response) => {
     if (!newBooking[property]) {
       return response.status(400).json({ msg: "Please fill in all fields" });
     }
+
+    if (!validator.validate(request.body.email)) {
+      return response.status(400).json("Please enter a valid email address");
+    }
+
+    if (!moment(request.body.checkInDate).isBefore(request.body.checkOutDate)) {
+      return response.status(400).json("Please enter valid dates");
+    }
   }
   bookings.push(newBooking);
   response.json(bookings);
@@ -50,19 +60,19 @@ app.get("/bookings", (request, response) => {
 
 // 3.Read one booking, specified by Id
 
-// app.get("/bookings/:id", (request, response) => {
-//   const id = Number(request.params.id);
-//   const idSearched = bookings.filter((booking) => booking.id === id);
-//   const found = bookings.some((booking) => booking.id === id);
+app.get("/bookings/:id", (request, response) => {
+  const id = Number(request.params.id);
+  const idSearched = bookings.filter((booking) => booking.id === id);
+  const found = bookings.some((booking) => booking.id === id);
 
-//   if (found) {
-//     response.json(idSearched);
-//   } else {
-//     response
-//       .status(404)
-//       .send(`No bookings match the id ${id}.Please enter a valid Id.`);
-//   }
-// });
+  if (found) {
+    response.json(idSearched);
+  } else {
+    response
+      .status(404)
+      .send(`No bookings match the id ${id}.Please enter a valid Id.`);
+  }
+});
 
 // 4. Delete a booking, specified by Id
 
