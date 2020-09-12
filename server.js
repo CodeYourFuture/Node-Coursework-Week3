@@ -68,14 +68,17 @@ app.get("/bookings/search", function (request, response) {
   let searchTerm = request.query.term;
   let date = request.query.date;
   if (moment(date, "YYYY-MM-DD", true).isValid()) {
-    let results = bookings.filter(
-      (booking) =>
-        date === booking.checkInDate ||
-        moment(date).isBetween(booking.checkInDate, booking.checkOutDate)
+    let results = bookings.filter((booking) =>
+      moment(date).isBetween(
+        booking.checkInDate,
+        booking.checkOutDate,
+        undefined,
+        "[)"
+      )
     );
     results.length > 0
       ? response.json(results)
-      : response.status(404).json("nothing was found on this date");
+      : response.status(204).json("nothing was found on this date");
   } else if (typeof searchTerm == "string" && searchTerm.trim().length > 0) {
     const result = bookings.filter(
       (booking) =>
@@ -85,7 +88,7 @@ app.get("/bookings/search", function (request, response) {
     );
     result.length > 0
       ? response.json(result)
-      : response.status(404).json("Nothing matched this term");
+      : response.status(204).json("Nothing matched this term");
   } else {
     response
       .status(400)
