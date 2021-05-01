@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 const PORT = process.env.PORT || 5000;
 
 const app = express();
@@ -32,6 +33,18 @@ app.post("/bookings", (req, res) => {
 
 });
 
+
+app.get("/bookings/search", (req, res) => {
+  const searchedDate = moment(req.query.date);
+  const searchResult = bookings.find(booking => {
+    const startDate = moment(booking.checkInDate);
+    const endDate = moment(booking.checkOutDate);
+    return searchedDate.isBetween(startDate, endDate) || searchedDate.isSame(startDate) || searchedDate.isSame(endDate);
+  });
+  if (searchResult) res.json(searchResult);
+  else res.status(400).json({message: `${searchedDate}!`})
+});
+
 app.get("/bookings/:id", (req, res) => {
   const id = req.params.id;
   const bookingById = bookings.find(booking => booking.id.toString() === id);
@@ -47,7 +60,7 @@ app.delete("/bookings/:id", (req, res) => {
     res.json({message: `A booking by the ID ${id} is successfully deleted!`});
   }
   else res.status(404).send({message: `A booking by the ID ${id} does not exist.`})
-})
+});
 
 // const listener = app.listen(process.env.PORT, function () {
 //   console.log("Your app is listening on port " + listener.address().port);
