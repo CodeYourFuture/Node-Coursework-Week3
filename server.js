@@ -31,5 +31,26 @@ app.get("/bookings/:id", (req, res) => {
   }
 });
 
+// post a booking
+
+app.post("/bookings", (req, res) => {
+  const booking = req.body;
+  if (
+    booking.id &&
+    booking.title &&
+    booking.firstName &&
+    booking.email &&
+    booking.roomId &&
+    booking.surname &&
+    booking.checkInDate &&
+    booking.checkOutDate
+  ) {
+    bookings.push(booking);
+    res.json(bookings);
+  } else {
+    res.status(400).json({ msg: "please fill in all details" });
+  }
+});
+
 // TODO add your routes and helper functions here
 app.listen(PORT);
