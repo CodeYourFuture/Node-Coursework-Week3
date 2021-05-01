@@ -19,5 +19,17 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
+// get booking by id
+
+app.get("/bookings/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  if (id) {
+    const booking = bookings.filter((item) => item.id === id);
+    res.status(200).json(booking);
+  } else {
+    res.status(400).json({ msg: "yyyyy" });
+  }
+});
+
 // TODO add your routes and helper functions here
 app.listen(PORT);
