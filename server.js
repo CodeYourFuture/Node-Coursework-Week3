@@ -9,6 +9,12 @@ app.use(cors());
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
+//get all bookings
+
+app.get("/bookings", function (request, response) {
+  response.json(bookings);
+});
+
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
