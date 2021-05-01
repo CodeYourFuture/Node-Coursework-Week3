@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
+const validator = require("email-validator");
 const PORT = process.env.PORT || 5000;
 
 const app = express();
@@ -23,16 +24,21 @@ app.get("/bookings", (req, res) => {
 
 app.post("/bookings", (req, res) => {
   const newBooking = req.body;
-  if (newBooking.id && newBooking.title && newBooking.firstName && newBooking.surname && newBooking.email && newBooking.roomId && newBooking.checkInDate && newBooking.checkOutDate) {
+  const newBookingWithExistingID = bookings.some(booking => booking.id === newBooking.id);
+  if (newBookingWithExistingID) {
+    res.status(400).json({message: `Booking rejected! A booking with the ID - ${newBooking.id} already exists.`})
+  } else if (moment(newBooking.checkInDate).isAfter(moment(newBooking.checkOutDate))) {
+    res.status(400).json({message: `Booking rejected! Check in date (${newBooking.checkInDate}) should not be after check out date(${newBooking.checkOutDate}).`})
+  } else if (!validator.validate(newBooking.email)) {
+    res.status(400).json({message: `${newBooking.email} is not a valid email!`})
+  } else if (newBooking.id && newBooking.title && newBooking.firstName && newBooking.surname &&     newBooking.email && newBooking.roomId && newBooking.checkInDate && newBooking.checkOutDate) {
     bookings.push(newBooking);
-    res.send({message: "New booking is successfully added"})
+    res.json({message: `Your booking is successfully confirmed!`})
   } else {
     res.status(400);
     res.json({message: "Booking failed! Please fill all the required fields."})
   }
-
 });
-
 
 app.get("/bookings/search", (req, res) => {
   const searchedDate = moment(req.query.date);
@@ -61,10 +67,6 @@ app.delete("/bookings/:id", (req, res) => {
   }
   else res.status(404).send({message: `A booking by the ID ${id} does not exist.`})
 });
-
-// const listener = app.listen(process.env.PORT, function () {
-//   console.log("Your app is listening on port " + listener.address().port);
-// });
 
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`)
