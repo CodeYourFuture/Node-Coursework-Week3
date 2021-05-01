@@ -23,8 +23,8 @@
   "license": "MIT",
   "keywords": [
     "node",
-    "glitch",
+    "heroku",
     "express"
   ],
-  "author": ""
+  "author": "Biruk Kebede"
 }
