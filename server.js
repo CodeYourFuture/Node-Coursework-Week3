@@ -10,8 +10,17 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const routes = [ 
+  {route: "/bookings", method: "GET", returns: "all bookings"},
+  {route: "/bookings/id", method: "GET", returns: "a booking by id"},
+  {route: "/bookings/search?date=YYYY-MM-DD", method: "GET", returns: "all bookings spanning the given date"},
+  {route: "/bookings/search?term= your search term", method: "GET", returns: "all bookings matching your search term"},
+  {route: "/bookings", method: "POST", creates: "a new booking"},
+  {route: "/bookings/id", method: "DELETE", deletes: "a booking by id"},
+];
+
 app.get("/", (req, res) => {
-  res.json({ message: "Hotel booking server.  Ask for /bookings, etc." });
+  res.json({"Hotel Booking Server! Ask me for": routes});
 });
 
 app.get("/bookings", (req, res) => {
