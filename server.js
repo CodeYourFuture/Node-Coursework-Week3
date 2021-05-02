@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
 const validator = require("email-validator");
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 5000;
 
 const app = express();
 
@@ -28,21 +28,27 @@ app.post("/bookings", (req, res) => {
     (booking) => booking.id === newBooking.id
   );
   if (newBookingWithExistingID) {
-    res.status(400).json({message: `Booking rejected! A booking with the ID - ${newBooking.id} already exists.`});
-  } else if (moment(newBooking.checkInDate).isAfter(moment(newBooking.checkOutDate))) {
     res.status(400).json({
-      message: `Booking rejected! Check in date (${newBooking.checkInDate}) should not be after check out date(${newBooking.checkOutDate}).`
+      message: `Booking rejected! A booking with the ID - ${newBooking.id} already exists.`,
+    });
+  } else if (
+    moment(newBooking.checkInDate).isAfter(moment(newBooking.checkOutDate))
+  ) {
+    res.status(400).json({
+      message: `Booking rejected! Check in date (${newBooking.checkInDate}) should not be after check out date(${newBooking.checkOutDate}).`,
     });
   } else if (!validator.validate(newBooking.email)) {
-    res.status(400).json({ message: `${newBooking.email} is not a valid email!` });
+    res
+      .status(400)
+      .json({ message: `${newBooking.email} is not a valid email!` });
   } else if (
-    newBooking.id &&
-    newBooking.title &&
-    newBooking.firstName &&
-    newBooking.surname &&
-    newBooking.email &&
-    newBooking.roomId &&
-    newBooking.checkInDate &&
+    newBooking.id&&
+    newBooking.title&&
+    newBooking.firstName&&
+    newBooking.surname&&
+    newBooking.email&&
+    newBooking.roomId&&
+    newBooking.checkInDate&&
     newBooking.checkOutDate
   ) {
     bookings.push(newBooking);
@@ -62,17 +68,18 @@ app.get("/bookings/search", (req, res) => {
       const startDate = moment(booking.checkInDate);
       const endDate = moment(booking.checkOutDate);
       return (
-        searchedDate.isBetween(startDate, endDate) ||
-        searchedDate.isSame(startDate) ||
+        searchedDate.isBetween(startDate, endDate)||
+        searchedDate.isSame(startDate)||
         searchedDate.isSame(endDate)
       );
     });
-    if (searchResult.length > 0) res.json(searchResult);
-    else res.status(404).json({message: `No booking is found for the date ${req.query.date}!`});
-
+    if (searchResult.length>0) res.json(searchResult);
+    else res.status(404).json({
+      message: `No booking is found for the date ${req.query.date}!`
+    });
   } else if (req.query.term) {
     const searchTerm = req.query.term;
-    const foundTerm = bookings.filter((booking) => {
+    const foundBooking = bookings.filter((booking) => {
       const foundInEmail = booking.email.includes(searchTerm);
       const foundInFirstName = booking.firstName
         .toLowerCase()
@@ -80,10 +87,12 @@ app.get("/bookings/search", (req, res) => {
       const foundInSurname = booking.surname
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
-      return foundInEmail || foundInFirstName || foundInSurname;
+      return foundInEmail||foundInFirstName||foundInSurname;
     });
-    if (foundTerm.length > 0) res.json(foundTerm);
-    else res.status(404).json({message: `Your search for '${searchTerm}' could not be found!`});
+    if (foundBooking.length > 0) res.json(foundBooking);
+    else res.status(404).json({
+      message: `Your search for '${searchTerm}' could not be found!`
+    });
   }
 });
 
@@ -96,11 +105,11 @@ app.get("/bookings/:id", (req, res) => {
 
 app.delete("/bookings/:id", (req, res) => {
   const id = req.params.id;
-  const bookingToDelete = bookings.findIndex(
+  const toBeDeleted = bookings.findIndex(
     (booking) => booking.id.toString() === id
   );
-  if (id && bookingToDelete) {
-    bookings.splice(bookingToDelete, 1);
+  if (id && toBeDeleted) {
+    bookings.splice(toBeDeleted, 1);
     res.json({ message: `A booking by the ID ${id} is successfully deleted!` });
   } else res.status(404).send({ message: `A booking by the ID ${id} does not exist.` });
 });
