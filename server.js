@@ -36,13 +36,13 @@ app.post("/bookings", (req, res) => {
   } else if (!validator.validate(newBooking.email)) {
     res.status(400).json({ message: `${newBooking.email} is not a valid email!` });
   } else if (
-    newBooking.id&&
-    newBooking.title&&
-    newBooking.firstName&&
-    newBooking.surname&&
-    newBooking.email&&
-    newBooking.roomId&&
-    newBooking.checkInDate&&
+    newBooking.id &&
+    newBooking.title &&
+    newBooking.firstName &&
+    newBooking.surname &&
+    newBooking.email &&
+    newBooking.roomId &&
+    newBooking.checkInDate &&
     newBooking.checkOutDate
   ) {
     bookings.push(newBooking);
@@ -67,7 +67,7 @@ app.get("/bookings/search", (req, res) => {
         searchedDate.isSame(endDate)
       );
     });
-    if (searchResult.length>0) res.json(searchResult);
+    if (searchResult.length > 0) res.json(searchResult);
     else res.status(404).json({
       message: `No booking is found for the date ${req.query.date}!`
     });
