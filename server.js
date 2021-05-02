@@ -41,14 +41,29 @@ app.post("/bookings", (req, res) => {
 });
 
 app.get("/bookings/search", (req, res) => {
-  const searchedDate = moment(req.query.date);
-  const searchResult = bookings.find(booking => {
-    const startDate = moment(booking.checkInDate);
-    const endDate = moment(booking.checkOutDate);
-    return searchedDate.isBetween(startDate, endDate) || searchedDate.isSame(startDate) || searchedDate.isSame(endDate);
-  });
-  if (searchResult) res.json(searchResult);
-  else res.status(400).json({message: `${searchedDate}!`})
+
+  if (req.query.date) {
+    const searchedDate = moment(req.query.date);
+    const searchResult = bookings.filter(booking => {
+      const startDate = moment(booking.checkInDate);
+      const endDate = moment(booking.checkOutDate);
+      return searchedDate.isBetween(startDate, endDate) || searchedDate.isSame(startDate) || searchedDate.isSame(endDate);
+    });
+    if (searchResult.length > 0) res.json(searchResult);
+    else res.status(404).json({message: `No booking is found for the date ${req.query.date}!`});
+
+  } else if (req.query.term) {
+    const searchTerm = req.query.term;
+    const foundTerm = bookings.filter(booking => {
+      const foundInEmail = booking.email.includes(searchTerm);
+      const foundInFirstName = booking.firstName.toLowerCase().includes(searchTerm.toLowerCase());
+      const foundInSurname = booking.surname.toLowerCase().includes(searchTerm.toLowerCase());
+      return foundInEmail || foundInFirstName || foundInSurname;
+    });
+    if (foundTerm.length > 0) res.json(foundTerm);
+    else res.status(404).json({message: `Your search for '${searchTerm}' could not be found!`})
+  }
+  
 });
 
 app.get("/bookings/:id", (req, res) => {
