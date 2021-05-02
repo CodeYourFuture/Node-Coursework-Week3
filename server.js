@@ -8,7 +8,7 @@ app.use(cors());
 
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
-const { response } = require("express");
+const moment = require("moment");
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
@@ -19,6 +19,26 @@ app.get("/", function (request, response) {
 const listener = app.listen(process.env.PORT || 5000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
+
+/**** LEVEL 3 SOLUTION CODE ****/
+
+// get bookings by date
+app.get("/bookings/search", (req, res) => {
+  const incomingDate = req.query.date;
+  if (incomingDate) {
+    // if date value has been provided in the search query
+    const result = bookings.filter(
+      (booking) =>
+        moment(booking.checkInDate).isSame(incomingDate, "day") ||
+        moment(booking.checkOutDate).isSame(incomingDate, "day")
+    );
+    result.length > 0 ? res.status(200).send(result) : res.sendStatus(404);
+  } else {
+    res.sendStatus(400);
+  }
+});
+
+/**** END OF LEVEL 3 SOLUTION ****/
 
 /**** LEVELS 1 AND 2 SOLUTION CODE ****/
 
