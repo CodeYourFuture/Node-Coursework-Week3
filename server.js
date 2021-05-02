@@ -40,12 +40,13 @@ app.get("/bookings/search", (req, res) => {
 
 /**** END OF LEVEL 3 SOLUTION ****/
 
-/**** LEVELS 1 AND 2 SOLUTION CODE ****/
+/**** LEVELS 1, 2 AND 4 SOLUTION CODE ****/
 
 app.use(express.json());
 // CREATE new booking
 app.post("/bookings", (req, res) => {
-  if (dataIsOK(req.body)) {
+  const dataIsValid = validateBookingData(req.body);
+  if (dataIsValid) {
     const newId = bookings[bookings.length - 1].id + 1;
     const newBooking = { id: newId, ...req.body };
     bookings.push(newBooking);
@@ -87,7 +88,9 @@ app.delete("/bookings/:id", (req, res) => {
   }
 });
 
-// LEVEL 2 SUPPLEMENTARY CODE **/
+// SUPPLEMENTARY CODE (LEVELS 2 AND 4) //
+
+// booking data fields
 const ALL_FIELDS = [
   "title",
   "firstName",
@@ -97,8 +100,20 @@ const ALL_FIELDS = [
   "checkInDate",
   "checkOutDate",
 ];
+
+// validate POST request booking data 
+function validateBookingData(bookingData) {
+  let result = dataIsComplete(bookingData);
+  if (result === true) {
+    result =
+      emailIsValid(bookingData.email) &&
+      datesAreOK(bookingData.checkInDate, bookingData.checkOutDate);
+  }
+  return result;
+}
+
 // check for missing or empty booking data field
-const dataIsOK = (bookingData) => {
+const dataIsComplete = (bookingData) => {
   const fields = Object.keys(bookingData);
   return (
     fields.length === ALL_FIELDS.length &&
@@ -107,9 +122,21 @@ const dataIsOK = (bookingData) => {
     )
   );
 };
-// check correctness of a field name
+
+// check correctness of a field's name
 const fieldNameExists = (fieldName) => {
   return ALL_FIELDS.find((value) => fieldName === value);
 };
 
-/**** END OF LEVELS 1 AND 2 SOLUTION ****/
+// validate customer email
+const emailValidator = require("email-validator");
+const emailIsValid = (email) => {
+  return emailValidator.validate(email);
+};
+
+// check appropriateness of checkInDate and checkOutDate
+const datesAreOK = (checkInDate, checkOutDate) => {
+  return moment(checkOutDate).isAfter(checkInDate);
+};
+
+/**** END OF LEVELS 1, 2 AND 4 SOLUTION ****/
