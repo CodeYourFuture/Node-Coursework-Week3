@@ -20,16 +20,19 @@ const listener = app.listen(process.env.PORT || 5000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
-/**** LEVEL 1 SOLUTION CODE ****/
+/**** LEVELS 1 AND 2 SOLUTION CODE ****/
 
 app.use(express.json());
 // CREATE new booking
 app.post("/bookings", (req, res) => {
-  // **NOTE**: INPUT VALIDATION HAS TO BE DONE BY THE CLIENT
-  const newId = bookings[bookings.length - 1].id + 1;
-  const newBooking = { id: newId, ...req.body };
-  bookings.push(newBooking);
-  res.sendStatus(201);
+  if (dataIsOK(req.body)) {
+    const newId = bookings[bookings.length - 1].id + 1;
+    const newBooking = { id: newId, ...req.body };
+    bookings.push(newBooking);
+    res.sendStatus(201);
+  } else {
+    res.sendStatus(400);
+  }
 });
 
 // RETRIEVE all bookingS
@@ -64,4 +67,29 @@ app.delete("/bookings/:id", (req, res) => {
   }
 });
 
-/**** END OF LEVEL 1 SOLUTION ****/
+// LEVEL 2 SUPPLEMENTARY CODE **/
+const ALL_FIELDS = [
+  "title",
+  "firstName",
+  "surname",
+  "email",
+  "roomId",
+  "checkInDate",
+  "checkOutDate",
+];
+// check for missing or empty booking data field
+const dataIsOK = (bookingData) => {
+  const fields = Object.keys(bookingData);
+  return (
+    fields.length === ALL_FIELDS.length &&
+    fields.every(
+      (fieldName) => fieldNameExists(fieldName) && bookingData[fieldName] !== ""
+    )
+  );
+};
+// check correctness of a field name
+const fieldNameExists = (fieldName) => {
+  return ALL_FIELDS.find((value) => fieldName === value);
+};
+
+/**** END OF LEVELS 1 AND 2 SOLUTION ****/
