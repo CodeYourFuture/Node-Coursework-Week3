@@ -20,25 +20,38 @@ const listener = app.listen(process.env.PORT || 5000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
-/**** LEVEL 3 SOLUTION CODE ****/
+/**** LEVELS 3 AND 5 SOLUTION CODE ****/
 
-// get bookings by date
+// get bookings by date or another search term
 app.get("/bookings/search", (req, res) => {
-  const incomingDate = req.query.date;
-  if (incomingDate) {
-    // if date value has been provided in the search query
-    const result = bookings.filter(
+  const query= req.query;
+  let result = [];
+  // bookings by date
+  if (query.date) {
+    // if query term is "date" and its value has been provided
+    result = bookings.filter(
       (booking) =>
-        moment(booking.checkInDate).isSame(incomingDate, "day") ||
-        moment(booking.checkOutDate).isSame(incomingDate, "day")
+        moment(booking.checkInDate).isSame(query.date, "day") ||
+        moment(booking.checkOutDate).isSame(query.date, "day")
     );
-    result.length > 0 ? res.status(200).send(result) : res.sendStatus(404);
-  } else {
-    res.sendStatus(400);
   }
+  // bookings by a search term
+  else if (query.term) {
+    // if query term is "term" and its value has been provided
+    result = bookings.filter(
+      (booking) =>
+        booking.firstName.toLowerCase().includes(query.term) ||
+        booking.surname.toLowerCase().includes(query.term) ||
+        booking.email.toLowerCase().includes(query.term)
+    );
+  } else {
+    return res.sendStatus(400);
+  }
+
+  return result.length > 0 ? res.status(200).send(result) : res.sendStatus(404);
 });
 
-/**** END OF LEVEL 3 SOLUTION ****/
+/**** END OF LEVELS 3 AND 5 SOLUTION ****/
 
 /**** LEVELS 1, 2 AND 4 SOLUTION CODE ****/
 
@@ -101,7 +114,7 @@ const ALL_FIELDS = [
   "checkOutDate",
 ];
 
-// validate POST request booking data 
+// validate POST request booking data
 function validateBookingData(bookingData) {
   let result = dataIsComplete(bookingData);
   if (result === true) {
