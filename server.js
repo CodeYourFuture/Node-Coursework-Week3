@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
 const validator = require("email-validator");
+const bookings = require("./bookings.json");
 const PORT = process.env.PORT || 5000;
 
 const app = express();
@@ -9,14 +10,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-//Use this array as your (in-memory) data store.
-const bookings = require("./bookings.json");
-
 app.get("/", (req, res) => {
   res.json({ message: "Hotel booking server.  Ask for /bookings, etc." });
 });
-
-// TODO add your routes and helper functions here
 
 app.get("/bookings", (req, res) => {
   res.json(bookings);
@@ -38,9 +34,7 @@ app.post("/bookings", (req, res) => {
       message: `Booking rejected! Check in date (${newBooking.checkInDate}) should not be after check out date(${newBooking.checkOutDate}).`,
     });
   } else if (!validator.validate(newBooking.email)) {
-    res
-      .status(400)
-      .json({ message: `${newBooking.email} is not a valid email!` });
+    res.status(400).json({ message: `${newBooking.email} is not a valid email!` });
   } else if (
     newBooking.id&&
     newBooking.title&&
