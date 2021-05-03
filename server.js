@@ -15,35 +15,31 @@ app.get("/bookings", function (request, response) {
   response.json(bookings);
 });
 
-app.get("/", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
-});
-
 // get booking by id
 
 app.get("/bookings/:id", (req, res) => {
   const id = parseInt(req.params.id);
-  if (id) {
-    const booking = bookings.filter((item) => item.id === id);
+  const booking = bookings.filter((item) => item.id === id);
+
+  if (booking.length > 0) {
     res.status(200).json(booking);
   } else {
-    res.status(400).json({ msg: "yyyyy" });
+    res.status(404).json({ msg: `booking with id ${id} not found` });
   }
 });
 
 // post a booking
-
 app.post("/bookings", (req, res) => {
-  const booking = req.body;
+  const booking = { id: bookings[bookings.length - 1].id + 1, ...req.body };
+
   if (
-    booking.id &&
-    booking.title &&
-    booking.firstName &&
-    booking.email &&
-    booking.roomId &&
-    booking.surname &&
-    booking.checkInDate &&
-    booking.checkOutDate
+    booking.title !== "" &&
+    booking.firstName !== "" &&
+    booking.email !== "" &&
+    booking.roomId !== "" &&
+    booking.surname !== "" &&
+    booking.checkInDate !== "" &&
+    booking.checkOutDate !== ""
   ) {
     bookings.push(booking);
     res.json(bookings);
