@@ -10,59 +10,47 @@ app.use(cors());
 const bookingData = require("./bookings.json");
 //const bookingData = JSON.parse(fs.readFileSync('./bookingData.json', 'utf8'));
 
-//Read 
+//Read
 app.get("/", function (req, res) {
   res.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
+// read all bookings
 app.get("/bookings", function (req, res) {
-  res.status(200).send(bookingData);
-  // res.status(200).json({ message:"Booking data available"});
+  try {
+    res.status(200).send(bookingData);
+  } catch (error) {
+    res.status(400).json({ message: "your request invalid" });
+  }
 });
 
+// read one booking by id
 app.get("/bookings/:id", function (req, res) {
   const searchId = parseInt(req.params.id);
-  const foundBooking = bookingData.find((booking) => { // function looks for the first element that matches the condition, starting from index 0
-    // console.log("booking id", booking.id === searchId)
-    if (searchId === booking.id) {
-      return booking;
+  try {
+    const foundBooking = bookingData.find((booking) => {
+      // function looks for the first element that matches the condition, starting from index 0
+      if (searchId === booking.id) {
+        return booking;
+      }
+    });
+    if (foundBooking) {
+      res.status(200).send(foundBooking);
+    } else {
+      res
+        .status(404)
+        .json({ message: "booking id does not exist in the database" });
+      res.status(200).send(foundBooking);
     }
-  });
-  // if (foundId === undefined) {
-  // }
-  console.log("FB", foundBooking);
-  res.status(200).send(foundBooking);
-  // res.status(200).json({ message:"Booking data available"});
+  } catch (error) {
+    console.log(error.booking);
+    res.sendStatus(500);
+  }
 });
-
-
-
-// app.get("/bookings/:id", function (req, res) {
-//   const searchId = parseInt(req.params.id);
-//   let foundBooking= {}
-//   console.log(searchId)
-//   foundBooking = bookingData.find((booking) => {
-//     // console.log("booking id", booking.id === searchId)
-//     if (searchId === booking.id) {
-//        return booking
-//     }
-//   // return res.status(200).send(foundBooking)
-
-//   });
-//   // if (foundId === undefined) {
-//   // }
-//   console.log("FB", foundBooking)
-//    res.status(200).send(foundBooking);
-//   // res.status(200).json({ message:"Booking data available"});
-// });
-
-
-
 
 //let x = [0,1,2,3,4,5,6,7]
 //x[8] = x[x.length] = undefined
 //to get last thing: x[x.length-1]
-
 
 app.post("/bookings", function (req, res) {
   //create a unique id for the booking
@@ -71,7 +59,7 @@ app.post("/bookings", function (req, res) {
   //bookingData[bookingData.length-1] = last booking in the array
   //bookingData[bookingData.length-1].id = ID of last booking in the array
   //bookingData[bookingData.length-1].id + 1 = ID  of last booking in the array plus 1
-  const newId = bookingData[bookingData.length-1].id + 1;
+  const newId = bookingData[bookingData.length - 1].id + 1;
 
   //METHOD 1
   //const lastBookingIndex = bookingData.length - 1;
@@ -85,7 +73,7 @@ app.post("/bookings", function (req, res) {
   //METHOD 1 AND METHOD 2 DO THE SAME THING
 
   //add the new booking to the "data" array
-  let newBooking = { id:newId, ...req.body };
+  let newBooking = { id: newId, ...req.body };
   bookingData.push(newBooking);
 
   /*
@@ -104,13 +92,17 @@ app.post("/bookings", function (req, res) {
     //BAD STUFF HAPPENED (OUT DATE IS BEFORE IN DATE)
   }
   */
-// add error handling 
+  // add error handling
   // validate the input
 
   // TODO
 
   //send the response
-  fs.writeFileSync("./bookings.json", JSON.stringify(bookingData, null, 2), () => { });// logic for adding -formats the file immediately  
+  fs.writeFileSync(
+    "./bookings.json",
+    JSON.stringify(bookingData, null, 2),
+    () => {}
+  ); // logic for adding -formats the file immediately
 
   res.sendStatus(200).json("Booking successful");
 }); // TODO add your routes and helper functions here

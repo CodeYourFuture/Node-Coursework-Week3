@@ -84,6 +84,59 @@ app.post("/bookings", function (req, res) {
   res.sendStatus(200).json("Booking successful");
 }); // TODO add your routes and helper functions here
 
+
+// app.get("/bookings/:id", function (req, res) {
+//   const searchId = parseInt(req.params.id);
+//   let foundBooking= {}
+//   console.log(searchId)
+//   foundBooking = bookingData.find((booking) => {
+//     // console.log("booking id", booking.id === searchId)
+//     if (searchId === booking.id) {
+//        return booking
+//     }
+//   // return res.status(200).send(foundBooking)
+
+//   });
+//   // if (foundId === undefined) {
+//   // }
+//   console.log("FB", foundBooking)
+//    res.status(200).send(foundBooking);
+//   // res.status(200).json({ message:"Booking data available"});
+// });
+
+
+// app.get("/bookings/:id", function (req, res) {
+//   const searchId = parseInt(req.params.id);
+//   try {
+//     const foundBooking = bookingData.find((booking) => {
+//       // function looks for the first element that matches the condition, starting from index 0
+//       // console.log("booking id", booking.id === searchId)
+//       if (searchId === booking.id) {
+//         return booking;
+//       }
+//     });
+//     // if (foundId === undefined) {
+//     // }
+//     res.status(200).send(foundBooking);
+//     // res.status(200).json({ message:"Booking data available"});
+//   } catch (error) {
+//     console.log(error.booking);
+//     res.sendStatus(400);
+//   }
+// });
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Create
 // app.post("/messages", (req, res) => {
 //   let newMessage = req.body;
