@@ -29,6 +29,7 @@ app.get("/bookings/:id", (req, res) => {
 });
 
 // post a booking
+
 app.post("/bookings", (req, res) => {
   const booking = { id: bookings[bookings.length - 1].id + 1, ...req.body };
 
@@ -42,9 +43,23 @@ app.post("/bookings", (req, res) => {
     booking.checkOutDate !== ""
   ) {
     bookings.push(booking);
-    res.json(bookings);
+    res.status(201).json(bookings);
   } else {
     res.status(400).json({ msg: "please fill in all details" });
+  }
+});
+
+// delete a booking by id
+
+app.delete("/bookings/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const index = bookings.findIndex((booking) => booking.id === id);
+
+  if (index >= 0) {
+    bookings.splice(index, 1);
+    res.status(204);
+  } else {
+    res.status(400).json({ msg: `booking with id ${id} does not exist` });
   }
 });
 
