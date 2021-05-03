@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 const PORT = process.env.PORT || 3000;
 const app = express();
 
@@ -59,7 +60,7 @@ app.delete("/bookings/:id", (req, res) => {
     bookings.splice(index, 1);
     res.status(204);
   } else {
-    res.status(400).json({ msg: `booking with id ${id} does not exist` });
+    res.status(404).json({ msg: `booking with id ${id} does not exist` });
   }
 });
 
