@@ -56,23 +56,23 @@ app.post("/bookings", function (req, res) {
   /*
   This code might not actually work and is a best guess at what you need to do
 
-  const checkInDate = req.body.checkInDate; //formatted like yyyy-mm-dd
-  const checkOutDate = req.body.checkOutDate;
+  // const checkInDate = req.body.checkInDate; //formatted like yyyy-mm-dd
+  // const checkOutDate = req.body.checkOutDate;
 
-  //NOTE: these will probably throw an exception if the date is malformed
-  // or maybe the return value will be undefined
-  const validCheckInDate = dayjs(checkInDate);
-  const validCheckOutDate = dayjs(checkOutDate);
+  // //NOTE: these will probably throw an exception if the date is malformed
+  // // or maybe the return value will be undefined
+  // const validCheckInDate = dayjs(checkInDate);
+  // const validCheckOutDate = dayjs(checkOutDate);
 
-  const dateDiff = validCheckInDate.diff(validCheckOutDate);
-  if(dateDiff < 0) {
-    //BAD STUFF HAPPENED (OUT DATE IS BEFORE IN DATE)
-  }
-  */
-  // add error handling
-  // validate the input
+  // const dateDiff = validCheckInDate.diff(validCheckOutDate);
+  // if(dateDiff < 0) {
+  //   //BAD STUFF HAPPENED (OUT DATE IS BEFORE IN DATE)
+  // }
+  // */
+  // // add error handling
+  // // validate the input
 
-  // TODO
+  // // TODO
 
   //send the response
   fs.writeFileSync(
