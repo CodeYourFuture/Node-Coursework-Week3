@@ -26,7 +26,7 @@ app.get("/bookings/:id", (req, res) => {
   if (booking) {
     res.status(200).send(booking);//send this back if  booking exists
   } else {
-    res.sendStatus(404);//send this back if id does not exist.
+    res.sendStatus(404);//send this back if booking does not exist.
   }
 });
 
