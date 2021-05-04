@@ -13,10 +13,39 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
-//gets all the bookings
+//Gets all the bookings
 app.get("/bookings", (req, res) => {
   res.status(200).send(bookings);
-})
+});
+
+//Get one booking by id
+app.get("/bookings/:id", (req, res) => {
+  const booking = bookings.find(
+    (booking) => booking.id === parseInt(req.params.id)
+  );
+  if (booking) {
+    res.status(200).send(booking);//send this back if requested booking exists
+  } else {
+    res.sendStatus(404);//send this back if id does not exist.
+  }
+});
+
+//Delete a booking by an id
+app.delete("/bookings/:id", (req, res) => {
+  const index = bookings.findIndex((booking) => booking.id === parseInt(req.params.id)
+  );
+  if (index >= 0) {
+    bookings.splice(index, 1);
+    res.sendStatus(204).send('Booking has been deleted');
+  } else {
+    res.sendStatus(404).send('The booking requested to be deleted does not exist');
+  }
+});
+
+//Create a new booking
+app.post('')
+
+
 
 // TODO add your routes and helper functions here
 
