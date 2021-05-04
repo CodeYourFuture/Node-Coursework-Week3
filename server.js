@@ -43,7 +43,7 @@ app.delete("/bookings/:id", (req, res) => {
 });
 
 //Create a new booking
-app.post('')
+
 
 
 
