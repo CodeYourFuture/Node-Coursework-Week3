@@ -13,7 +13,7 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
-//Gets all the bookings
+//Get all the bookings
 app.get("/bookings", (req, res) => {
   res.status(200).send(bookings);
 });
