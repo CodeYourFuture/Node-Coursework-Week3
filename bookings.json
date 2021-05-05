@@ -64,7 +64,7 @@
     "roomId": "123",
     "title": "Master",
     "firstName": "James",
-    "surName": "Jones",
+    "surname": "Jones",
     "email": "john@kaplan.com",
     "checkInDate": "2017-10-22",
     "checkOutDate": "2017-11-23"
@@ -74,7 +74,7 @@
     "roomId": "123",
     "title": "Miss",
     "firstName": "Jade",
-    "surName": "Jennings",
+    "surname": "Jennings",
     "email": "Jane@cocacolaeu.com",
     "checkInDate": "2017-06-22",
     "checkOutDate": "2017-08-23"
@@ -84,7 +84,7 @@
     "roomId": "123",
     "title": "Mrs",
     "firstName": "Sally",
-    "surName": "Carter",
+    "surname": "Carter",
     "email": "scarter@cartercorp.com",
     "checkInDate": "2021-05-03",
     "checkOutDate": "2021-04-29"
@@ -94,7 +94,7 @@
     "roomId": "123",
     "title": "Mrs",
     "firstName": "Sally",
-    "surName": "Carter",
+    "surname": "Carter",
     "email": "scarter@cartercorp.com",
     "checkInDate": "2021-05-03",
     "checkOutDate": "2021-04-29"
@@ -104,7 +104,7 @@
     "roomId": "123",
     "title": "Mr",
     "firstName": "Son",
-    "surName": "Carter",
+    "surname": "Carter",
     "email": "scarter@cartercorp.com",
     "checkInDate": "2021-05-03",
     "checkOutDate": "2021-04-29"
@@ -114,7 +114,7 @@
     "roomId": "123",
     "title": "Mr",
     "firstName": "Aston",
-    "surName": "Chambers",
+    "surname": "Chambers",
     "email": "achambers@cartercorp.com",
     "checkInDate": "2021-05-03",
     "checkOutDate": "2021-05-29"
@@ -124,7 +124,7 @@
     "roomId": "123",
     "title": "Mr",
     "firstName": "Aaron",
-    "surName": "Linton-Chambers",
+    "surname": "Linton-Chambers",
     "email": "alchambers@cartercorp.com",
     "checkInDate": "2021-05-03",
     "checkOutDate": "2021-05-03"
@@ -134,7 +134,7 @@
     "roomId": "123",
     "title": "Miss",
     "firstName": "Niamh Khalifa",
-    "surName": "Linton-Chambers",
+    "surname": "Linton-Chambers",
     "email": "nkchambers@cartercorp.com",
     "checkInDate": "2021-05-03",
     "checkOutDate": "2021-05-06"
@@ -144,7 +144,7 @@
     "roomId": "123",
     "title": "Ms",
     "firstName": "Beatrice",
-    "surName": "Perez",
+    "surname": "Perez",
     "email": "Bhshsh@cartercorp.com",
     "checkInDate": "2021-05-04",
     "checkOutDate": "2021-05-07"

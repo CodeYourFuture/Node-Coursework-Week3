@@ -265,3 +265,13 @@ const listener = app.listen(process.env.PORT || 4040, function () {
 //     // || booking.checkOutDate.includes(date);
 //   });
 // }
+
+// const bookingEmail = req.body.email;
+  // // console.log("email", bookingEmail);
+  // if (bookingEmail.includes("@")) {
+  //   console.log(bookingEmail);
+  // } else if (bookingEmail != bookingEmail.includes("@")) {
+  //   res.status(400);
+  // } else {
+  //   res.status(400);
+  // }
