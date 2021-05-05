@@ -218,3 +218,50 @@ const listener = app.listen(process.env.PORT || 4040, function () {
 
 // const PORT = process.env.PORT || 4003;
 // app.listen(PORT, () => console.log(`Your app is listening ...${PORT}`));
+
+
+
+
+// old search 
+
+
+// search term
+// app.get("/booking/search", function (req, res) {
+//   try {
+//     const searchedDate = req.query.date;
+//     // let convertedDate = moment([searchedDate]);
+//     console.log("search",searchedDate);
+//     // console.log(typeof(searchedDate), "get search date");
+//     // res.send(search(searchedDate));
+//         res.send(search(searchedDate));
+
+//     // res.send(search(searchedDate, bookingData));
+//   } catch (error) {
+//     // console.log(error.message);
+//     res.sendStatus(400);
+//   }
+// });
+
+// // /bookings/search?date=2019-05-20
+// function Search(date, bookingData) {
+//   const convertedCheckInDate = dayjs(booking.checkInDate);
+//   const convertedCheckOutDate = dayjs(booking.checkOutDate);
+//   bookingData.map((booking) => {
+//     booking.checkInDate.includes(date) || booking.checkout.includes(date);
+//     if (convertedCheckInDate === date || convertedCheckOutDate === date) {
+//       return booking
+//     }
+//   });
+// }
+
+// function search(date, bookingData) {
+//   bookingData.map((booking) => {
+//       // const convertedCheckInDate = moment([booking.checkInDate]);
+//       const convertedCheckInDate = dayjs(booking.checkInDate);
+//     if (convertedCheckInDate === date) {
+//       // console.log("search func", typeof date);
+//       return booking;
+//     }
+//     // || booking.checkOutDate.includes(date);
+//   });
+// }

@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const fs = require("fs"); // feature to read&Write files
+// const moment = require("moment");
+const IsEmail = require('isemail');
+
 const app = express();
 const dayjs = require("dayjs");
 
@@ -10,10 +13,26 @@ app.use(cors());
 const bookingData = require("./bookings.json");
 //const bookingData = JSON.parse(fs.readFileSync('./bookingData.json', 'utf8'));
 
+
+
+// function emailValidator(email, req) {
+//   const validEmail = IsEmail.validate(req.params.email, { errorLevel: true });
+//   const inValidEmail = IsEmail.validate(req.params.email, { errorLevel: false });
+
+//   if (email == validEmail) {
+//     return email
+//   } else{
+//    return inValidEmail
+//   }
+// }
+
+
+
 //Read home server page
 app.get("/", function (req, res) {
   res.send("Hotel booking server.  Ask for /bookings, etc.");
 });
+
 
 // read all bookings
 app.get("/bookings", function (req, res) {
@@ -24,12 +43,12 @@ app.get("/bookings", function (req, res) {
   }
 });
 
-// search term  
-app.get("/booking/search", function (req, res) {
+
+// search term
+app.get("/bookings/search", function (req, res) {
   try {
     const searchedDate = req.query.date;
-    // let convertedDate = dayjs([searchedDate]);
-    // console.log(typeof(searchedDate), "get search date");
+    console.log("date1", searchedDate);
     res.send(search(searchedDate, bookingData));
   } catch (error) {
     console.log(error.message);
@@ -39,15 +58,16 @@ app.get("/booking/search", function (req, res) {
 
 // /bookings/search?date=2019-05-20
 function search(date, bookingData) {
-  bookingData.map((booking) => {
-    if (booking.checkInDate == date) {
-      console.log("search func",typeof(date))
-      return booking;
+  let result = bookingData.filter((booking) => {
+    if ((booking.checkInDate === date) || (booking.checkOutDate === date)) {
+      console.log("func date", booking)
+      return booking
     }
-    // || booking.checkOutDate.includes(date);
   });
-}
+    return result;
+  }
 
+//http://localhost:4040/booking/search?date=2021-05-04
 // Read one booking by id
 app.get("/bookings/:id", function (req, res) {
   const searchId = parseInt(req.params.id);
@@ -92,6 +112,8 @@ app.get("/bookings/:id", function (req, res) {
 app.post("/bookings", function (req, res) {
   //create a unique id for the booking
   //const id = bookingData.length; requires the id to match the index in the array
+  const reqEmail = req.body.email
+  
   let newId; // declare undefined var
   if (bookingData.length >= 0) {
     // if array is empty than the length is 0
@@ -100,13 +122,12 @@ app.post("/bookings", function (req, res) {
     newId = 0;
   }
   let newBooking = { id: newId, ...req.body };
-
   let checkInDate = req.body.checkInDate; //formatted like yyyy-mm-dd
   let checkOutDate = req.body.checkOutDate;
   //NOTE: these will probably throw an exception if the date is malformed
   // or maybe the return value will be undefined
   const validCheckInDate = dayjs(checkInDate);
-  console.log("test", validCheckInDate)
+  console.log("test", validCheckInDate);
   const validCheckOutDate = dayjs(checkOutDate);
   const dateDiff = validCheckInDate.diff(validCheckOutDate);
 
