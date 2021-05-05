@@ -9,12 +9,46 @@ app.use(cors());
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
-app.get("/", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
+app.get("/", function (req, res) {
+  res.send("<h2>Hotel booking server.  Ask for /bookings, etc.</h2>");
 });
+
+
+//Read all bookings
+app.get("/bookings", function(req, res){
+  res.json(bookings);
+})
+
+
+//Read one booking, specified by an ID
+app.get("/bookings/:id", function(req, res){
+  const id = parseInt(req.params.id);
+  const filteredId = bookings.filter(booking => booking.id === id);
+
+  if(filteredId){
+    res.json(filteredId)
+  } else {
+   res.sendStatus(404);
+  }
+})
+
+
+
+//Create a new booking
+app.post("/messages", function(req, res) {
+  const newBooking = req.body;
+  newBooking.id = bookings.length;
+  
+
+  if(newBooking.title && newBooking.firstName && newBooking.surname && newBooking.email && newBooking.roomId && newBooking.checkInDate && newBooking.checkOutDate){
+    bookings.push(newBooking);
+    res.sendStatus(400)
+  }
+  
+})
 
 // TODO add your routes and helper functions here
 
-const listener = app.listen(process.env.PORT, function () {
+const listener = app.listen(process.env.PORT || 3000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
