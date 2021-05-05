@@ -35,7 +35,7 @@ app.get("/bookings/:id", function(req, res){
 
 
 //Create a new booking
-app.post("/messages", function(req, res) {
+app.post("/bookings", function(req, res) {
   const newBooking = req.body;
   newBooking.id = bookings.length;
   
@@ -44,7 +44,17 @@ app.post("/messages", function(req, res) {
     bookings.push(newBooking);
     res.sendStatus(400)
   }
-  
+})
+
+
+//Delete a booking, specified by an ID
+app.delete("/bookings/:id", function(req, res){
+   const id = parseInt(req.params.id);
+   const bookingIndex = bookings
+        .findIndex(booking => booking.id === id);
+    if (bookingIndex >= 0) {
+        bookings.splice(bookingIndex, 1);
+    }
 })
 
 // TODO add your routes and helper functions here
