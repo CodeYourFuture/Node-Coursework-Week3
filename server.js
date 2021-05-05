@@ -17,9 +17,18 @@ app.get("/", function (request, response) {
 app.post("/bookings", function (request, response) {
   let newBooking = request.body;
 
-  if (!newBooking.id) {
+  if (
+    !newBooking.id ||
+    !newBooking.title ||
+    !newBooking.firstName ||
+    !newBooking.surname ||
+    !newBooking.email ||
+    !newBooking.roomId ||
+    !newBooking.checkInDate ||
+    !newBooking.checkOutDate
+  ) {
     response.status(400);
-    response.send("Booking Id required");
+    response.send("Some of the booking Details are missing");
   } else if (bookings.find((booking) => booking.id === newBooking.id)) {
     response.status(400);
     response.send("booking already exists");
@@ -48,6 +57,24 @@ app.get("/bookings/:id", function (request, response) {
     response.sendStatus(404);
   }
   response.send(filteredBooking);
+});
+
+// Deleting booking by Id
+
+app.delete("/bookings/:id", (request, response) => {
+  let id = parseInt(request.params.id);
+  let deletedBookingIndex = bookings.findIndex((booking) => booking.id === id);
+  if (deletedBookingIndex > -1) {
+    console.log(bookings[deletedBookingIndex]);
+    bookings.slice(deletedBookingIndex, 1);
+    // response.status(204);
+    response.send("Booking Successfully deleted");
+  } else {
+    response.sendStatus(404);
+  }
+
+  // response.status(204); // No data
+  // response.end(); // Response body is empty
 });
 
 // TODO add your routes and helper functions here
