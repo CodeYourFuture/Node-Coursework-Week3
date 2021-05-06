@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 
 const app = express();
 
@@ -72,10 +73,21 @@ app.delete("/bookings/:id", (request, response) => {
   } else {
     response.sendStatus(404);
   }
-
-  // response.status(204); // No data
-  // response.end(); // Response body is empty
 });
+
+// //  booking search by date route
+// app.get("/bookings/search", function (request, response) {
+//   let term = request.query.term;
+
+//   // if (!term) {
+//   //   return response.sendStatus(404);
+//   // }
+//   // term = term.toLowerCase();
+//   // let filteredBooking = bookings.filter((booking) =>
+//   //   booking.title.toLowerCase().includes(term)
+//   // );
+//   response.send(term);
+// });
 
 // TODO add your routes and helper functions here
 
