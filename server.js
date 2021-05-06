@@ -13,6 +13,36 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
+app.post("/bookings", (req, res) => {
+  const newBooking = req.body;
+  bookings.push(newBooking);
+  res.json(newBooking);
+
+});
+
+app.get("/bookings", (req, res) => res.json(bookings));
+
+app.get("/bookings/:id", (req, res) => {
+  let id  = parseInt(req.params.id);
+  const filteredBookings = bookings.find((booking) => booking.id === id);
+  res.json(filteredBookings);
+});
+
+
+app.delete("/bookings/:id", (req, res) => {
+  let id = parseInt(req.params.id);
+  bookings.forEach((booking) => {
+    if (booking.id === id) {
+      bookings.splice(booking, 1);
+      res.send("booking deleted");
+    } else {
+    res.status("400").send("Bad Request");
+    }
+    
+  });
+  });
+
+
 // TODO add your routes and helper functions here
 
 const listener = app.listen(process.env.PORT, function () {
