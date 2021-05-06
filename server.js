@@ -1,10 +1,13 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const cors = require("cors");
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
@@ -20,18 +23,6 @@ app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
-// Read one booking, specified by an ID. If the booking to be read cannot be found by id, return a 404.
-app.get("/bookings/:id", (req, res) => {
-  const getBookingId = bookings.find(
-    (booking) => booking.id === parseInt(req.params.id)
-  );
-  if (getBookingId === undefined) {
-    res.sendStatus(404).json({ message: "Booking Id not found" });
-  } else {
-    res.json(getBookingId);
-  }
-});
-
 // Create a new booking
 app.post("/bookings", (req, res) => {
   const newBooking = {
@@ -44,34 +35,67 @@ app.post("/bookings", (req, res) => {
     newBooking.title !== "" &&
     newBooking.firstName !== "" &&
     newBooking.surname !== "" &&
-    newBooking.email !== "" &&
+    newBooking.email !== "" && // this can be validated as well
     newBooking.roomId !== "" &&
     newBooking.checkInDate !== "" &&
     newBooking.checkOutDate !== ""
   ) {
     bookings.push(newBooking);
-    res.sendStatus(201);
+    res
+      .status(201)
+      .json(
+        `Successfully created a new booking with Id number ${newBooking.id}!.`
+      );
   } else {
-    res.sendStatus(400);
+    res.status(400).json("Please Fill all the form fields, thanks!");
   }
+});
+
+// free-text search
+app.get("/bookings/search", (req, res) => {
+  const searchTerm = req.query.term;
+  const searchResult = bookings.filter((element) => {
+    return (
+      element.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      element.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      element.surname.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
+  if (searchResult) {
+    res.json(searchResult);
+  } else {
+    res.status(404);
+  }
+});
+
+// Read one booking, specified by an ID. If the booking to be read cannot be found by id, return a 404.
+app.get("/bookings/:id", (req, res) => {
+  const getBookingId = bookings.find(
+    (booking) => booking.id === parseInt(req.params.id)
+  );
+  getBookingId
+    ? res.json(getBookingId)
+    : res.status(404).json({ message: "Booking Id not found" });
 });
 
 // Delete a booking, specified by an ID. If the booking for deletion cannot be found by id, return a 404.
 app.delete("/bookings/:id", (req, res) => {
-  const deleteBooking = bookings.find(
+  const deleteBooking = bookings.findIndex(
     (booking) => booking.id === parseInt(req.params.id)
   );
-  if (deleteBooking === undefined) {
-    res.sendStatus(404).json({ message: "Booking Id not found" });
-  } else {
+  if (deleteBooking >= 0) {
+    bookings.splice(deleteBooking, 1);
     res.sendStatus(204);
+  } else {
+    res.status(404).json({ message: "Booking Id not found" });
   }
 });
 
-// //Check that port 4050 is not in use otherwise set it to a different port
+// // //Check that port 4050 is not in use otherwise set it to a different port
 // const PORT = process.env.PORT || 4050;
 
-// //Start our server so that it listens for HTTP requests!
+// // //Start our server so that it listens for HTTP requests!
 // app.listen(PORT, () => console.log(`Your app is listening on port ${PORT}`));
 
 const listener = app.listen(process.env.PORT, function () {
