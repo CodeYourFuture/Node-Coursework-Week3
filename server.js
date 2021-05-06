@@ -23,7 +23,7 @@ app.get("/bookings", function(req, res){
 //Read one booking, specified by an ID
 app.get("/bookings/:id", function(req, res){
   const id = parseInt(req.params.id);
-  const filteredId = bookings.filter(booking => booking.id === id);
+  const filteredId = bookings.find(booking => booking.id === id);
 
   if(filteredId){
     res.json(filteredId)
@@ -37,11 +37,12 @@ app.get("/bookings/:id", function(req, res){
 //Create a new booking
 app.post("/bookings", function(req, res) {
   const newBooking = req.body;
-  newBooking.id = bookings.length;
+  newBooking.id = bookings.length === 0 ? 0 : bookings[bookings.length - 1].id + 1 ;
   
-
   if(newBooking.title && newBooking.firstName && newBooking.surname && newBooking.email && newBooking.roomId && newBooking.checkInDate && newBooking.checkOutDate){
     bookings.push(newBooking);
+    res.sendStatus(201)
+  } else {
     res.sendStatus(400)
   }
 })
@@ -54,6 +55,9 @@ app.delete("/bookings/:id", function(req, res){
         .findIndex(booking => booking.id === id);
     if (bookingIndex >= 0) {
         bookings.splice(bookingIndex, 1);
+        res.sendStatus(200)
+    } else {
+      res.send("ID Not found")
     }
 })
 
