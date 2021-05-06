@@ -36,32 +36,59 @@ app.get("/bookings/:id", (req, res) => {
 
 // create new booking
 app.post("/bookings", (req, res) => {
-  let newId = bookings.length + 1; // auto generate new Id
+  const {
+    title,
+    firstName,
+    surname,
+    email,
+    roomId,
+    checkInDate,
+    checkOutDate
+  } = req.body;
 
-  const newBooking = {
-    id: newId,
-    ...req.body,
-  };
-
-  // validation
   if (
-    newBooking.title === "" &&
-    newBooking.firstName === "" &&
-    newBooking.surname === "" &&
-    newBooking.email === "" &&
-    newBooking.roomId === "" &&
-    newBooking.checkInDate === "" &&
-    newBooking.checkoutDate === ""
+    !title ||
+    !firstName ||
+    !surname ||
+    !email ||
+    !roomId ||
+    !checkInDate ||
+    !checkOutDate
   ) {
-    res.status(400);
-    res.send({ message: "Booking Error" });
+    res.status(400).json({ message: "Booking Error" });
   } else {
+    // generate new Id with increment of 1 of last id, disregard deleted id
+    let newId = bookings[bookings.length - 1].id + 1;
+
+    const newBooking = {
+      id: newId,
+      title,
+      firstName,
+      surname,
+      email,
+      roomId,
+      checkInDate,
+      checkOutDate,
+    };
+    console.log(newBooking);
     bookings.push(newBooking);
-    res.status(201);
-    res.send(newBooking);
+    res.status(201).json(newBooking);
   }
 });
 
+app.delete("/bookings/:id", (req, res) => {
+  const bookingIndex = bookings.findIndex(
+    (booking) => booking.id === parseInt(req.params.id)
+  );
+
+  if (bookingIndex >= 0) {
+    bookings.splice(bookingIndex, 1);
+    res.status(204).send({
+      message: `Booking ${req.params.id} deleted` 
+    });
+    res.end();
+  }
+});
 
 const listener = app.listen(process.env.PORT || 3000, function () {
   console.log("Your app is listening on port " + listener.address().port);
