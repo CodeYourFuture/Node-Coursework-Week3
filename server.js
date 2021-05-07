@@ -90,24 +90,41 @@ app.delete("/bookings/:id", (request, response) => {
   }
 });
 
-// get bookings by check in and out date
 app.get("/search", (req, res) => {
   let date = req.query.date;
+  let term = req.query.term;
+  let filteredBookings = [];
 
-  if (!date) {
-    res.send("Enter search query in YYYY-MM-DD format ");
-  } else {
-    const filteredBookings = bookings.filter(
+  // no query given
+  if (date === undefined && term === undefined) {
+    res.send("Enter search query ");
+    //query for date is given
+  } else if (term === undefined) {
+    filteredBookings = bookings.filter(
       (booking) =>
         moment(booking.checkInDate).isSame(date) ||
         moment(booking.checkOutDate).isSame(date)
     );
 
-    if (filteredBookings.length > 0) {
-      res.send(filteredBookings);
-    } else {
-      res.sendStatus(404);
-    }
+    //query for term is given
+  } else if (date === undefined) {
+    term = term.toLowerCase();
+    filteredBookings = bookings.filter(
+      (booking) =>
+        booking.firstName.toLowerCase().includes(term) ||
+        booking.surname.toLowerCase().includes(term) ||
+        booking.email.toLowerCase().includes(term)
+    );
+  } else {
+    return;
+  }
+
+  if (filteredBookings.length > 0) {
+    res.send(filteredBookings);
+
+    // Nothing found in the bookings
+  } else {
+    res.sendStatus(404);
   }
 });
 
