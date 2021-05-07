@@ -75,11 +75,11 @@ app.delete("/bookings/:id", (request, response) => {
 });
 
 // get bookings by check in and out date
-app.get("/bookings/search", (req, res) => {
+app.get("/search", (req, res) => {
   let date = req.query.date;
-  console.log(date);
+
   if (!date) {
-    res.sendStatus(400);
+    res.send("Enter search query in YYYY-MM-DD format ");
   } else {
     const filteredBookings = bookings.filter(
       (booking) =>
@@ -88,7 +88,7 @@ app.get("/bookings/search", (req, res) => {
     );
 
     if (filteredBookings.length > 0) {
-      response.send(filteredBooking);
+      res.send(filteredBookings);
     } else {
       res.sendStatus(404);
     }
