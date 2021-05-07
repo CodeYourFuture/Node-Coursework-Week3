@@ -72,7 +72,7 @@ client.connect(() => {
       if (err) {
         res.status(500).send(err);
       } else {
-        res.status(200).send(result.ops[0]);
+        res.status(200).send(result);
       }
     });
   });
