@@ -70,7 +70,6 @@ app.post("/bookings", (req, res) => {
       checkInDate,
       checkOutDate,
     };
-    console.log(newBooking);
     bookings.push(newBooking);
     res.status(201).json(newBooking);
   }
