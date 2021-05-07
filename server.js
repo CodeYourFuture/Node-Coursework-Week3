@@ -32,13 +32,13 @@ app.post("/bookings", (req, res) => {
 
   // check that all field is filled out
   if (
-    newBooking.title !== "" &&
-    newBooking.firstName !== "" &&
-    newBooking.surname !== "" &&
-    newBooking.email !== "" && // this can be validated as well
-    newBooking.roomId !== "" &&
-    newBooking.checkInDate !== "" &&
-    newBooking.checkOutDate !== ""
+    newBooking.title &&
+    newBooking.firstName &&
+    newBooking.surname &&
+    newBooking.email && // this can be validated as well
+    newBooking.roomId &&
+    newBooking.checkInDate &&
+    newBooking.checkOutDate
   ) {
     bookings.push(newBooking);
     res
