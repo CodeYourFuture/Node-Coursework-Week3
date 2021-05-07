@@ -53,7 +53,6 @@ function search(term, bookingData) {
   return result;
 }
 
-//http://localhost:4040/booking/search?date=2021-05-04
 // Read one booking by id
 app.get("/bookings/:id", function (req, res) {
   const searchId = parseInt(req.params.id);
@@ -101,7 +100,7 @@ app.post("/bookings", function (req, res) {
 
   if (dateDiff > 0) {
    return  res.status(400).send({
-      message: "cannot have check out date that starts before check in",
+      message: "cannot have check out date that starts before the check in date",
     });
   }
 
@@ -115,7 +114,6 @@ app.post("/bookings", function (req, res) {
   } catch (error) {
     res.send(error.message)
   }
-  
 });
 
 // Delete
