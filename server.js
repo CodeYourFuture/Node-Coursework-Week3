@@ -42,16 +42,27 @@ app.delete("/bookings/:id", (req, res) => {
   }
 });
 
+
 //Create a new booking
 app.post("/bookings",(request, response) => {
   let newBooking = request.body;
 
-  if (!newBooking.id) {
+  if (
+    
+      !newBooking.id ||
+      !newBooking.title ||
+      !newBooking.firstName ||
+      !newBooking.surname ||
+      !newBooking.email ||
+      !newBooking.roomId ||
+      !newBooking.checkInDate ||
+      !newBooking.checkOutDate
+  ) {
     response.status(400);
-    response.send("Booking Id required");
+    response.send("Some of the fields are missing");
   } else if (bookings.find((booking) => booking.id === newBooking.id)) {
     response.status(400);
-    response.send("booking already exists");
+    response.send("Booking already exists");
   } else {
     bookings.push(newBooking);
     response.status(201);
@@ -63,8 +74,7 @@ app.post("/bookings",(request, response) => {
 
 
 
-// TODO add your routes and helper functions here
-
+//port configuration
 const listener = app.listen(process.env.PORT || 5000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
