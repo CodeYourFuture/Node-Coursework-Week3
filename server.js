@@ -43,6 +43,22 @@ app.delete("/bookings/:id", (req, res) => {
 });
 
 //Create a new booking
+app.post("/bookings",(request, response) => {
+  let newBooking = request.body;
+
+  if (!newBooking.id) {
+    response.status(400);
+    response.send("Booking Id required");
+  } else if (bookings.find((booking) => booking.id === newBooking.id)) {
+    response.status(400);
+    response.send("booking already exists");
+  } else {
+    bookings.push(newBooking);
+    response.status(201);
+    console.log(newBooking);
+    response.send(newBooking);
+  }
+});
 
 
 
