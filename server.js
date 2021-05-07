@@ -62,44 +62,17 @@ app.get("/bookings", function (request, response) {
   response.send(bookings);
 });
 
-// Reading a booking by ID
-app.get("/bookings/:id", function (request, response) {
-  // type conversion to int from string
-  let id = parseInt(request.params.id);
-
-  let filteredBooking = bookings.find((booking) => booking.id === id);
-
-  // if no booking found
-  if (!filteredBooking) {
-    response.sendStatus(404);
-  }
-  response.send(filteredBooking);
-});
-
-// Deleting booking by Id
-
-app.delete("/bookings/:id", (request, response) => {
-  let id = parseInt(request.params.id);
-  let deletedBookingIndex = bookings.findIndex((booking) => booking.id === id);
-  if (deletedBookingIndex > -1) {
-    bookings.splice(deletedBookingIndex, 1);
-    // response.status(204);
-    response.send("Booking Successfully deleted");
-  } else {
-    response.sendStatus(404);
-  }
-});
-
-app.get("/search", (req, res) => {
-  let date = req.query.date;
-  let term = req.query.term;
+// search route
+app.get("/bookings/search", (req, res) => {
+  let {date, term} = req.query;
+  console.log(term);
+  console.log(date);
   let filteredBookings = [];
 
   // no query given
   if (date === undefined && term === undefined) {
-    res.send("Enter search query ");
-    //query for date is given
-  } else if (term === undefined) {
+    return res.status(400).send("Enter search query ");
+  } else if (date) {
     filteredBookings = bookings.filter(
       (booking) =>
         moment(booking.checkInDate).isSame(date) ||
@@ -107,7 +80,7 @@ app.get("/search", (req, res) => {
     );
 
     //query for term is given
-  } else if (date === undefined) {
+  } else if (term) {
     term = term.toLowerCase();
     filteredBookings = bookings.filter(
       (booking) =>
@@ -128,8 +101,38 @@ app.get("/search", (req, res) => {
   }
 });
 
+// Reading a booking by ID, wildcards
+app.get("/bookings/:id", function (request, response) {
+  // type conversion to int from string
+  console.log(request.params.id);
+  let id = parseInt(request.params.id);
+
+  let filteredBooking = bookings.find((booking) => booking.id === id);
+
+  // if no booking found
+  if (!filteredBooking) {
+    response.status(404).send("Nothings found");
+    return;
+  }
+  response.send(filteredBooking);
+});
+
+// Deleting booking by Id
+
+app.delete("/bookings/:id", (request, response) => {
+  let id = parseInt(request.params.id);
+  let deletedBookingIndex = bookings.findIndex((booking) => booking.id === id);
+  if (deletedBookingIndex > -1) {
+    bookings.splice(deletedBookingIndex, 1);
+    // response.status(204);
+    response.send("Booking Successfully deleted");
+  } else {
+    response.sendStatus(404);
+  }
+});
+
 // TODO add your routes and helper functions here
 
-const listener = app.listen(process.env.PORT || 3000, function () {
+const listener = app.listen(process.env.PORT || 3001, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
