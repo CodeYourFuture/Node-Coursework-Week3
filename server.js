@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
+const validator = require("email-validator");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.get("/", function (request, response) {
 app.post("/bookings", function (request, response) {
   let newBooking = request.body;
 
+  // checks if one of the booking details is empty
   if (
     !newBooking.id ||
     !newBooking.title ||
@@ -30,9 +32,23 @@ app.post("/bookings", function (request, response) {
   ) {
     response.status(400);
     response.send("Some of the booking Details are missing");
+
+    // checks is booking id already exists
   } else if (bookings.find((booking) => booking.id === newBooking.id)) {
     response.status(400);
     response.send("booking already exists");
+
+    // checks email is a valid one
+  } else if (validator.validate(newBooking.email) === false) {
+    response.send("Please Enter a valid email");
+
+    // checks checkIn date is before checkOut
+  } else if (
+    moment(newBooking.checkInDate).isBefore(newBooking.checkOutDate) === false
+  ) {
+    response.send("Check in should be before check out date");
+
+    // if all conditions passed it will add th new booking to bookings
   } else {
     bookings.push(newBooking);
     response.status(201);
