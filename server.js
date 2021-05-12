@@ -21,7 +21,9 @@ app.get("/bookings", (req, res) => {
 
 // get booking by id
 app.get("/bookings/:id", (req, res) => {
-  const bookingId = bookings.find((elem) => elem.id == req.params.id);
+  const bookingId = bookings.find(
+    (elem) => elem.id === parseInt(req.params.id)
+  );
   // validation
   if (bookingId) {
     res.status(200).send({
@@ -43,7 +45,7 @@ app.post("/bookings", (req, res) => {
     email,
     roomId,
     checkInDate,
-    checkOutDate
+    checkOutDate,
   } = req.body;
 
   if (
@@ -55,7 +57,7 @@ app.post("/bookings", (req, res) => {
     !checkInDate ||
     !checkOutDate
   ) {
-    res.status(400).json({ message: "Booking Error" });
+    res.status(400).send({ message: "Booking Error" });
   } else {
     // generate new Id with increment of 1 of last id, disregard deleted id
     let newId = bookings[bookings.length - 1].id + 1;
@@ -71,7 +73,7 @@ app.post("/bookings", (req, res) => {
       checkOutDate,
     };
     bookings.push(newBooking);
-    res.status(201).json(newBooking);
+    res.status(201).send(newBooking);
   }
 });
 
@@ -79,14 +81,22 @@ app.delete("/bookings/:id", (req, res) => {
   const bookingIndex = bookings.findIndex(
     (booking) => booking.id === parseInt(req.params.id)
   );
+  const bookingId = bookings.find(
+    (elem) => elem.id === parseInt(req.params.id)
+  );
 
-  if (bookingIndex >= 0) {
-    bookings.splice(bookingIndex, 1);
-    res.status(204).send({
-      message: `Booking ${req.params.id} deleted` 
-    });
-    res.end();
+  if (bookingId) {
+    if (bookingIndex >= 0) {
+      bookings.splice(bookingIndex, 1);
+      res.status(204).send({
+        message: `Booking ${req.params.id} deleted`,
+      });
+      res.end();
+    }
+  } else {
+    res.status(400).send({message: "Deletion error, id not found"})
   }
+
 });
 
 const listener = app.listen(process.env.PORT || 3000, function () {
