@@ -4,6 +4,8 @@ const lodash = require("lodash");
 const app = express();
 const uuid = require('uuid');
 const moment = require("moment");
+const validator = require("email-validator");
+
 app.use(express.json());
 app.use(cors());
 app.use(express.urlencoded({extended:false}));
@@ -21,12 +23,10 @@ app.get("/bookings", function(req, res){
 });
 
 
-//create new booking
+
+// create new Booking
 app.post("/bookings", (req, res) => {
-   //const newBooking = req.body;
-
-
-   const newBooking = {
+     const newBooking = {
     //id: lodash.uniqueId("1"),
     id:uuid.v4(),
     title: req.body.title.trim(),
@@ -37,37 +37,60 @@ app.post("/bookings", (req, res) => {
     checkInDate: req.body.checkInDate.trim(),
     checkOutDate: req.body.checkOutDate.trim(),
   };
-
-  if (newBooking.id
-  && newBooking.title
-  && newBooking.firstName
-  && newBooking.surname
-  && newBooking.email
-  && newBooking.roomId 
-  && newBooking.checkInDate 
-  && newBooking.checkOutDate) { 
-
-   bookings.push(newBooking);
-    res.send({message: "New booking is successfully added"})
-  } else {
-    res.status(400);
-    res.json({message: "Booking failed! Please fill all the required fields."})
-  }
-
+  
+  const BookingExist = bookings.some(booking => booking.id === newBooking.id);
+  
+  if (BookingExist) {
+      res.status(400).json({message: `Booking rejected! A booking with the ID - ${newBooking.id} already exists.`})
+    } else if (moment(newBooking.checkInDate).isAfter(moment(newBooking.checkOutDate))) {
+      res.status(400).json({message: `Booking rejected! Check in date (${newBooking.checkInDate}) should not be after check out date(${newBooking.checkOutDate}).`})
+    } else if (!validator.validate(newBooking.email)) {
+      res.status(400).json({message: `${newBooking.email} Please Enter valid Email !`})
+    } else if (newBooking.id && newBooking.title && newBooking.firstName && newBooking.surname &&     newBooking.email && newBooking.roomId && newBooking.checkInDate && newBooking.checkOutDate) {
+      bookings.push(newBooking);
+      res.json({message: `Thank you your booking was successfull`})
+    } else {
+      res.status(400);
+      res.json({message: "Booking failed! Please fill all the required fields."})
+    }
 });
 
 
-//search by date
+//Level 5 serach for date,email,firstname,surname
 app.get("/bookings/search", (req, res) => {
-  const searchedDate = moment(req.query.date);
-  const searchResult = bookings.find(booking => {
-    const startDate = moment(booking.checkInDate);
-    const endDate = moment(booking.checkOutDate);
-    return searchedDate.isBetween(startDate, endDate) || searchedDate.isSame(startDate) || searchedDate.isSame(endDate);
-  });
-  if (searchResult) res.json(searchResult);
-  else res.status(400).json({message: `${searchedDate}!`})
+
+  if (req.query.date) {
+      const searchedDate = moment(req.query.date);
+     
+      const searchResult = bookings.filter(booking => {
+      const {checkInDate,checkOutDate} = booking;
+      const startDate = moment(checkInDate);
+      const endDate = moment(checkOutDate);
+      return searchedDate.isBetween(startDate, endDate) || searchedDate.isSame(startDate) || searchedDate.isSame(endDate);
+    });
+    
+     (searchResult.length > 0)
+     ? res.json(searchResult)
+     : res.status(404).json({message: `No booking is found for the date ${req.query.date}!`});
+
+  } else if (req.query.term) {
+      const searchTerm = req.query.term;
+      const foundTerm = bookings.filter(booking => {
+      const foundInEmail = booking.email.includes(searchTerm);
+      const foundInFirstName = booking.firstName.toLowerCase().includes(searchTerm.toLowerCase());
+      const foundInSurname = booking.surname.toLowerCase().includes(searchTerm.toLowerCase());
+      return foundInEmail || foundInFirstName || foundInSurname;
+    });
+    
+    (foundTerm.length > 0)
+    ? res.json(foundTerm)
+    : res.status(404).json({message: `Your search for '${searchTerm}' could not be found!`}) 
+   }
+
 });
+
+
+
 
 //Find the booking by ID 
 app.get("/bookings/:id",(req,res)=>{
@@ -81,9 +104,6 @@ app.get("/bookings/:id",(req,res)=>{
 
 });
 
-
-
-
 //Delete Bookings
 app.delete("/bookings/:id", (req, res) => {
   const id = req.params.id;
@@ -95,6 +115,13 @@ app.delete("/bookings/:id", (req, res) => {
   }
   else res.status(404).send({message: `A booking by the ID ${id} does not exist.`})
 })
+
+
+
+
+
+
+
 
 
 
@@ -120,6 +147,9 @@ app.delete("/bookings/:id", (req, res) => {
 // });
 // TODO add your routes and helper functions here
 
-const listener = app.listen(process.env.PORT, function () {
+// const listener = app.listen(process.env.PORT, function () {
+//   console.log("Your app is listening on port " + listener.address().port);
+// });
+const listener = app.listen(5000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
