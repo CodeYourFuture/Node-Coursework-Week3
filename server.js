@@ -42,6 +42,21 @@ app.post("/bookings", (req, res) => {
 })
 
 
+app.get("/bookings/search", (req, res) => {
+  const searchDate = req.query.date;
+  const isDateValid = moment(searchDate, "YYYY-MM-DD", true).isValid();
+  if (isDateValid) {
+    const searchBooking = bookings.filter((booking) => {
+     return moment(searchDate).isBetween(booking.checkInDate, booking.checkOutDate, undefined, '[]');      
+    });
+    (searchBooking ? res.status(200).json(searchBooking) : res.send(`There isn't any booking with the date: ${searchBooking}`));
+    
+  } else{
+    res.status(400);
+    res.send("Please enter date in YYYY-MM-DD format.")
+  }
+});
+
 app.get("/bookings/:id", (req, res) => {
   const id = Number(req.params.id);
   const requestedBooking = bookings.find(booking => booking.id === id)
