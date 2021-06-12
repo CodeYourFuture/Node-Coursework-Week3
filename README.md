@@ -103,6 +103,7 @@ Search for bookings which span a date (given by the client).
 
 It should accept requests of the following format:
 
+
 `/bookings/search?date=2019-05-20`
 
 Hint: use the `moment` library to make this easier.
