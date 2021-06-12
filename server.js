@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
 const app = express();
+const validator = require("email-validator")
 
 app.use(express.json());
 app.use(cors());
@@ -14,24 +15,41 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
+
 // Read all bookings
 app.get("/bookings", (request, response) => {
   response.json(bookings)
 })
 
-//  Read only booking whose text contains a given substring:
+
+//  Search functionality
 app.get("/bookings/search", (request, response) => {
-  const { term } = request.query;
+  const { term, date } = request.query;
 
-  const filteredBooking = bookings.filter(booking => booking.firstName.toUpperCase().includes(term.toUpperCase()) || booking.surname.toUpperCase().includes(term.toUpperCase()) || booking.email.toUpperCase().includes(term.toUpperCase()));
+  //  Read only booking whose text contains a given substring:
+  if (term) {
+    const filteredBooking = bookings.filter(booking => booking.firstName.toUpperCase().includes(term.toUpperCase()) || booking.surname.toUpperCase().includes(term.toUpperCase()) || booking.email.toUpperCase().includes(term.toUpperCase()));
 
-  response.json(filteredBooking)
+    if (filteredBooking.length > 0) {
+      response.json(filteredBooking)
+    } else {
+      response.status(404).json({ message: `No booking found` })
+    }
+  }
+
+  // Search for bookings which span a date (given by the client)
+  if (date) {
+    const filteredBookings = bookings.filter((entry) => entry.checkInDate.includes(date) || entry.checkOutDate.includes(date));
+
+    if (filteredBookings.length > 0) {
+      response.json(filteredBookings)
+    } else {
+      response.status(404).json({ message: `No booking found` })
+    }
+  }
+
 })
 
-app.get("bookings/search", (request, response) => {
-  const { date } = request.query;
-  // const filteredBookingDate = 
-})
 
 // Read one booking specified by an ID
 app.get("/bookings/:id", (request, response) => {
@@ -41,22 +59,23 @@ app.get("/bookings/:id", (request, response) => {
   if (isBookingIdFound) {
     response.json(bookings.filter(booking => booking.id === parseInt(selectedId)))
   } else {
-    response.status(400).json({ message: `No booking with the id of ${selectedId}` })
+    response.status(404).json({ message: `No booking with the id of ${selectedId}` })
   }
 })
+
 
 // Create a new booking
 app.post("/bookings", (request, response) => {
   const newBooking = {
-    id: request.body.id,
-    title: request.body.title,
-    firstName: request.body.firstName,
-    surname: request.body.surname,
-    email: request.body.email,
+    id: bookings.length + 1,
+    title: request.body.title.trim(),
+    firstName: request.body.firstName.trim(),
+    surname: request.body.surname.trim(),
+    email: request.body.email.trim(),
     roomId: request.body.roomId,
-    checkInDate: "YYYY-MM-DD",
-    checkOutDate: "YYYY-MM-DD",
-    timeSent: new Date().toLocaleString() // store a timestamp in each message object, in a field called timeSent.
+    checkInDate: request.body.checkInDate.trim(),
+    checkOutDate: request.body.checkOutDate.trim(),
+    timeSent: new Date().toLocaleString() // store a timestamp in each booking object, in a field called timeSent.
   }
 
   const uniqueBookingIdCheck = bookings.some(booking => booking.id === request.body.id);
@@ -68,12 +87,22 @@ app.post("/bookings", (request, response) => {
   if (!newBooking.title || !newBooking.firstName || !newBooking.surname || !newBooking.email || !newBooking.roomId || !newBooking.checkInDate || !newBooking.checkOutDate) {
     return response.status(400).json({ message: "Please fill in all fields" })
   }
+  
+  // Email validation
+  if(!validator.validate(request.body.email)) {
+    return response.status(400).json({ message: "Please enter valid email" })
+  }
+
+  if (moment(request.body.checkInDate) > moment(request.body.checkOutDate)) {
+    return response.status(400).json({ message: "Check-in date must be before than check-out date " })
+  }
 
   bookings.push(newBooking);
   response.json(bookings)
 })
 
-// Update the booking
+
+// Update the selected booking
 app.put("/bookings/:id", (request, response) => {
   const isBookingFound = bookings.some(booking => booking.id === parseInt(request.params.id));
 
@@ -97,7 +126,8 @@ app.put("/bookings/:id", (request, response) => {
   }
 })
 
-// Delete a booking, specified by an ID
+
+// Delete a booking specified by an ID
 app.delete("/bookings/:id", (request, response) => {
   let isBookingFound = bookings.some(booking => booking.id === parseInt(request.params.id));
   let deleteBooking;
@@ -112,9 +142,10 @@ app.delete("/bookings/:id", (request, response) => {
     response.json({ msg: `Booking Id ${request.params.id} deleted on ${new Date().toLocaleString()}`, deleteBooking })
   }
   else {
-    response.status(400).json({ msg: `No booking with the id of ${request.params.id}` })
+    response.status(404).json({ msg: `No booking with the id of ${request.params.id}` })
   }
 })
+
 
 // TODO add your routes and helper functions here
 
