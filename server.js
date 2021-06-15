@@ -67,22 +67,47 @@ app.delete("/bookings/:id", function (request, response) {
 
 // I had help on L3
 app.get("/bookings/search", function (request, response) {
-  let bookingsInDateRange = [];
-  let date = request.query.date;
+  // I had help to get two search options into this route
+  if (request.query.date) {
+    let bookingsInDateRange = [];
+    let date = request.query.date;
 
-  for (let bookingIndex in bookings) {
-    let booking = bookings[bookingIndex];
-    let checkInDate = booking["checkInDate"];
-    let checkOutDate = booking["checkOutDate"];
+    for (let bookingIndex in bookings) {
+      let booking = bookings[bookingIndex];
+      let checkInDate = booking["checkInDate"];
+      let checkOutDate = booking["checkOutDate"];
+      if (
+        moment(date).isSameOrAfter(checkInDate) &&
+        moment(date).isSameOrBefore(checkOutDate)
+      ) {
+        bookingsInDateRange.push(booking);
+      }
+    }
+    response.send(bookingsInDateRange);
+  } else if (request.query.term) {
+    let term = request.query.term;
+    term = term.toLowerCase();
+    let foundBookings = searchBooking(term);
+    response.send(foundBookings);
+  }
+});
+
+const searchBooking = (term) => {
+  let searchedArrayOfBookings = [];
+  for (let booking of bookings) {
+    const emailLowered = booking.email.toLowerCase();
+    const firstNameLowered = booking.firstName.toLowerCase();
+    const surnameLowered = booking.surname.toLowerCase();
     if (
-      moment(date).isSameOrAfter(checkInDate) &&
-      moment(date).isSameOrBefore(checkOutDate)
+      emailLowered.includes(term) ||
+      firstNameLowered.includes(term) ||
+      surnameLowered.includes(term)
     ) {
-      bookingsInDateRange.push(booking);
+      searchedArrayOfBookings.push(booking);
     }
   }
-  response.send(bookingsInDateRange);
-});
+  return searchedArrayOfBookings;
+};
 
 app.get("/bookings/:id", function (request, response) {
   let booking = bookings.find((booking) => booking.id == request.params.id);
