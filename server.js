@@ -20,7 +20,6 @@ app.get("/", function (request, response) {
 });
 
 // TODO add your routes and helper functions here
-
 //Read All booking
 app.get("/bookings", (request, response) => {
   response.json(bookings);
@@ -51,13 +50,12 @@ app.post("/bookings", (request, response) => {
   });
   const booking = request.body;
   booking.id = bookings.length + 1;
-  console.log(booking)
   const result = schema.validate(request.body);
   if (result.error) {
     response.status(400).send(result.error.details[0].message);
     return;
   } else {
-    bookings.push(result);
+    bookings.push(result.value);
     response.send(bookings);
   }
 });
@@ -65,7 +63,6 @@ app.post("/bookings", (request, response) => {
 //Delete a booking, specified by an ID
 app.delete("/bookings/:id([0-9]+)", (request, response) => {
   const id = Number(request.params.id);
-console.log(id)
   const bookingToDelete = bookings.findIndex((booking) => {
     return booking.id === id;
   });
