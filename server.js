@@ -69,6 +69,30 @@ app.delete("/booking/:id", (request, response) =>{
   }
 })
 
+// VALIDATION 
+app.post("/booking", function (request, response) {
+  let testID = bookings.length - 1;
+  const newBooking = { id: testID, ...request.body };
+
+  if (
+    !newBooking.id ||
+    !newBooking.title ||
+    !newBooking.firstName ||
+    !newBooking.surname ||
+    !newBooking.email ||
+    !newBooking.roomId ||
+    !newBooking.checkInDate ||
+    !newBooking.checkOutDate
+  ) {
+    return response
+      .status(404)
+      .json({ message: `Booking information is missing!` });
+  } else {
+    bookings.push(newBooking);
+    response.send(bookings);
+  }
+});
+
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
