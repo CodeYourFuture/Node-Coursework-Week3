@@ -39,7 +39,7 @@ app.get("/bookings/search", (req, res, next) => {
   const term = req.query.term?.toLowerCase(); // ?. - if term is nullish it returns undefined without causing an error
 
   if (term == null) {
-    next();
+    res.status(404).send("oops");
     return;
   }
 
@@ -91,9 +91,10 @@ app.post("/bookings", (req, res) => {
     checkOutDate,
   } = req.body;
 
-  const id = bookings[bookings.length - 1].id + 1; // id for the new booking
+  const generateRandomId = () => Date.now(); // id for the new booking
+
   const newBooking = {
-    id,
+    id: generateRandomId(),
     title,
     firstName,
     surname,
