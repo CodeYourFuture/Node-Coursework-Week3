@@ -122,13 +122,11 @@ app.delete("/bookings/:id", (req, res) => {
 
   if (bookingToDelete !== -1) {
     bookings.splice(bookingToDelete, 1);
-    res.status(200).send("Deleted");
+    res.status(200).send(`Deleted booking with id: ${id}`);
   } else {
     res.status(404).send("Not found");
   }
 });
-
-// TODO add your routes and helper functions here
 
 const listener = app.listen(process.env.PORT || 3000, function () {
   console.log("Your app is listening on port " + listener.address().port);
