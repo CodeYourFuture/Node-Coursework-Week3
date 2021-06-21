@@ -23,7 +23,10 @@ app.get("/bookings", (req, res) => {
 
 app.post("/bookings", (req, res) => {
   const newBooking = req.body;
-  newBooking.id = bookings.length + 1 ; 
+  newBooking.id = bookings.length +1;
+  const isCheckInDateDateValid = moment(newBooking.checkInDate, "YYYY-MM-DD", true).isValid();
+  const isCheckOutDateValid = moment(newBooking.checkOutDate, "YYYY-MM-DD", true).isValid();
+  
   if(!req.body.title ||
      !req.body.firstName || 
      !req.body.surname || 
@@ -67,23 +70,13 @@ app.get("/bookings/:id", (req, res) => {
 });
 
 app.delete("/bookings/:id", (req, res) => {
-  const id = Number(req.params.id);
-  let deletedBooking;
-  bookings.map(booking => {
-  if(booking.id === id) {
-    bookings.splice(id, 1);
-    deletedBooking = booking;
-  }   
-  })
-  if(!deletedBooking) {
-    res.status(404);
-    console.log(id);
-    res.send(`Booking with ID: ${id} has not found`);
-  } else {
-    res.status(200);
-    console.log(deletedBooking);
-    res.send(`Booking with ID: ${id} has been deleted`);
-  }
+  const id = parseInt(req.params.id);
+  let deletedBooking= bookings.findIndex(booking => booking.id === id)
+   if(deletedBooking >= 0) {
+     bookings.splice(deletedBooking, 1);
+     res.status(200).send(`Booking with ID: ${id} has been deleted`);      
+   }
+    res.status(404).send(`Booking with ID: ${id} has not found`);  
 });
 
 const PORT = 3000;
