@@ -22,6 +22,23 @@ app.get('/bookings', (req, res) => {
   res.json(bookings);
 });
 
+// 1.Create a Booking
+app.post('/bookings', (req, res) => {
+  const newBooking = {
+    id: parseInt(_.uniqueId()),
+    title: req.body.title,
+    firstName: req.body.firstName,
+    surname: req.body.surname,
+    email: req.body.email,
+    roomId: parseInt(_.uniqueId()),
+    checkInDate: req.body.checkInDate,
+    checkOutDate: req.body.checkOutDate
+  };
+
+  bookings.push(newBooking);
+  res.json(bookings);
+});
+
 const listener = app.listen(PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
