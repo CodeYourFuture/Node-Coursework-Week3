@@ -43,13 +43,25 @@ app.post('/bookings', (req, res) => {
 app.get('/bookings/:id', (req, res) => {
   const { id } = req.params;
   const idExist = bookings.some(booking => booking.id === parseInt(id));
-  console.log(idExist);
 
   if (idExist) {
     const idFound = bookings.filter(booking => booking.id === parseInt(id));
     res.json(idFound);
   } else {
-    res.status(404).json({ msg: `No message with the id of ${id}` });
+    res.status(404).json({ msg: `No booking with the id of ${id}` });
+  }
+});
+
+// 4.Delete a Booking by Id
+app.delete('/bookings/:id', (req, res) => {
+  const { id } = req.params;
+  const idExist = bookings.some(booking => booking.id === parseInt(id));
+  
+  if (idExist) {
+    const newBookings = bookings.filter(booking => booking.id !== parseInt(id));
+    res.status(200).json({ success: true, newBookings});
+  } else {
+    res.status(404).json({ msg: `No booking with the id of ${id}` });
   }
 });
 
