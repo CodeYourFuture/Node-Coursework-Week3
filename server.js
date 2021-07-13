@@ -39,7 +39,7 @@ app
 			const filteredBookings = bookings.filter(
 				(booking) => booking.id !== bookingId
 			);
-			res.json({ success: true }, filteredBookings);
+			res.json({ success: true , filteredBookings});
 		} else {
 			res
 				.status(404)
