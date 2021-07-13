@@ -14,8 +14,21 @@ app.get("/", function (request, response) {
 });
 
 // TODO add your routes and helper functions here
+//Read all bookings
 app.get("/bookings", (req, res) => {
 	res.json(bookings);
+});
+
+//Read one booking by Id
+app.get("/bookings/:bookingIdStr", (req, res) => {
+	const { bookingIdStr } = req.params;
+	const bookingId = parseInt(bookingIdStr);
+	if (bookings.some((booking) => booking.id === bookingId)) {
+		const match = bookings.filter((booking) => booking.id === bookingId);
+		res.json(match);
+	} else {
+		res.status(404).json({ msg: `No booking with id of: ${bookingId}` });
+	}
 });
 
 const listener = app.listen(process.env.PORT, function () {
