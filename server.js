@@ -14,10 +14,18 @@ app.get("/", function (request, response) {
 });
 
 // TODO add your routes and helper functions here
-//Read all bookings
-app.get("/bookings", (req, res) => {
+//Read all bookings and create new booking
+app.route("/bookings").get((req, res) => {
 	res.json(bookings);
-});
+}).post((req, res)=>{
+	const {newBooking} = req.body;
+	if(newBooking){
+	bookings.push(newBooking);
+	res.json({success:true, bookings});
+	}else{
+		res.status(400).json({success:false, msg:`Error! No data found`});
+	}
+})
 
 //Read one booking by Id and delete by Id
 app
