@@ -14,7 +14,7 @@ app.get("/", function (request, response) {
 });
 
 // TODO add your routes and helper functions here
-app.get("/", (req, res) => {
+app.get("/bookings", (req, res) => {
 	res.json(bookings);
 });
 
