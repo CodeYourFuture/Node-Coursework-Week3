@@ -22,7 +22,6 @@ app
 	})
 	.post((req, res) => {
 		const newBooking = req.body;
-		console.log(newBooking);
 		if (newBooking) {
 			bookings.push(newBooking);
 			res.json({ success: true, bookings });
