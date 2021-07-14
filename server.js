@@ -21,7 +21,7 @@ app
 		res.json(bookings);
 	})
 	.post((req, res) => {
-		//add a conditionals to check that every key property is present and has a value before accepting request
+		//add a conditional to check if id is already in data
 		const newBooking = req.body;
 		if (
 			newBooking.id &&
