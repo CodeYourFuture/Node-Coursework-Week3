@@ -25,8 +25,23 @@ router.post('/', (req, res) => {
     checkOutDate: req.body.checkOutDate
   };
 
-  bookings.push(newBooking);
-  res.json(bookings);
+  // Checking if any property of the booking object is missing or empty.
+  if (!newBooking.title) {
+    res.status(400).json({ msg: `Please include a title` });
+  } if (!newBooking.firstName) {
+    res.status(400).json({ msg: `Please include a first name` });
+  } if (!newBooking.surname) {
+    res.status(400).json({ msg: `Please include a surname` });
+  } if (!newBooking.email) {
+    res.status(400).json({ msg: `Please include an email` });
+  } if (!newBooking.checkInDate) {
+    res.status(400).json({ msg: `Please include a check-in date in the format YYYY-MM-DD ` });
+  } if (!newBooking.checkOutDate) {
+    res.status(400).json({ msg: `Please include a check-out date in the format YYYY-MM-DD ` });
+  } else {
+    bookings.push(newBooking);
+    res.json(bookings);
+  }
 });
 
 // 3.Read a Booking by Id
