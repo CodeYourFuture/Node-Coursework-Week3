@@ -42,6 +42,25 @@ router.post('/', (req, res) => {
   }
 });
 
+// Level 5.Free Text Search
+router.get('/search', (req, res) => {
+  const searchTerm = req.query.term;
+  let wordMatch = bookings.filter(({ email, firstName, surname }) => {
+    return (
+      email.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      surname.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  });
+
+  if (wordMatch) {
+    res.json(wordMatch);
+  } else {
+    res.status(404).json({ msg: `No booking that contains the word ${searchTerm}` });
+  }
+});
+
+
 // 3.Read a Booking by Id
 router.get('/:id', (req, res) => {
   const { id } = req.params;
