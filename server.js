@@ -21,8 +21,18 @@ app
 		res.json(bookings);
 	})
 	.post((req, res) => {
+		//add a conditionals to check that every key property is present and has a value before accepting request
 		const newBooking = req.body;
-		if (newBooking) {
+		if (
+			newBooking.id &&
+			newBooking.title &&
+			newBooking.firstName &&
+			newBooking.surname &&
+			newBooking.email &&
+			newBooking.roomId &&
+			newBooking.checkInDate &&
+			newBooking.checkOutDate
+		) {
 			bookings.push(newBooking);
 			res.json({ success: true, bookings });
 		} else {
