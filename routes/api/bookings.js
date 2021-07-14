@@ -5,8 +5,6 @@ const _ = require('lodash');
 //Use this array as your (in-memory) data store.
 const bookings = require("../../bookings");
 
-// TODO add your routes and helper functions here
-
 // 2.Read All Bookings
 router.get('/', (req, res) => {
   res.json(bookings);
