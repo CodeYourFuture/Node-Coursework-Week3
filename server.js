@@ -21,9 +21,9 @@ app
 		res.json(bookings);
 	})
 	.post((req, res) => {
-		//add a conditional to check if id is already in data
 		const newBooking = req.body;
 		if (
+			//Check all properties present
 			newBooking.id &&
 			newBooking.title &&
 			newBooking.firstName &&
@@ -33,10 +33,13 @@ app
 			newBooking.checkInDate &&
 			newBooking.checkOutDate
 		) {
-			bookings.push(newBooking);
+			//Validate id against data
+			!bookings.some((booking) => booking.id === newBooking.id)
+				? bookings.push(newBooking)
+				: res.status(400).json({ success: false, msg: "Id already exists" });
 			res.json({ success: true, bookings });
 		} else {
-			res.status(400).json({ success: false, msg: `Error! No data found` });
+			res.status(400).json({ success: false, msg: `Error! Incomplete data` });
 		}
 	});
 
