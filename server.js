@@ -24,7 +24,6 @@ app
 		const newBooking = req.body;
 		if (
 			//Check all properties present
-			newBooking.id &&
 			newBooking.title &&
 			newBooking.firstName &&
 			newBooking.surname &&
@@ -33,17 +32,9 @@ app
 			newBooking.checkInDate &&
 			newBooking.checkOutDate
 		) {
-			//Validate id against data
-			if (
-				!bookings.some(
-					(booking) => parseInt(booking.id) === parseInt(newBooking.id)
-				)
-			) {
+			//Generate unique id for data ?based on data present
 				bookings.push(newBooking);
 				res.json({ success: true, bookings });
-			} else {
-				res.status(400).send({ success: false, msg: "Id already exists" });
-			}
 		} else {
 			res.status(400).json({ success: false, msg: `Error! Incomplete data` });
 		}
