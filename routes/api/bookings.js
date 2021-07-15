@@ -10,15 +10,20 @@ router.get('/', (req, res) => {
   res.json(bookings);
 });
 
+// ID for New Booking
+const orderedIdBookings = _.orderBy(bookings, ['id'], ['desc']); // 'asc'
+const latestIdBooking = orderedIdBookings[0]; // Just need to check if order bookings has a item in the array
+const newId = latestIdBooking.id + 1;
+
 // 1.Create a Booking
 router.post('/', (req, res) => {
   const newBooking = {
-    id: parseInt(_.uniqueId()),
+    id: newId,
     title: req.body.title,
     firstName: req.body.firstName,
     surname: req.body.surname,
     email: req.body.email,
-    roomId: parseInt(_.uniqueId()),
+    roomId: parseInt(_.uniqueId(10)),
     checkInDate: req.body.checkInDate,
     checkOutDate: req.body.checkOutDate
   };
