@@ -34,7 +34,7 @@ app
 			newBooking.checkOutDate
 		) {
 			//Validate id against data
-			!bookings.some((booking) => booking.id === newBooking.id)
+			!bookings.some((booking) => parseInt(booking.id) === parseInt(newBooking.id))
 				? bookings.push(newBooking)
 				: res.status(400).json({ success: false, msg: "Id already exists" });
 			res.json({ success: true, bookings });
