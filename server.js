@@ -34,10 +34,16 @@ app
 			newBooking.checkOutDate
 		) {
 			//Validate id against data
-			!bookings.some((booking) => parseInt(booking.id) === parseInt(newBooking.id))
-				? bookings.push(newBooking)
-				: res.status(400).json({ success: false, msg: "Id already exists" });
-			res.json({ success: true, bookings });
+			if (
+				!bookings.some(
+					(booking) => parseInt(booking.id) === parseInt(newBooking.id)
+				)
+			) {
+				bookings.push(newBooking);
+				res.json({ success: true, bookings });
+			} else {
+				res.status(400).send({ success: false, msg: "Id already exists" });
+			}
 		} else {
 			res.status(400).json({ success: false, msg: `Error! Incomplete data` });
 		}
