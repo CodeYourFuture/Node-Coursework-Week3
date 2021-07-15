@@ -33,6 +33,7 @@ app
 			newBooking.checkOutDate
 		) {
 			//Generate unique id for data ?based on data present
+				newBooking.id = Math.floor(Math.random()*bookings.length*100);
 				bookings.push(newBooking);
 				res.json({ success: true, bookings });
 		} else {
