@@ -20,6 +20,16 @@ app.get("bookings", (req, res) => {
   res.json(bookings)
 });
 
+app.get("/bookings/:id", (req, res) => {
+  let bookingId = parseInt(req.params.id)
+
+  if (bookings[bookingId]) res.json(bookings[bookingId])
+  else {
+    res.status(404)
+    res.json({msg: `Could not find that booking with Id: ${bookingId}` })
+  }
+});
+
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
