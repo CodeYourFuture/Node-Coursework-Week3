@@ -3,20 +3,21 @@ const router = express.Router();
 const _ = require('lodash');
 
 //Use this array as your (in-memory) data store.
-const bookings = require("../../bookings");
+let bookings = require("../../bookings");
 
 // 2.Read All Bookings
 router.get('/', (req, res) => {
   res.json(bookings);
 });
 
-// ID for New Booking
-const orderedIdBookings = _.orderBy(bookings, ['id'], ['desc']); // 'asc'
-const latestIdBooking = orderedIdBookings[0]; // Just need to check if order bookings has a item in the array
-const newId = latestIdBooking.id + 1;
 
 // 1.Create a Booking
 router.post('/', (req, res) => {
+  // ID for New Booking
+  const orderedIdBookings = _.orderBy(bookings, ['id'], ['desc']); // 'asc'
+  const latestIdBooking = orderedIdBookings[0]; // Just need to check if order bookings has a item in the array
+  const newId = latestIdBooking.id + 1;
+
   const newBooking = {
     id: newId,
     title: req.body.title,
@@ -31,16 +32,29 @@ router.post('/', (req, res) => {
   // Checking if any property of the booking object is missing or empty.
   if (!newBooking.title) {
     res.status(400).json({ msg: `Please include a title` });
-  } if (!newBooking.firstName) {
+  }
+  if (!newBooking.firstName) {
     res.status(400).json({ msg: `Please include a first name` });
-  } if (!newBooking.surname) {
+  }
+  if (!newBooking.surname) {
     res.status(400).json({ msg: `Please include a surname` });
-  } if (!newBooking.email) {
+  }
+  if (!newBooking.email) {
     res.status(400).json({ msg: `Please include an email` });
-  } if (!newBooking.checkInDate) {
-    res.status(400).json({ msg: `Please include a check-in date in the format YYYY-MM-DD ` });
-  } if (!newBooking.checkOutDate) {
-    res.status(400).json({ msg: `Please include a check-out date in the format YYYY-MM-DD ` });
+  }
+  if (!newBooking.checkInDate) {
+    res
+      .status(400)
+      .json({
+        msg: `Please include a check-in date in the format YYYY-MM-DD `
+      });
+  }
+  if (!newBooking.checkOutDate) {
+    res
+      .status(400)
+      .json({
+        msg: `Please include a check-out date in the format YYYY-MM-DD `
+      });
   } else {
     bookings.push(newBooking);
     res.json(bookings);
@@ -55,13 +69,15 @@ router.get('/search', (req, res) => {
       email.toLowerCase().includes(searchTerm.toLowerCase()) ||
       firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       surname.toLowerCase().includes(searchTerm.toLowerCase())
-    )
+    );
   });
 
   if (wordMatch) {
     res.json(wordMatch);
   } else {
-    res.status(404).json({ msg: `No booking that contains the word ${searchTerm}` });
+    res
+      .status(404)
+      .json({ msg: `No booking that contains the word ${searchTerm}` });
   }
 });
 
@@ -85,8 +101,11 @@ router.delete('/:id', (req, res) => {
   const deleteId = bookings.some(booking => booking.id === parseInt(id));
 
   if (deleteId) {
-    const deletedBooking = bookings.filter(booking => booking.id !== parseInt(id));
-    res.json({ msg: `Booking id: ${id} deleted!`, bookings: deletedBooking });
+    const deletedBookings = bookings.filter(
+      booking => booking.id !== parseInt(id)
+    );
+    bookings = deletedBookings;
+    res.json({ msg: `Booking id: ${id} deleted!` });    
   } else {
     res.status(404).json({ msg: `No booking with the id of ${id}` });
   }
