@@ -25,8 +25,42 @@ app.get("/",  (request, response) => {
     res.send(bookings);
   });
 
+  // Search by booking
+  app.get("/booking/search", (req, res) => {
+    const { date } = req.query;
 
+    if (date == null) {
+      next();
+      return;
+    }
 
+    const result = bookings.filter((bookings) => {
+      console.log(moment(date).isBetween(bookings.checkInDate, bookings.checkInDate)
+      )
+    })
+    res.send(result);
+  });
+
+  //  search for all bookings
+
+  app.get("/bookings/search", (req, res, next) => {
+    const term = req.query.term?.toLowerCase(); // ?. - if term is nullish it returns undefined without causing an error
+  
+    if (term == null) {
+      res.status(404).send("oops");
+      return;
+    }
+  
+    const result = bookings.filter((booking) => {
+      return (
+        booking.firstName.toLowerCase().includes(term) ||
+        booking.surname.toLowerCase().includes(term) ||
+        booking.email.toLowerCase().includes(term)
+      );
+    });
+  
+    res.send(result);
+  });
 
 
 
