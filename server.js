@@ -16,7 +16,6 @@ app.get("/",  (request, response) => {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
-// TODO add your routes and helper functions here
 
 // get all bookings
 
@@ -77,7 +76,50 @@ app.get("/bookings/:id", (req, res) => {
 });
 
 
+// Create a new booking
+  app.post("/bookings", (req, res) => {
+    const schema = Joi.object({
+      title: Joi.string().min(2).required(),
+      firstName: Joi.string().max(50).required(),
+      surname: Joi.string().max(50).required(),
+      email: Joi.string().email().required(),
+      roomId: Joi.number().integer().min(1).required(),
+      checkInDate: Joi.date().iso().required(),
+      checkOutDate: Joi.date().iso().greater(Joi.ref("checkInDate")).required(),
+    });
 
+    const result = schema.validate(req.body);
+
+    const {
+      title,
+      firstName,
+      surname,
+      email,
+      roomId,
+      checkInDate,
+      checkOutDate,
+    } = req.body;
+
+    const generateRandomId = () => Date.now(); // id for the new booking
+
+    const newBooking = {
+      id: generateRandomId(),
+      Title,
+      FirstName,
+      Surname,
+      Email,
+      RoomId,
+      CheckInDate,
+      CheckOutDate,
+    };
+
+    if (result.error) {
+      res.status(400).send(result.error.details[0].message);
+    } else {
+      bookings.push(newBooking);
+      res.status(200).send(bookings);
+    }
+  });
 
 
 
