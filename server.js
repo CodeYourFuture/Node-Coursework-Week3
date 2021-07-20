@@ -63,6 +63,21 @@ app.get("/",  (request, response) => {
   });
 
 
+// Get one booking by id
+app.get("/bookings/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const foundBooking = bookings.find((booking) => {
+    return booking.id === id;
+    // returns element || undefined
+  });
+
+  foundBooking !== undefined
+    ? res.status(200).send(foundBooking)
+    : res.status(404).send(`There is no booking with id ${id}`);
+});
+
+
+
 
 
 
