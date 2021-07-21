@@ -91,13 +91,13 @@ app.get("/bookings/:id", (req, res) => {
     const result = schema.validate(req.body);
 
     const {
-      title,
-      firstName,
-      surname,
-      email,
-      roomId,
-      checkInDate,
-      checkOutDate,
+      Title,
+      FirstName,
+      Surname,
+      Email,
+      RoomId,
+      CheckInDate,
+      CheckOutDate,
     } = req.body;
 
     const generateRandomId = () => Date.now(); // id for the new booking
@@ -122,19 +122,21 @@ app.get("/bookings/:id", (req, res) => {
   });
 
 
+// DeleteS a booking by id
+app.delete("/bookings/:id", (req, res) => {
+  const id = Number(req.params.id);
+  const bookingToDelete = bookings.findIndex((booking) => {
+    return booking.id === id;
+    // returns index of the booking || -1
+  });
 
-
-
-
-
-
-
-
-
-
-
-
-
+  if (bookingToDelete !== -1) {
+    bookings.splice(bookingToDelete, 1);
+    res.status(200).send(`Deleted booking with id: ${id}`);
+  } else {
+    res.status(404).send("Not found");
+  }
+});
 
 
 
