@@ -14,16 +14,20 @@ app.get("/", function (request, response) {
 });
 //new booking
 app.post("/bookings", (req, resp) => {
-  bookings.push({
-    id: bookings.length + 1,
-    title: req.body.title,
-    firstName: req.body.firstName,
-    surname: req.body.surname,
-    email: req.body.email,
-    roomId: req.body.roomId,
-    checkInDate: req.body.checkIn,
-    checkOutDate: req.body.checkOut
-  });
+  if (req.body.title.length > 0 && req.body.firstName.length > 0 && req.body.surname.length > 0 && req.body.roomId.length>0) {
+    bookings.push({
+      id: bookings.length + 1,
+      title: req.body.title,
+      firstName: req.body.firstName,
+      surname: req.body.surname,
+      email: req.body.email,
+      roomId: req.body.roomId,
+      checkInDate: req.body.checkIn,
+      checkOutDate: req.body.checkOut,
+    });
+  }
+  else resp.status(404).send("Blank Fields Not Allowed");
+ 
   
 });
 //get all bookings
@@ -46,7 +50,7 @@ app.delete("/deleteById/:id", (req, resp) => {
     resp.send("Booking with id "+ id+" has been successfully deleted")
   }
   else {
-    resp.status(404).send("Id not found")
+    resp.status(404).send("Id not found");
   }
   
 })
