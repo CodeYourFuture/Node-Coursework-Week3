@@ -10,7 +10,7 @@ app.use(cors());
 const bookings = require("./bookings.json");
 
 app.get("/", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
+  response.sendFile(__dirname+"/index.html");
 });
 
 // TODO add your routes and helper functions here
