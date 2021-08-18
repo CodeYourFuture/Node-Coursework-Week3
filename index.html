@@ -9,21 +9,38 @@
   <body>
     <h1>Hotel Server</h1>
     <form action="/bookings" method="post">
-           <input type="text" name="title" placeholder="Please Enter Your Title"/><br>
-      <input type="text" name="firstName" placeholder="Please Enter Your First Name" />   <br>
-      <input type="text" name="surname" placeholder="Please Enter Your Surname"/><br>
-      <input type="email" name="email"  placeholder="Please Enter Your Email Address"><br>
-      <label for="">
-    <input type="date" name="checkIn"  > Check In Date
-      </label><br>
-  
-     <label for=""> 
-    <input type="date" name="checkOut" >Check Out Date
-      </label><br>
-  
-      <input type="number" name="roomId" placeholder="Please Enter Your Room Id"><br>
-<button type="submit">Send</button>
-      
+      <input
+        type="text"
+        name="title"
+        placeholder="Please Enter Your Title"
+      /><br />
+      <input
+        type="text"
+        name="firstName"
+        placeholder="Please Enter Your First Name"
+      />
+      <br />
+      <input
+        type="text"
+        name="surname"
+        placeholder="Please Enter Your Surname"
+      /><br />
+      <input
+        type="email"
+        name="email"
+        placeholder="Please Enter Your Email Address"
+      /><br />
+      <label> <input type="date" name="checkIn" /> Check In Date </label><br />
+
+      <label> <input type="date" name="checkOut" />Check Out Date </label><br />
+
+      <input
+        type="number"
+        name="roomId"
+        placeholder="Please Enter Your Room Id"
+      /><br />
+      <button type="submit">Send</button>
     </form>
+    <a href="/bookings">See all bookings</a>
   </body>
 </html>
