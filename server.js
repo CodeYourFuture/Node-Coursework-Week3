@@ -47,6 +47,19 @@ app.post("/bookings", (request, response) => {
   response.send(newBookings);
 });
 
+// Delete a booking
+app.delete("/bookings/:bookingId", (request, response) => {
+  const bookingId = +request.params.bookingId;
+  const index = bookings.findIndex(
+    booking => booking.id === bookingId
+    );
+    if (index === -1) {
+      return response.status(400).send({ MSG: `Check id` });
+    }
+    bookings.splice(index, 1);
+    response.send(`Msg: booking id:${bookingId} deleted`);
+});
+
 const listener = app.listen(PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
