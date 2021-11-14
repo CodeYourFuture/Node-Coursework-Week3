@@ -45,17 +45,17 @@ app.post("/bookings", (request, response) => {
     booking.checkInDate
   );
 
-  if(!checkEmail){
+  if (!checkEmail) {
     response.status(400).send("please enter a valid email");
     return;
   }
 
   if (!checkDate) {
-    response.status(400).send("please enter valid check-out-date after your check-in-date");
+    response
+      .status(400)
+      .send("please enter valid check-out-date after your check-in-date");
     return;
   }
-
-
 
   const newBooking = {
     id: bookings[bookings.length - 1].id + 1,
@@ -73,22 +73,44 @@ app.post("/bookings", (request, response) => {
     response.status(201).send(newBooking);
   }
 });
-//search by date
+//search by date (function)
 const search = (date) => {
   return bookings.find((booking) => booking.checkInDate.includes(date));
 };
-// read booking by specified date
-app.get("/bookings/search", (request, response) => {
-  const searchDate = request.query.date;
-  const newDate = moment(searchDate).format("YYYY-MM-DD");
-  const result = search(newDate);
 
-  if (newDate === "Invalid date" || !result) {
-    response.status(400).send("You have entered an invalid date");
-    return;
+// read booking by specified date || term
+app.get("/bookings/search", (request, response) => {
+  //search booking matching with date
+  const searchDate = request.query.date;
+
+  //search booking matching with term
+  const searchTerm = request.query.term;
+
+  if (searchDate) {
+    const newDate = moment(searchDate).format("YYYY-MM-DD");
+    const result = search(newDate);
+
+    if (newDate === "Invalid date" || !result) {
+      response.status(400).send("You have entered an invalid date");
+      return;
+    }
+    response.send(result);
   }
 
-  response.send(result);
+  if (searchTerm) {
+    const filteredTerm = bookings.find(
+      (booking) =>
+        booking.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        booking.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        booking.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    if (!filteredTerm) {
+      response.status(400).send("You search doesn't have match booking");
+      return;
+    }
+    response.send(filteredTerm);
+  }
 });
 
 // Read one booking, specified by an ID
