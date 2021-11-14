@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const moment = require("moment");
+const validator = require("email-validator");
 
 app.use(express.json());
 app.use(cors());
@@ -38,6 +39,23 @@ app.post("/bookings", (request, response) => {
     response.status(400).send("Please fill the text");
     return;
   }
+
+  const checkEmail = validator.validate(booking.email);
+  const checkDate = moment(booking.checkOutDate).isSameOrAfter(
+    booking.checkInDate
+  );
+
+  if(!checkEmail){
+    response.status(400).send("please enter a valid email");
+    return;
+  }
+
+  if (!checkDate) {
+    response.status(400).send("please enter valid check-out-date after your check-in-date");
+    return;
+  }
+
+
 
   const newBooking = {
     id: bookings[bookings.length - 1].id + 1,
