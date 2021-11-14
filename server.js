@@ -25,6 +25,19 @@ app.post("/bookings", (request, response) => {
   //get data from the client
   const booking = request.body;
 
+   if (
+     !booking.title ||
+     !booking.firstName ||
+     !booking.surname ||
+     !booking.email ||
+     !booking.roomId ||
+     !booking.checkInDate ||
+     !booking.checkOutDate
+   ) {
+     response.status(400).send("Please fill the text");
+     return;
+   }
+
   const newBooking = {
     id: bookings[bookings.length -1].id + 1,
     title: booking.title,
@@ -39,9 +52,7 @@ app.post("/bookings", (request, response) => {
   if (booking) {
     bookings.push(newBooking);
     response.status(201).send(newBooking);
-  } else {
-    response.status(400).send("error");
-  }
+  } 
 });
 
 // Read one booking, specified by an ID
