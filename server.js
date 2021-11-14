@@ -29,6 +29,24 @@ app.get("/bookings/:bookingId", function (request, response) {
   response.send(selectedBooking);
 });
 
+// Create a new message
+app.post("/bookings", (request, response) => {
+  const { title, firstName, surname, email, checkInDate } = request.body;
+  if (!title || !firstName || !surname || !email) {
+    return response.status(400).send({ MSG: `Missing information` });
+  }
+  const newBookings = {
+    id: bookings[bookings.length - 1].id + 1,
+    title: title,
+    firstName: firstName,
+    surname: surname,
+    email: email,
+    checkInDate: new Date().toLocaleString("en-GB"),
+  };
+  bookings.push(newBookings);
+  response.send(newBookings);
+});
+
 const listener = app.listen(PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
