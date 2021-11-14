@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
+const moment = require("moment");
 
 app.use(express.json());
 app.use(cors());
@@ -39,14 +40,14 @@ app.post("/bookings", (request, response) => {
    }
 
   const newBooking = {
-    id: bookings[bookings.length -1].id + 1,
+    id: bookings[bookings.length - 1].id + 1,
     title: booking.title,
     firstName: booking.firstName,
     surname: booking.surname,
     email: booking.email,
     roomId: booking.roomId,
-    checkInDate: booking.checkInDate,
-    checkOutDate: booking.checkOutDate,
+    checkInDate: moment(booking.checkInDate).format("YYYY-MM-DD"),
+    checkOutDate: moment(booking.checkOutDate).format("YYYY-MM-DD"),
   };
 
   if (booking) {
@@ -54,6 +55,18 @@ app.post("/bookings", (request, response) => {
     response.status(201).send(newBooking);
   } 
 });
+//search by date
+const search = (date) =>{
+  return bookings.find((booking) => booking.checkInDate.includes(date));
+}
+// read booking by specified date 
+app.get("/bookings/search", (request, response)=>{
+  const searchDate = request.query.date;
+  const newDate = moment(searchDate).format("YYYY-MM-DD");
+  const result = search(newDate);
+  
+  response.send(result);
+})
 
 // Read one booking, specified by an ID
 app.get("/bookings/:id", (request, response) => {
