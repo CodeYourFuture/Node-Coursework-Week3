@@ -26,18 +26,18 @@ app.post("/bookings", (request, response) => {
   //get data from the client
   const booking = request.body;
 
-   if (
-     !booking.title ||
-     !booking.firstName ||
-     !booking.surname ||
-     !booking.email ||
-     !booking.roomId ||
-     !booking.checkInDate ||
-     !booking.checkOutDate
-   ) {
-     response.status(400).send("Please fill the text");
-     return;
-   }
+  if (
+    !booking.title ||
+    !booking.firstName ||
+    !booking.surname ||
+    !booking.email ||
+    !booking.roomId ||
+    !booking.checkInDate ||
+    !booking.checkOutDate
+  ) {
+    response.status(400).send("Please fill the text");
+    return;
+  }
 
   const newBooking = {
     id: bookings[bookings.length - 1].id + 1,
@@ -53,20 +53,25 @@ app.post("/bookings", (request, response) => {
   if (booking) {
     bookings.push(newBooking);
     response.status(201).send(newBooking);
-  } 
+  }
 });
 //search by date
-const search = (date) =>{
+const search = (date) => {
   return bookings.find((booking) => booking.checkInDate.includes(date));
-}
-// read booking by specified date 
-app.get("/bookings/search", (request, response)=>{
+};
+// read booking by specified date
+app.get("/bookings/search", (request, response) => {
   const searchDate = request.query.date;
   const newDate = moment(searchDate).format("YYYY-MM-DD");
   const result = search(newDate);
-  
+
+  if (newDate === "Invalid date" || !result) {
+    response.status(400).send("You have entered an invalid date");
+    return;
+  }
+
   response.send(result);
-})
+});
 
 // Read one booking, specified by an ID
 app.get("/bookings/:id", (request, response) => {
@@ -74,10 +79,10 @@ app.get("/bookings/:id", (request, response) => {
     (booking) => booking.id === Number(request.params.id)
   );
 
-   if (filterBooking.length === 0) {
-     response.status(404).send("Booking cannot be found!:{");
-     return;
-   }
+  if (filterBooking.length === 0) {
+    response.status(404).send("Booking cannot be found!:{");
+    return;
+  }
   response.send(filterBooking);
 });
 
@@ -93,7 +98,7 @@ app.delete("/bookings/:id", (request, response) => {
   }
 
   bookings.splice(index, 1);
-console.log(index);
+  console.log(index);
   response.send("Successfully Deleted!!!");
 });
 
