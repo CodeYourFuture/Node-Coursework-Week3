@@ -37,11 +37,7 @@ app.post("/bookings", (request, response) => {
   }
   const newBookings = {
     id: bookings[bookings.length - 1].id + 1,
-    title: title,
-    firstName: firstName,
-    surname: surname,
-    email: email,
-    checkInDate: new Date().toLocaleString("en-GB"),
+   ...request.body,
   };
   bookings.push(newBookings);
   response.send(newBookings);
