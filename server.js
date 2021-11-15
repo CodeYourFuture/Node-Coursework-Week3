@@ -33,6 +33,21 @@ app.get("/bookings/:id", (request, response) => {
       });
 });
 
+// Delete a booking, specified by an ID
+app.delete("/bookings/:customerId", (request, response) => {
+  const customerId = +request.params.customerId;
+  const customerIndex = bookings.findIndex(
+    (booking) => booking.id === customerId
+  );
+  if (customerIndex === -1) {
+    return response.status(404).send({
+      msg: `Customer  doesn't exist with id: ${customerId}`,
+    });
+  } else {
+    bookings.splice(customerIndex, 1);
+    response.sendStatus(204);
+  }
+});
 const listener = app.listen(PORT, () => {
   console.log(
     "Your app is listening on port " +
