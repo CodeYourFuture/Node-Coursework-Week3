@@ -48,9 +48,19 @@ app.post("/bookings/", (req, res) => {
     checkOutDate: req.body.checkOutDate,
   };
 
-  bookings.push(newBooking);
+  // Check a value is present, as the `newBooking` object is using a
+  // predefined template the properties will always be present so I
+  // dont believe a properties check in necessary???.
+  const checkNewBookingValues = Object.values(newBooking).filter(
+    (info) => info.toString().length > 0
+  );
 
-  res.status(201).json({ Success: true });
+  if (checkNewBooking.length < 8) {
+    res.status(400).json({ Success: false });
+  } else {
+    bookings.push(newBooking);
+    res.status(201).json({ Success: true });
+  }
 });
 
 // Delete booking
