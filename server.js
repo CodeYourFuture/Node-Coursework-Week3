@@ -33,6 +33,37 @@ app.get("/bookings/:id", (request, response) => {
       });
 });
 
+//Create a new booking
+app.post("/bookings", (request, response) => {
+  const {
+    title,
+    firstName,
+    surname,
+    email,
+    checkInDate,
+    roomId,
+    checkOutDate,
+  } = request.body;
+  if (
+    !title ||
+    !firstName ||
+    !surname ||
+    !email ||
+    !checkInDate ||
+    !checkOutDate ||
+    !roomId
+  ) {
+    return response.status(400).send({
+      msg: "Please check all informations of customer ",
+    });
+  }
+  const newCustomer = {
+    id: bookings[bookings.length - 1].id + 1,
+    ...request.body,
+  };
+  bookings.push(newCustomer);
+  response.send(newCustomer);
+});
 // Delete a booking, specified by an ID
 app.delete("/bookings/:customerId", (request, response) => {
   const customerId = +request.params.customerId;
