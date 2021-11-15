@@ -8,12 +8,31 @@ app.use(cors());
 
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
+const { response } = require("express");
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
 // TODO add your routes and helper functions here
+
+// Search booking by date
+app.get("/bookings/search", function (request, response) {
+  const date = new Date (request.query.date)
+  const matchingBookings = bookings.filter(booking => 
+    (new Date (booking.checkInDate)) <= date &&
+    (new Date (booking.checkOutDate)) >= date
+  );
+  if(matchingBookings.length === 0){
+    return response
+      .status(400)
+      .send(
+        `Msg: There is no matching booking on the selected date : ${request.query.date}`
+      );
+  }
+  response.send(matchingBookings);
+});
+
 // Read all bookings
 app.get("/bookings", function (request, response) {
   response.send(bookings);
