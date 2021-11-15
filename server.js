@@ -31,14 +31,21 @@ app.get("/bookings", (req, res) => {
 });
 
 // http://localhost:4002/bookings/search?date=2018-02-15
+// http://localhost:4002/bookings/search?term=james
 // Search by date
 app.get("/bookings/search", (req, res) => {
   const matchingBookings = bookings.filter((booking) => {
     const checkIn = moment(booking.checkInDate);
     const checkOut = moment(booking.checkOutDate);
     const date = moment(req.query.date);
+    const PISearch = req.query.term.toUpperCase();
 
-    return date.isAfter(checkIn) && date.isBefore(checkOut);
+    return (
+      (date.isAfter(checkIn) && date.isBefore(checkOut)) ||
+      booking.firstName.toUpperCase().includes(PISearch) ||
+      booking.surname.toUpperCase().includes(PISearch) ||
+      booking.email.toUpperCase().includes(PISearch)
+    );
   });
 
   matchingBookings.length > 0
