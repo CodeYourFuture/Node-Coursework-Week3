@@ -6,15 +6,66 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Import uuid library
+const { v4: uuidv4 } = require("uuid"); //uuidv4()
+
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
+// const { application } = require("express");
 
-app.get("/", function (request, response) {
+// app root
+app.get("/", (req, res) => {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
 // TODO add your routes and helper functions here
 
-const listener = app.listen(process.env.PORT, function () {
+// Get all bookings
+app.get("/bookings", (req, res) => {
+  bookings.length > 0 ? res.status(200).json(bookings) : res.status(404);
+});
+
+// Get booking by id
+app.get("/bookings/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const booking = bookings.find((booking) => booking.id === id);
+
+  booking === undefined
+    ? res.status(404).json({ Success: false })
+    : res.status(200).json(booking);
+});
+
+// Create new booking
+app.post("/bookings/", (req, res) => {
+  const newBooking = {
+    id: uuidv4(),
+    title: req.body.title,
+    firstName: req.body.firstName,
+    surname: req.body.surname,
+    email: req.body.email,
+    roomId: req.body.roomId,
+    checkInDate: req.body.checkInDate,
+    checkOutDate: req.body.checkOutDate,
+  };
+
+  bookings.push(newBooking);
+
+  res.status(201).json({ Success: true });
+});
+
+// Delete booking
+app.delete("/bookings/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+
+  const bookingIndex = bookings.findIndex((booking) => booking.id === id);
+
+  if (bookingIndex >= 0) {
+    bookings.splice(bookingIndex, 1), res.status(200).json({ Success: true });
+  } else {
+    res.status(404).json({ Success: false });
+  }
+});
+
+const listener = app.listen(process.env.PORT || 4002, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
