@@ -7,6 +7,8 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+const validator = require("email-validator");
+// validator.validate("test@email.com"); // true
 
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
@@ -69,13 +71,17 @@ app.post("/bookings", (request, response) => {
     !title ||
     !firstName ||
     !surname ||
-    !email ||
     !checkInDate ||
     !checkOutDate ||
     !roomId
   ) {
     return response.status(400).send({
       msg: "Please check all informations of customer ",
+    });
+  }
+  if (!validator.validate(email)) {
+    return response.status(400).send({
+      msg: `Please check email, your email is not valid, ${email} `,
     });
   }
   const newCustomer = {
