@@ -25,8 +25,19 @@ app.get("/bookings", (request, response) => {
 });
 
 // Level 3 (Optional, advanced) - search by date
-// /bookings/search?date=2019-05-20
+// /bookings/search?date=2019-05-20 && term
 app.get("/bookings/search", (request, response) => {
+  let term = request.query.term;
+  if (term) {
+    term = term.toLowerCase();
+    const searchedBookings = bookings.filter(
+      (book) =>
+        book.firstName.toLowerCase().includes(term) ||
+        book.email.toLowerCase().includes(term) ||
+        book.surname.toLowerCase().includes(term)
+    );
+    return response.send(searchedBookings);
+  }
   const date = request.query.date;
   const bookingsIndDate = bookings.filter(
     (booking) =>
