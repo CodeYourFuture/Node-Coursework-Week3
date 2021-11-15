@@ -1,6 +1,9 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
+const validator = require("email-validator");
+
+// validator.validate("test@email.com");
 const PORT = process.env.PORT || 3000;
 const app = express();
 
@@ -51,9 +54,12 @@ app.get("/bookings/:bookingId", function (request, response) {
 
 // Create a new message
 app.post("/bookings", (request, response) => {
-  const { title, firstName, surname, email, checkInDate } = request.body;
-  if (!title || !firstName || !surname || !email) {
+  const { title, firstName, surname, roomId, email, checkInDate, checkOutDate } = request.body;
+  if (!title || !firstName || !surname || !roomId || !checkInDate || !checkOutDate ) {
     return response.status(400).send({ MSG: `Missing information` });
+  }
+  if(!validator.validate(email)){
+    return response.status(400).send({ msg: 'invalid email address' });
   }
   const newBookings = {
     id: bookings[bookings.length - 1].id + 1,
