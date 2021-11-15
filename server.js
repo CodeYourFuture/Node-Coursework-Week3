@@ -61,6 +61,9 @@ app.post("/bookings", (request, response) => {
   if(!validator.validate(email)){
     return response.status(400).send({ msg: 'invalid email address' });
   }
+  if((new Date (checkOutDate)) < (new Date (checkInDate))){
+    response.status(400).send({ MSG: `Check in date can not be after check out date` });
+  }
   const newBookings = {
     id: bookings[bookings.length - 1].id + 1,
    ...request.body,
