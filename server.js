@@ -7,6 +7,9 @@ const { v4: uuidv4 } = require("uuid");
 // Import moment library
 const moment = require("moment");
 
+// Import email verification library
+const emailVerifier = require("email-verifier-node");
+
 const app = express();
 
 app.use(express.json());
@@ -40,7 +43,7 @@ app.get("/bookings/search", (req, res) => {
 
   matchingBookings.length > 0
     ? res.status(200).json(matchingBookings)
-    : res.status(204).json({Success: true});
+    : res.status(204).json({ Success: true });
 });
 
 // Get booking by id
@@ -72,7 +75,19 @@ app.post("/bookings/", (req, res) => {
     (info) => info.toString().length > 0
   );
 
-  if (checkNewBooking.length < 8) {
+  // Check for a valid email
+  const verifyEmailIsValid = emailVerifier.validate_email(req.body.email);
+
+  // Check if `checkOutDate` is after `checkInDate`
+  const verifyCheckOutDate = moment(req.body.checkInDate).isBefore(
+    moment(req.body.checkOutDate)
+  );
+
+  if (
+    checkNewBookingValues.length < 8 ||
+    !verifyEmailIsValid ||
+    !verifyCheckOutDate
+  ) {
     res.status(400).json({ Success: false });
   } else {
     bookings.push(newBooking);
