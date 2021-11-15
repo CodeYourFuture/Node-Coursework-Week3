@@ -26,9 +26,20 @@ app.get("/bookings", function (request, response) {
   response.send(bookings);
 });
 
-// Search booking by date
+// Search booking by date and email, firstName, surname
 app.get("/bookings/search", function (request, response) {
+  const term = request.query.term
+  if(term){
+    const matchingTerm = bookings.filter(
+      (booking) =>
+        booking.firstName.toLowerCase().includes(term.toLowerCase()) ||
+        booking.surname.toLowerCase().includes(term.toLowerCase()) ||
+        booking.email.toLowerCase().includes(term.toLowerCase())
+    );
+    return response.send(matchingTerm)
+  }
   const date = new Date (request.query.date)
+    
   const matchingBookings = bookings.filter(booking => 
     moment(`${date}`).isBetween(`${booking.checkInDate}`, `${booking.checkOutDate}`)
   );
