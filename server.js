@@ -84,6 +84,12 @@ app.post("/bookings", (request, response) => {
       msg: `Please check email, your email is not valid, ${email} `,
     });
   }
+  if (new Date(checkInDate) > new Date(checkOutDate)) {
+    return response.status(400).send({
+      msg: `checkoutDate ${checkOutDate} must be after checkinDate ${checkInDate} `,
+    });
+  }
+
   const newCustomer = {
     id: bookings[bookings.length - 1].id + 1,
     ...request.body,
