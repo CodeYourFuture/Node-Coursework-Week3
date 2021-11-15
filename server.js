@@ -20,6 +20,23 @@ app.get("/", function (request, response) {
 app.get("/bookings", (request, response) => {
   response.send(bookings);
 });
+
+// Level 3 (Optional, advanced) - search by date
+// /bookings/search?date=2019-05-20
+app.get("/bookings/search", (request, response) => {
+  const date = new Date(request.query.date);
+  const bookingsIndDate = bookings.filter((booking) => {
+    return (
+      new Date(booking.checkInDate) <= date &&
+      new Date(booking.checkOutDate) >= date
+    );
+  });
+  bookingsIndDate.length === 0
+    ? response.status(400).send({
+        msg: `There is nobody on date ${request.query.date}`,
+      })
+    : response.send(bookingsIndDate);
+});
 //get one booking by id
 app.get("/bookings/:id", (request, response) => {
   const customerId = +request.params.id;
