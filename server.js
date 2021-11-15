@@ -1,7 +1,9 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 const PORT = process.env.PORT || 3000;
 const app = express();
+
 
 app.use(express.json());
 app.use(cors());
@@ -16,12 +18,16 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 
+// Read all bookings
+app.get("/bookings", function (request, response) {
+  response.send(bookings);
+});
+
 // Search booking by date
 app.get("/bookings/search", function (request, response) {
   const date = new Date (request.query.date)
   const matchingBookings = bookings.filter(booking => 
-    (new Date (booking.checkInDate)) <= date &&
-    (new Date (booking.checkOutDate)) >= date
+    moment(`${date}`).isBetween(`${booking.checkInDate}`, `${booking.checkOutDate}`)
   );
   if(matchingBookings.length === 0){
     return response
@@ -31,11 +37,6 @@ app.get("/bookings/search", function (request, response) {
       );
   }
   response.send(matchingBookings);
-});
-
-// Read all bookings
-app.get("/bookings", function (request, response) {
-  response.send(bookings);
 });
 
 // Read one booking, specified by an ID
