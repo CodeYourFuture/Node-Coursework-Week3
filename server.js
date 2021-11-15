@@ -1,17 +1,19 @@
 const express = require("express");
 const cors = require("cors");
 
+// Import uuid library
+const { v4: uuidv4 } = require("uuid");
+
+// Import moment library
+const moment = require("moment");
+
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-// Import uuid library
-const { v4: uuidv4 } = require("uuid"); //uuidv4()
-
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
-// const { application } = require("express");
 
 // app root
 app.get("/", (req, res) => {
@@ -23,6 +25,22 @@ app.get("/", (req, res) => {
 // Get all bookings
 app.get("/bookings", (req, res) => {
   bookings.length > 0 ? res.status(200).json(bookings) : res.status(404);
+});
+
+// http://localhost:4002/bookings/search?date=2018-02-15
+// Search by date
+app.get("/bookings/search", (req, res) => {
+  const matchingBookings = bookings.filter((booking) => {
+    const checkIn = moment(booking.checkInDate);
+    const checkOut = moment(booking.checkOutDate);
+    const date = moment(req.query.date);
+
+    return date.isAfter(checkIn) && date.isBefore(checkOut);
+  });
+
+  matchingBookings.length > 0
+    ? res.status(200).json(matchingBookings)
+    : res.status(204).json({Success: true});
 });
 
 // Get booking by id
@@ -48,9 +66,8 @@ app.post("/bookings/", (req, res) => {
     checkOutDate: req.body.checkOutDate,
   };
 
-  // Check a value is present, as the `newBooking` object is using a
-  // predefined template the properties will always be present so I
-  // dont believe a properties check in necessary???.
+  // Check a value is present, as the `newBooking` object is hard coded
+  // properties will always be present so I dont believe a properties check in necessary???.
   const checkNewBookingValues = Object.values(newBooking).filter(
     (info) => info.toString().length > 0
   );
