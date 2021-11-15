@@ -16,7 +16,10 @@ app.get("/", function (request, response) {
   );
 });
 
-// TODO add your routes and helper functions here
+//return all bookings
+app.get("/bookings", (request, response) => {
+  response.send(bookings);
+});
 
 const listener = app.listen(PORT, function () {
   console.log(
