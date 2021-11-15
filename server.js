@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const PORT = process.env.PORT || 3000;
+const moment = require("moment");
 
 const app = express();
 
@@ -24,13 +25,16 @@ app.get("/bookings", (request, response) => {
 // Level 3 (Optional, advanced) - search by date
 // /bookings/search?date=2019-05-20
 app.get("/bookings/search", (request, response) => {
-  const date = new Date(request.query.date);
-  const bookingsIndDate = bookings.filter((booking) => {
-    return (
-      new Date(booking.checkInDate) <= date &&
-      new Date(booking.checkOutDate) >= date
-    );
-  });
+  const date = request.query.date;
+  const bookingsIndDate = bookings.filter(
+    (booking) =>
+      // new Date(booking.checkInDate) <= date &&
+      // new Date(booking.checkOutDate) >= date
+      moment(date).isBetween(
+        booking.checkInDate,
+        booking.checkOutDate
+      ) // true
+  );
   bookingsIndDate.length === 0
     ? response.status(400).send({
         msg: `There is nobody on date ${request.query.date}`,
