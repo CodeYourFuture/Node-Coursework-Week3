@@ -13,6 +13,8 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
+//
+
 // TODO add your routes and helper functions here
 
 const listener = app.listen(process.env.PORT, function () {
