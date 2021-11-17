@@ -52,6 +52,19 @@ app.post("/bookings", (req, res) => {
   res.json(bookings);
 });
 
+// Read one booking specified by an ID
+app.get("/bookings/:id", (req, res) => {
+  const foundId = bookings.some((booking) => booking.id === +req.params.id);
+  if (foundId) {
+    res.send(bookings.filter((booking) => booking.id === +req.params.id));
+  } else {
+    res
+      .status(400)
+      .json({ message: `No booking with the id of ${req.params.id}` });
+  }
+});
+
+
 
 const listener = app.listen(PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
