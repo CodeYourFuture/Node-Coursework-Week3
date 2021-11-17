@@ -3,6 +3,8 @@ const cors = require("cors");
 
 const app = express();
 
+const PORT = process.env.PORT || 3000;
+
 app.use(express.json());
 app.use(cors());
 
@@ -15,6 +17,13 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 
-const listener = app.listen(process.env.PORT, function () {
+
+// Read all bookings
+app.get('/bookings', (req, res) => {
+  res.json(bookings)
+});
+
+
+const listener = app.listen(PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
