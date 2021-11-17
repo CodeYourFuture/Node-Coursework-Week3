@@ -1,8 +1,8 @@
-const express = require('express');
-const moment = require('moment');
+const express = require("express");
+const moment = require("moment");
 const router = express.Router();
-const bookings = require('../bookings.json');
-const validator = require('email-validator');
+const bookings = require("../bookings.json");
+const validator = require("email-validator");
 
 router.get("/", (req, res) => {
   res.send(bookings);
@@ -26,46 +26,51 @@ router.post("/", (req, res) => {
     res.sendStatus(400);
   } else {
     const newBooking = {
-      "id": lastId + 1,
-      "roomId": booking.roomId,
-      "title": booking.title,
-      "firstName": booking.firstName,
-      "surname": booking.surname,
-      "email": booking.email,
-      "checkInDate": booking.checkInDate,
-      "checkOutDate": booking.checkOutDate,
+      id: lastId + 1,
+      roomId: booking.roomId,
+      title: booking.title,
+      firstName: booking.firstName,
+      surname: booking.surname,
+      email: booking.email,
+      checkInDate: booking.checkInDate,
+      checkOutDate: booking.checkOutDate,
     };
     bookings.push(newBooking);
     res.send(bookings);
   }
 });
 
-router.get('/search', (req, res) => {
-    const date = req.query.date;
-    if(date) {
-        const bookingsCoverDate = bookings.filter(
-          ({ checkInDate, checkOutDate }) =>
-            moment(date).isBetween(checkInDate, checkOutDate)
-        );
-        if (bookingsCoverDate.length === 0) {
-          res.send({ message: `No booking found at ${date}` });
-          return;
-        }
-        res.send(bookingsCoverDate);
+router.get("/search", (req, res) => {
+  const query = req.query;
+  switch (true) {
+    case query.hasOwnProperty("date"):
+      const date = query.date;
+      const bookingsCoverDate = bookings.filter(
+        ({ checkInDate, checkOutDate }) =>
+          moment(date).isBetween(checkInDate, checkOutDate)
+      );
+      if (bookingsCoverDate.length === 0) {
+        res.send({ message: `No booking found at ${date}` });
         return;
-    }
-    const searchTerm = req.query.term.toLowerCase();
-    if(searchTerm) {
-        const foundBookings = bookings.filter(({firstName, surname, email}) => firstName.toLowerCase().includes(searchTerm) || 
-            surname.toLowerCase().includes(searchTerm) ||
-            email.toLowerCase().includes(searchTerm));
-        if(foundBookings.length === 0) {
-            res.send({"message": `No booking found`});
-            return;
-        }
-        res.send(foundBookings);
-    }
-})
+      }
+      res.send(bookingsCoverDate);
+      break;
+    case query.hasOwnProperty("term"):
+      const searchTerm = query.term.toLowerCase();
+      const foundBookings = bookings.filter(
+        ({ firstName, surname, email }) =>
+          firstName.toLowerCase().includes(searchTerm) ||
+          surname.toLowerCase().includes(searchTerm) ||
+          email.toLowerCase().includes(searchTerm)
+      );
+      if (foundBookings.length === 0) {
+        res.send({ message: `No booking found` });
+        return;
+      }
+      res.send(foundBookings);
+      break;
+  }
+});
 
 router.get("/:bookingId", (req, res) => {
   const bookingId = parseInt(req.params.bookingId);
@@ -87,7 +92,5 @@ router.delete("/:bookingId", (req, res) => {
   bookings.splice(bookingIndex, 1);
   res.send(bookings);
 });
-
-
 
 module.exports = router;
