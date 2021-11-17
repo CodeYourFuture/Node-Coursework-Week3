@@ -46,7 +46,7 @@ app.post("/bookings", (req, res) => {
     !newBookings.roomId ||
     !newBookings.checkInDate
   ) {
-    return res.status(400).json({ message: "Please fill in all information!" });
+    return res.status(404).json({ message: "Please fill in all information!" });
   }
   bookings.push(newBookings);
   res.json(bookings);
@@ -59,7 +59,7 @@ app.get("/bookings/:id", (req, res) => {
     res.send(bookings.filter((booking) => booking.id === +req.params.id));
   } else {
     res
-      .status(400)
+      .status(404)
       .json({ message: `No booking with the id of ${req.params.id}` });
   }
 });
@@ -74,7 +74,7 @@ app.delete("/bookings/:id", (req, res) => {
     });
   } else {
     res
-      .status(400)
+      .status(404)
       .json({ message: `No booking with the id of ${req.params.id}` });
   }
 });
