@@ -17,10 +17,39 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 
-
 // Read all bookings
-app.get('/bookings', (req, res) => {
-  res.json(bookings)
+app.get("/bookings", (req, res) => {
+  res.json(bookings);
+});
+
+// Create a new booking
+app.post("/bookings", (req, res) => {
+  //  res.send(req.body);
+  const index = bookings.length;
+
+  const newBookings = {
+    id: index + 1,
+    title: req.body.title,
+    firstName: req.body.firstName,
+    surname: req.body.surname,
+    email: req.body.email,
+    roomId: req.body.roomId,
+    checkInDate: req.body.checkInDate,
+    checkOutDate: req.body.checkOutDate,
+  };
+
+  if (
+    !newBookings.title ||
+    !newBookings.firstName ||
+    !newBookings.surname ||
+    !newBookings.email ||
+    !newBookings.roomId ||
+    !newBookings.checkInDate
+  ) {
+    return res.status(400).json({ message: "Please fill in all information!" });
+  }
+  bookings.push(newBookings);
+  res.json(bookings);
 });
 
 
