@@ -1,4 +1,5 @@
 const express = require('express');
+const moment = require('moment');
 const router = express.Router();
 const bookings = require('../bookings.json');
 
@@ -35,6 +36,16 @@ router.post("/", (req, res) => {
     res.send(bookings);
   }
 });
+
+router.get('/search', (req, res) => {
+    const date = req.query.date;
+    const bookingsCoverDate = bookings.filter(({checkInDate, checkOutDate}) => moment(date).isBetween(checkInDate, checkOutDate));
+    if(bookingsCoverDate.length === 0) {
+        res.send({"message": `No booking found at ${date}`});
+        return;
+    }
+    res.send(bookingsCoverDate);
+})
 
 router.get("/:bookingId", (req, res) => {
   const bookingId = parseInt(req.params.bookingId);
