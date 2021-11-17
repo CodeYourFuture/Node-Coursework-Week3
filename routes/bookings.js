@@ -42,12 +42,29 @@ router.post("/", (req, res) => {
 
 router.get('/search', (req, res) => {
     const date = req.query.date;
-    const bookingsCoverDate = bookings.filter(({checkInDate, checkOutDate}) => moment(date).isBetween(checkInDate, checkOutDate));
-    if(bookingsCoverDate.length === 0) {
-        res.send({"message": `No booking found at ${date}`});
+    if(date) {
+        const bookingsCoverDate = bookings.filter(
+          ({ checkInDate, checkOutDate }) =>
+            moment(date).isBetween(checkInDate, checkOutDate)
+        );
+        if (bookingsCoverDate.length === 0) {
+          res.send({ message: `No booking found at ${date}` });
+          return;
+        }
+        res.send(bookingsCoverDate);
         return;
     }
-    res.send(bookingsCoverDate);
+    const searchTerm = req.query.term.toLowerCase();
+    if(searchTerm) {
+        const foundBookings = bookings.filter(({firstName, surname, email}) => firstName.toLowerCase().includes(searchTerm) || 
+            surname.toLowerCase().includes(searchTerm) ||
+            email.toLowerCase().includes(searchTerm));
+        if(foundBookings.length === 0) {
+            res.send({"message": `No booking found`});
+            return;
+        }
+        res.send(foundBookings);
+    }
 })
 
 router.get("/:bookingId", (req, res) => {
