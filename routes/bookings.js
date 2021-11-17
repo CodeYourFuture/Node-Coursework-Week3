@@ -2,6 +2,7 @@ const express = require('express');
 const moment = require('moment');
 const router = express.Router();
 const bookings = require('../bookings.json');
+const validator = require('email-validator');
 
 router.get("/", (req, res) => {
   res.send(bookings);
@@ -17,8 +18,10 @@ router.post("/", (req, res) => {
     !booking.firstName ||
     !booking.surname ||
     !booking.email ||
+    !validator.validate(booking.email) ||
     !booking.checkInDate ||
-    !booking.checkOutDate;
+    !booking.checkOutDate ||
+    !moment(booking.checkOutDate).isAfter(booking.checkInDate);
   if (notValidBooking) {
     res.sendStatus(400);
   } else {
