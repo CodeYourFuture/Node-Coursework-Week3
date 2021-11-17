@@ -37,7 +37,7 @@ app.post("/bookings", (req, res) => {
     checkInDate: req.body.checkInDate,
     checkOutDate: req.body.checkOutDate,
   };
-
+// reject requests to create bookings if any property of the booking object is missing or empty
   if (
     !newBookings.title ||
     !newBookings.firstName ||
