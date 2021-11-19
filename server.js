@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 
 const app = express();
 
@@ -77,8 +78,23 @@ app.delete("/bookings/:bookingId", (request, response) => {
     bookings.splice(bookingIndex, 1);
     response.status(204);
   } else {
-    response.status(404).send(`Can not find any booking with the ID number ${bookingById}`)
+    response
+      .status(404)
+      .send(`Can not find any booking with the ID number ${bookingById}`);
   }
+});
+
+// Search by date
+app.get("/bookings/search", (request, response) => {
+  const date = request.query.date;
+  const isDateBetween = bookings.filter(({ checkInDate, checkOutDate }) =>
+    moment(date).isBetween(checkInDate, checkOutDate)
+  );
+  console.log(isDateBetween);
+  if (isDateBetween.length === 0) {
+    response.status(400).send({ msg: `not found any booking in ${date}` });
+  }
+    response.send(isDateBetween);
 });
 
 // TODO add your routes and helper functions here
