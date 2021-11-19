@@ -1,5 +1,8 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
+// validator ("....@email.com");
+const validator = require("email-validator");
 
 const app = express();
 
@@ -44,12 +47,56 @@ app.post("/bookings", (req, res) => {
     !newBookings.surname ||
     !newBookings.email ||
     !newBookings.roomId ||
-    !newBookings.checkInDate
+    !newBookings.checkInDate ||
+    !newBookings.checkOutDate
   ) {
     return res.status(404).json({ message: "Please fill in all information!" });
+  } 
+  if(!validator.validate(newBookings.email)){
+    return res.status(404).send({ message: "invalid email address" });
+  }
+  if((new Date (newBookings.checkOutDate)) < (new Date (newBookings.checkInDate))){
+    res.status(404).send({ message: "Please check your Date!" });
   }
   bookings.push(newBookings);
   res.json(bookings);
+});
+
+// Level 3 (Optional, advanced) - search by date And Level 5 (Optional, easy) - free-text search
+app.get("/bookings/search", function (req, res) {
+  const date = req.query.date;
+  const term = req.query.term;
+  if (!term && !date) {
+    res.status(404).json("Not found!!");
+    return;
+  }
+
+  if (moment(date, "YYYY-MM-DD", true).isValid()) {
+    let result = bookings.filter(
+      (booking) =>
+        moment(date).isBetween(booking.checkInDate, booking.checkOutDate ) ||
+        moment(date).isSame(booking.checkInDate) ||
+        moment(date).isSame(booking.checkOutDate)
+    );
+    result.length > 0
+      ? res.send(result)
+      : res.status(404).send("There isn't record ...");
+    return;
+  } else if (date) {
+    res.status(400).json('Please enter a valid date, format should like "YYYY-MM-DD"');
+    return;
+  }
+
+  const searchTerm = bookings.filter((booking) =>
+    `${booking.firstName} ${booking.surname} ${booking.email}`
+      .toLowerCase()
+      .includes(term.toLowerCase())
+  );
+  if (term && searchTerm.length > 0) {
+    res.json(searchTerm);
+  } else if (term) {
+    res.status(404).json("Server couldn't find your term");
+  }
 });
 
 // Read one booking, specified by an ID
