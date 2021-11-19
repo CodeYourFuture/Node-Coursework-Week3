@@ -100,6 +100,23 @@ app.delete("/bookings/:id", (req, res) => {
   }
 });
 
+// Search by date
+
+app.get("/bookings/search", (request, response) => {
+  const date = request.query.date;
+  const bookingsIndDate = bookings.filter(
+    (booking) =>
+        moment(date).isBetween(
+        booking.checkInDate,
+        booking.checkOutDate
+      ) 
+  );
+  bookingsIndDate.length === 0
+    ? response.status(400).send({
+        msg: `There is nobody on date ${request.query.date}`,
+      })
+    : response.send(bookingsIndDate);
+});
 
 
 const listener = app.listen(process.env.PORT || 3000,   () => {
