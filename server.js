@@ -11,7 +11,7 @@ app.use(cors());
 const bookings = require("./bookings.json");
 const indexOfLastbooking = bookings.length;
 console.log(indexOfLastbooking);
-const { request, response } = require("express");
+const { request, response, json } = require("express");
 
 const newBooking = {
   id: indexOfLastbooking + 1,
@@ -47,6 +47,18 @@ app.post("/", (request, response) => {
 });
 app.get("/bookings", (request, response) => {
   response.status(200).json(bookings);
+});
+app.delete("/bookings/:id", (request, response) => {
+  const id = Number(request.params.id);
+  const bookingToDelete = bookings.findIndex((booking) => booking.id === id);
+  if (!bookingToDelete) {
+    response
+      .status(400)
+      .json({ msq: `No bookings with the id of ${id} can be found!` });
+  } else {
+    const deletedBooking = bookings.splice(bookingToDelete, 1);
+    response.status(201).json({ bookingtobedeleted: deletedBooking });
+  }
 });
 app.get("/bookings/:id", (request, response) => {
   const paramId = parseInt(request.params.id);
