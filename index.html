@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Hotel Booking</title>
+</head>
+<body>
+    <form  class ="booking-form" action="/bookings" method="POST">
+        <h1> Hotel Boking</h1>
+        <label for="roomId" > Room Number
+        <input id="roomId" type="number" name= "roomId" >
+        </label>
+        <label for="title" > Title 
+        <input id="title" type="string" name= "title" /> 
+        </label>
+        <label for="firstName"> First Name
+        <input id= "firstName" type="string" name="firstName" />
+        </label> 
+        <label for="surname"> Surname
+        <input id="surname" type="string" name="surname" /> 
+        </label>
+        <label for ="email"> Email
+        <input id="email" type="string" name= "email" /> 
+        </label>
+        <label for="checkInDate"> Check in Date
+        <input id="checkInDate" type="string" name= "checkInDate" /> 
+        </label>
+        <label for="checkOutDate">Check out Date
+        <input id ="checkOutDate "type="string" name= "checkOutDate" /> 
+        </label>
+        <button type="submit" name="submit"> Book</button>
+        
+    </form>
+</body>
+</html>
