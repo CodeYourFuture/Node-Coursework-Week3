@@ -40,12 +40,12 @@ app.get("/bookings/search", (request, response) => {
   }
   const date = request.query.date;
   const bookingsIndDate = bookings.filter(
-    (booking) =>
+    ({ checkInDate, checkOutDate }) =>
       // new Date(booking.checkInDate) <= date &&
       // new Date(booking.checkOutDate) >= date
       moment(date).isBetween(
-        booking.checkInDate,
-        booking.checkOutDate
+        moment(checkInDate),
+        moment(checkOutDate)
       ) // true
   );
   bookingsIndDate.length === 0
