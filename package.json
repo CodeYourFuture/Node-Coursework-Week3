@@ -10,8 +10,11 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
+    "email-validator": "^2.0.4",
     "express": "^4.16.4",
-    "cors": "^2.8.5"
+    "lodash": "^4.17.21",
+    "moment": "^2.29.1"
   },
   "engines": {
     "node": "8.x"
