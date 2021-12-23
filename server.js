@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 
 const app = express();
 
@@ -19,6 +20,24 @@ app.get("/", function (request, response) {
 //Read all bookings
 app.get("/bookings", function (req, res) {
   res.status(200).send(bookings);
+});
+
+// Level 3 search by date `/bookings/search?date=2019-05-20`
+app.get(`/bookings/search`, (req,res) => {
+  const date = moment(req.query.date).format('YYYY MM DD');
+  console.log(date);
+  const index = bookings.findIndex(
+    (booking) =>
+      moment(booking.checkInDate).format("YYYY MM DD") === date ||
+      moment(booking.checkOutDate).format("YYYY MM DD") === date
+  );
+  console.log(index)
+  
+  if (index === -1){
+    res.status(404).send("The date is not found")
+  }else {
+    res.status(200).send(bookings[index]);
+  }
 });
 
 // Read one booking, specified by an ID
@@ -88,6 +107,7 @@ app.delete("/bookings/:id", function (req, res) {
     res.status(201).send("The id has been deleted")
   }
 });
+
 
 const listener = app.listen(3002, function () {
   console.log("Your app is listening on port " + listener.address().port);
