@@ -22,16 +22,33 @@ app.get("/bookings", function (req, res) {
 });
 
 // Level 3 search by date `/bookings/search?date=2019-05-20`
-app.get(`/bookings/search`, (req, res) => {
-  const date = moment(req.query.date).format("YYYY MM DD");
-  console.log(date);
-  const index = bookings.findIndex(
-    (booking) =>
-      moment(booking.checkInDate).format("YYYY MM DD") === date ||
-      moment(booking.checkOutDate).format("YYYY MM DD") === date
-  );
-  console.log(index);
+// app.get(`/bookings/search`, (req, res) => {
+//   const date = moment(req.query.date).format("YYYY MM DD");
+//   // console.log("Query" + " " + Object.keys(req.query));
+//   console.log("Query" + " " + req.query[Object.keys(req.query)]);
+//   const index = bookings.findIndex(
+//     (booking) =>
+//       moment(booking.checkInDate).format("YYYY MM DD") === date ||
+//       moment(booking.checkOutDate).format("YYYY MM DD") === date
+//   );
+//   console.log(index);
 
+//   if (index === -1) {
+//     res.status(404).send("The date is not found");
+//   } else {
+//     res.status(200).send(bookings[index]);
+//   }
+// });
+
+// app.get("/bookings", function (req, res) {
+//   res.status(200).send(bookings);
+// });
+
+// Level 5 (Optional, easy) - free-text search
+app.get(`/bookings/search`, (req, res) => {
+  const term = req.query[Object.keys(req.query)];
+  const index = bookings.findIndex(booking => booking.firstName.includes(term) || booking.surname.includes(term) || booking.email.includes(term))
+  console.log(index)
   if (index === -1) {
     res.status(404).send("The date is not found");
   } else {
