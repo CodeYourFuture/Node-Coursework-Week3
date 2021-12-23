@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
+const validator = require("email-validator");
 
 const app = express();
 
@@ -14,8 +15,6 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
-
-
 // TODO add your routes and helper functions here
 //Read all bookings
 app.get("/bookings", function (req, res) {
@@ -23,19 +22,19 @@ app.get("/bookings", function (req, res) {
 });
 
 // Level 3 search by date `/bookings/search?date=2019-05-20`
-app.get(`/bookings/search`, (req,res) => {
-  const date = moment(req.query.date).format('YYYY MM DD');
+app.get(`/bookings/search`, (req, res) => {
+  const date = moment(req.query.date).format("YYYY MM DD");
   console.log(date);
   const index = bookings.findIndex(
     (booking) =>
       moment(booking.checkInDate).format("YYYY MM DD") === date ||
       moment(booking.checkOutDate).format("YYYY MM DD") === date
   );
-  console.log(index)
-  
-  if (index === -1){
-    res.status(404).send("The date is not found")
-  }else {
+  console.log(index);
+
+  if (index === -1) {
+    res.status(404).send("The date is not found");
+  } else {
     res.status(200).send(bookings[index]);
   }
 });
@@ -43,11 +42,11 @@ app.get(`/bookings/search`, (req,res) => {
 // Read one booking, specified by an ID
 app.get("/bookings/:id", function (req, res) {
   const bookingId = req.params.id;
-  const index = bookings.findIndex(booking => booking.id == bookingId)
+  const index = bookings.findIndex((booking) => booking.id == bookingId);
   console.log(index);
-  if (index === -1){
-    res.status(404).send("Bad Request")
-  }else {
+  if (index === -1) {
+    res.status(404).send("Bad Request");
+  } else {
     res.status(200).json(bookings[index]);
   }
 });
@@ -57,9 +56,9 @@ app.post("/bookings", function (req, res) {
   const id = bookings.length + 1;
   const title = req.body.title;
   const firstName = req.body.firstName;
-  const surname = req.body.surname; 
+  const surname = req.body.surname;
   const email = req.body.email;
-  const roomId = req.body.roomId; 
+  const roomId = req.body.roomId;
   const checkInDate = req.body.checkInDate;
   const checkOutDate = req.body.checkOutDate;
   if (
@@ -79,6 +78,13 @@ app.post("/bookings", function (req, res) {
     checkOutDate.length === 0
   ) {
     res.status(400).send("Some information is missing");
+  } else if (!validator.validate(email)) {
+    res.status(400).send("Email is not valid");
+  } else if (
+    moment(checkInDate).format("YYYY MM DD") >
+    moment(checkOutDate).format("YYYY MM DD")
+  ) {
+    res.status(400).send("checkOutDate should be after checkInDate");
   } else {
     const newBooking = {
       id: id,
@@ -100,14 +106,13 @@ app.delete("/bookings/:id", function (req, res) {
   const deleteId = req.params.id;
   const index = bookings.findIndex((booking) => booking.id == deleteId);
   // console.log(index);
-  if (index === -1 ){
-    res.status(404).send("The id is not found")
-  }else{
-    bookings.splice(index, 1)
-    res.status(201).send("The id has been deleted")
+  if (index === -1) {
+    res.status(404).send("The id is not found");
+  } else {
+    bookings.splice(index, 1);
+    res.status(201).send("The id has been deleted");
   }
 });
-
 
 const listener = app.listen(3002, function () {
   console.log("Your app is listening on port " + listener.address().port);
