@@ -45,7 +45,11 @@ app.post('/bookings', (req, res) => {
 		res.status(201).send(bookings);
 	}
 });
-
+app.get('/bookings/search', (req, res) => {
+	// let date = req.query.date;
+	console.log('ss');
+	res.status(200).send('s');
+});
 app.get('/bookings/:id', (req, res) => {
 	const id = req.params.id;
 	let requestedPerson = bookings.find((booking) => booking.id == id);
@@ -67,11 +71,6 @@ app.delete('/bookings/:id', (req, res) => {
 	}
 });
 
-app.get('/bookings/search', (req, res) => {
-	// let date = req.query.date;
-	console.log('ss');
-	res.status(200).send('s');
-});
 app.get('/bookings/a', (req, res) => {
 	// let date = req.query.date;
 	console.log('ss');
