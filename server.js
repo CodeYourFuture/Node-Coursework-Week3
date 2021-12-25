@@ -1,7 +1,14 @@
 const express = require('express');
 const cors = require('cors');
 const uuid = require('uuid');
-const moment = require('moment');
+
+// Dayjs
+const dayjs = require('dayjs');
+const isSameOrAfter = require('dayjs/plugin/isSameOrAfter');
+const isSameOrBefore = require('dayjs/plugin/isSameOrBefore');
+dayjs.extend(isSameOrAfter);
+dayjs.extend(isSameOrBefore);
+// Dayjs
 
 const app = express();
 
@@ -45,11 +52,18 @@ app.post('/bookings', (req, res) => {
 		res.status(201).send(bookings);
 	}
 });
+
 app.get('/bookings/search', (req, res) => {
-	// let date = req.query.date;
-	console.log('ss');
-	res.status(200).send('s');
+	const date = req.query.date;
+	let dateMatch = bookings.filter((booking) => {
+		return (
+			dayjs(date).isSameOrAfter(booking.checkInDate) &&
+			dayjs(date).isSameOrBefore(booking.checkOutDate)
+		);
+	});
+	res.status(200).json(dateMatch);
 });
+
 app.get('/bookings/:id', (req, res) => {
 	const id = req.params.id;
 	let requestedPerson = bookings.find((booking) => booking.id == id);
@@ -69,12 +83,6 @@ app.delete('/bookings/:id', (req, res) => {
 		bookings = newBookings;
 		res.status(200).send(bookings);
 	}
-});
-
-app.get('/bookings/a', (req, res) => {
-	// let date = req.query.date;
-	console.log('ss');
-	res.status(200).send('s');
 });
 
 // TODO add your routes and helper functions here
