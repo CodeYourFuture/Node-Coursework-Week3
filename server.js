@@ -10,6 +10,10 @@ dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
 // Dayjs
 
+// Email-validator
+const validator = require('email-validator');
+// Email-validator
+
 const app = express();
 
 app.use(express.json());
@@ -38,8 +42,14 @@ app.post('/bookings', (req, res) => {
 		req.body.checkOutDate.length === 0
 	) {
 		res.status(400).send('Please fill out all the fields');
+	} else if (!validator.validate(req.body.email)) {
+		res.status(400).send('Please check your email');
+	} else if (
+		!dayjs(req.body.checkOutDate).isAfter(req.body.checkInDate, 'day')
+	) {
+		res.status(400).send('Please check your check-in and check-out dates');
 	} else {
-		bookings.push({
+		let newBooking = {
 			id: uuid.v4(),
 			title: req.body.title,
 			firstName: req.body.firstName,
@@ -48,20 +58,39 @@ app.post('/bookings', (req, res) => {
 			roomId: req.body.roomId,
 			checkInDate: req.body.checkInDate,
 			checkOutDate: req.body.checkOutDate,
-		});
-		res.status(201).send(bookings);
+		};
+		bookings.push(newBooking);
+		res.status(201).json(newBooking.id);
 	}
 });
 
 app.get('/bookings/search', (req, res) => {
+	// Searchng by date
 	const date = req.query.date;
-	let dateMatch = bookings.filter((booking) => {
-		return (
-			dayjs(date).isSameOrAfter(booking.checkInDate) &&
-			dayjs(date).isSameOrBefore(booking.checkOutDate)
-		);
-	});
-	res.status(200).json(dateMatch);
+	if (date) {
+		let dateMatch = bookings.filter((booking) => {
+			return (
+				dayjs(date).isSameOrAfter(booking.checkInDate) &&
+				dayjs(date).isSameOrBefore(booking.checkOutDate)
+			);
+		});
+		res.status(200).json(dateMatch);
+		return;
+	}
+
+	// Searchng by keyword
+	const term = req.query.term;
+	if (term) {
+		let termMatch = bookings.filter((booking) => {
+			return (
+				booking.email.includes(term) ||
+				booking.firstName.includes(term) ||
+				booking.surname.includes(term)
+			);
+		});
+		res.status(200).json(termMatch);
+		return;
+	}
 });
 
 app.get('/bookings/:id', (req, res) => {

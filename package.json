@@ -13,6 +13,7 @@
 	"dependencies": {
 		"cors": "^2.8.5",
 		"dayjs": "^1.10.7",
+		"email-validator": "^2.0.4",
 		"express": "^4.16.4",
 		"moment": "^2.29.1",
 		"nodemon": "^2.0.15",
