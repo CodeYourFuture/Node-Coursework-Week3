@@ -16,21 +16,21 @@ Please complete the details below this message
 
 # Your Details
 
-- Your Name:
-- Your City:
-- Your Slack Name:
+- Your Name: Fareedh Yawe
+- Your City: Glasgow
+- Your Slack Name: Fareedh yawe
 
 # Homework Details
 
-- Module:
-- Week:
+- Module: Node
+- Week:3
 
 # Notes
 
-- What did you find easy?
+- What did you find easy? Handler functions
 
-- What did you find hard?
+- What did you find hard? js methods
 
-- What do you still not understand?
+- What do you still not understand? app.use(cors())
 
 - Any other notes?
