@@ -1,6 +1,7 @@
 const { request, response } = require("express");
 const express = require("express");
 const cors = require("cors");
+const { uuid } = require("uuidv4");
 
 const app = express();
 app.use(express.json());
@@ -23,6 +24,34 @@ app.get("/bookings/id/:id",(request,response)=>{
     ? response.status(404).send("Please specify a bookings")
     : response.status(200).json(booking);
 })
+
+app.post('/bookings', (request, response) => {
+   let newBooking = request.body;
+   if(
+     request.body.title === "" ||
+     request.body.firstName === "" ||
+     request.body.surname === "" ||
+     request.body.email === "" ||
+     request.body.roomId === "" ||
+     request.body.checkInDate === "" ||
+     request.body.checkOutDate === "" 
+   )
+     {response.status(400).send(
+       {
+        result: "failure",
+        message: "Booking could not be saved"
+       }
+      );
+     }
+   else
+     {
+     const newId = 1 + Math.max(...bookings.map((booking) => Number(booking.id)));
+     Object.assign(newBooking, { id: newId });  
+		 bookings.push(newBooking);
+		 response.status(200).send({ id: newBooking.id });
+     }
+   });
+
 
 app.delete("/bookings/id/:id",(request,response)=>{
   const booking = bookings.find(
