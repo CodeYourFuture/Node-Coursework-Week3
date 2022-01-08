@@ -10,8 +10,9 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.16.4",
-    "cors": "^2.8.5"
+    "uuidv4": "^6.2.12"
   },
   "engines": {
     "node": "8.x"
