@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href= "style.css">
+    <title>Document</title>
+  </head>
+  <body>
+   <h1>Booking Form</h1>
+  
+    <form action="/bookings" method="post">
+      <!-- Customer Id<input type="number" name="id" /> Room id<input
+        type="number"
+        name="roomId"
+      /> -->
+      Title<input type="text" name="title" />
+      <br/>
+      <br/> First Name<input
+        type="text"
+        name="firstName"
+      />
+      <br/>
+      <br/>
+      Second Name<input type="text" name="secondName" />
+      <br/>
+      <br/> Email<input
+        type="text"
+        name="email"
+      />
+      <br/>
+      <br/>
+      Check-in Date<input type="date" name="checkInDate" /> 
+      <br/>
+      <br/>Check-out Date<input
+        type="date"
+        name="checkOutDate"
+      />
+      <br/>
+      <br/>
+
+      <button type="submit">Submit</button>
+     
+    </form>
+    <br/>
+    <br/>
+     <a href="/bookings">All Bookings</a>
+  </body>
+</html>

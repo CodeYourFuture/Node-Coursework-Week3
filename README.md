@@ -8,7 +8,7 @@ In the advanced part of this exercise you will modify your React hotel app which
 
 We also provide a basic React front-end to allow you to test some of the functionality.
 
-### Requirements
+### Pre-reqs
 
 You should have completed at least Level 1-3 of the Chat Server challenge before attempting this challenge.
 
@@ -57,17 +57,13 @@ Each booking is an object with the following properties:
 
 - The `id` field must be assigned on the server, not by the client.
 
-## Want to run your code on the internet?
+# Start by remixing our example server
 
-If you want to share your server with other people the easiest way to do this is to use Glitch
-
-- [ ] Make sure you're logged in to https://glitch.com/
-- [ ] Remix this server on glitch - https://glitch.com/~cyf-hotel-start
-- [ ] Name your new server `yourname-hotel-server`
-- [ ] Make sure you're logged in so that it saves
-- [ ] Check that it is working by making a request to `/`
-- [ ] Take time to read the comments
-- [ ] Copy the code you've written to Glitch
+1. Remix this server on glitch - https://glitch.com/~cyf-hotel-start
+1. Name your new server yourname-hotel-server
+1. Make sure you're logged in so that it saves permanently
+1. Check that it is working by making a request to /
+1. Take time to read the comments
 
 # Go ahead!
 
@@ -124,7 +120,7 @@ It should accept requests of the following format:
 
 `/bookings/search?term=jones`
 
-It should match if the term occurs in _any_ of `email`, `firstName`, or `surname` fields.
+It should match if the term occurs in *any* of `email`, `firstName`, or `surname` fields.
 
 # Level 6 (Optional) - make your React app use your new server
 
