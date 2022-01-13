@@ -38,6 +38,20 @@ app.post("/bookings", (req, res) => {
   }
 });
 
+app.get("/bookings/search?", (req, res) => {
+  //I'm  unsure how to span a between dates when the user only 
+  //puts in one date.
+  
+  //so for now this just returns any bookings that contain the
+  //date that was searched (be it check in or check out).
+  const foundBookings = bookings.filter(
+    (booking) =>
+      booking.checkInDate === req.query.date ||
+      booking.checkOutDate === req.query.date
+  );
+  res.json(foundBookings);
+});
+
 app.get("/bookings/:id", (req, res) => {
   const foundById = bookings.find((booking) => booking.id == req.params.id);
   if (foundById === undefined) {
@@ -57,7 +71,7 @@ app.delete("/bookings/:id", (req, res) => {
   }
 });
 
-app.get("/bookings/search?", (req, res) => {});
+
 
 //commented out for debugging - for some reason the port was random with every save
 // const listener = app.listen(process.env.PORT, function () {
