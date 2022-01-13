@@ -30,15 +30,19 @@ app.post("/bookings", (req, res) => {
     checkInDate: booking.checkInDate,
     checkOutDate: booking.checkOutDate,
   };
-  bookings.push(newBookingObj);
-  res.send("added new booking");
+  if (Object.values(newBookingObj).includes(undefined)) {
+    res.status(400).send("missing data in request body.");
+  } else {
+    bookings.push(newBookingObj);
+    res.send("added new booking");
+  }
 });
 
 app.get("/bookings/:id", (req, res) => {
   const foundById = bookings.find((booking) => booking.id == req.params.id);
-  if(foundById === undefined){
+  if (foundById === undefined) {
     res.status(404).send("could not find a booking matching the provided ID.");
-  }else{
+  } else {
     res.json(foundById);
   }
 });
@@ -47,8 +51,8 @@ app.delete("/bookings/:id", (req, res) => {
   const foundById = bookings.find((booking) => booking.id == req.params.id);
   if (foundById === undefined) {
     res.status(404).send("could not find a booking matching the provided ID.");
-  }else{
-    bookings = bookings.filter(booking => booking.id != req.params.id);
+  } else {
+    bookings = bookings.filter((booking) => booking.id != req.params.id);
     res.send(`deleted booking with id of ${req.params.id}`);
   }
 });
