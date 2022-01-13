@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-
+const validator = require("email-validator");
 const app = express();
 
 app.use(express.json());
@@ -30,9 +30,14 @@ app.post("/bookings", (req, res) => {
     checkInDate: booking.checkInDate,
     checkOutDate: booking.checkOutDate,
   };
+  //validation
+  const emailValid = validator.validate(req.body.email);
   if (Object.values(newBookingObj).includes(undefined)) {
     res.status(400).send("missing data in request body.");
+  }else if(!emailValid){
+    res.status(400).send("Invalid email");
   } else {
+    //booking is valid
     bookings.push(newBookingObj);
     res.send("added new booking");
   }
