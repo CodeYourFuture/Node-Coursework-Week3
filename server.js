@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
+const validator = require("email-validator");
 const app = express();
 
 app.use(express.json());
@@ -15,12 +16,10 @@ app.get("/", (req, res) => {
   res.json("Hotel booking server.  Ask for /bookings, etc.");
 });
 
-
 // get all bookings
 app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
-
 
 // adds a new booking
 app.post("/bookings", (req, res) => {
@@ -34,14 +33,16 @@ app.post("/bookings", (req, res) => {
     checkInDate: req.body.checkInDate,
     checkOutDate: req.body.checkOutDate,
   };
+  const validEmail = validator.validate(req.body.email);
   bookingNum++;
   !newBooking.title ||
   !newBooking.firstName ||
   !newBooking.surname ||
-  !newBooking.email ||
   !newBooking.roomId ||
   !newBooking.checkInDate ||
-  !newBooking.checkOutDate
+  !newBooking.checkOutDate ||
+  !validEmail ||
+  moment(newBooking.checkInDate).isAfter(moment(newBooking.checkOutDate))
     ? res.status(400).json({ msg: "Booking information incomplete" })
     : bookings.push(newBooking);
   res.status(200).json({
@@ -49,6 +50,19 @@ app.post("/bookings", (req, res) => {
   });
 });
 
+// search for a booking within a given time period
+app.get("/bookings/search", (req, res) => {
+  const startDate = req.query.start;
+  const endDate = req.query.end;
+  const filteredBookings = bookings.filter(
+    (booking) =>
+      moment(booking.checkInDate).isAfter(startDate) &&
+      moment(booking.checkInDate).isBefore(endDate)
+  );
+  res.json(filteredBookings);
+});
+
+// app.get()
 
 // get a booking by its id
 app.get("/bookings/:id", (req, res) => {
@@ -58,7 +72,6 @@ app.get("/bookings/:id", (req, res) => {
     ? res.status(200).json(bookingId)
     : res.status(404).json({ msg: "Booking not found" });
 });
-
 
 // deletes a booking
 app.delete("/bookings/:id", (req, res) => {
@@ -73,8 +86,6 @@ app.delete("/bookings/:id", (req, res) => {
     : bookings.splice(bookings.indexOf(deletedBooking[0]), 1);
   res.json({ msg: `Booking ${deletedId} deleted.` });
 });
-
-
 
 const listener = app.listen(3000, function () {
   console.log("Your app is listening on port " + listener.address().port);
