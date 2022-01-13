@@ -38,17 +38,19 @@ app.get("/bookings/:id", (req, res) => {
   const foundById = bookings.find((booking) => booking.id == req.params.id);
   if(foundById === undefined){
     res.status(404).send("could not find a booking matching the provided ID.");
+  }else{
+    res.json(foundById);
   }
-  res.json(foundById);
 });
 
 app.delete("/bookings/:id", (req, res) => {
   const foundById = bookings.find((booking) => booking.id == req.params.id);
   if (foundById === undefined) {
     res.status(404).send("could not find a booking matching the provided ID.");
+  }else{
+    bookings = bookings.filter(booking => booking.id != req.params.id);
+    res.send(`deleted booking with id of ${req.params.id}`);
   }
-  bookings = bookings.splice(req.params.id, 0);
-  res.send(`deleted booking with id of ${req.params.id}`);
 });
 
 app.get("/bookings/search?", (req, res) => {});
