@@ -62,7 +62,20 @@ app.get("/bookings/search", (req, res) => {
   res.json(filteredBookings);
 });
 
-// app.get()
+// search for a booking by search term
+app.get("/bookings/search", (req, res) => {
+  const searchTerm = req.query.term.toLowerCase();
+  console.log(searchTerm);
+  const bookingsCheck = bookings.filter((booking) => {
+    return (
+      booking.email.toLowerCase().includes(searchTerm) ||
+      booking.firstName.toLowerCase().includes(searchTerm) ||
+      booking.surname.toLowerCase().includes(searchTerm)
+    );
+  });
+  console.log(bookingsCheck);
+  res.json(bookingsCheck);
+});
 
 // get a booking by its id
 app.get("/bookings/:id", (req, res) => {
