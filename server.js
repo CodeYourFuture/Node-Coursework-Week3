@@ -8,6 +8,18 @@ app.use(cors());
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
+/* sends a response based on the length of the passed booking array
+  @param {array} booking - filtered booking array derived from bookings 
+  @returns {undefined} */
+const sendResponse = function (booking, res) {
+  booking.length === 0
+    ? res.status(404).json({
+        success: false,
+        message: `No booking was found.`,
+      })
+    : res.json({ success: true, booking });
+};
+
 app.get("/", (req, res) => {
   res.send("Hotel booking server.  Ask for /bookings, etc.");
 });
@@ -17,6 +29,7 @@ app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
+// serve an array of bookings based on a search term query. This query can match anything from within the object
 app.get("/bookings/search", (req, res) => {
   const { term } = req.query;
   if (!term)
@@ -32,12 +45,7 @@ app.get("/bookings/search", (req, res) => {
     }
   });
 
-  filteredBookings.length === 0
-    ? res.status(404).json({
-        success: false,
-        message: `No booking was found to be containing '${term}'`,
-      })
-    : res.json({ success: true, booking: filteredBookings });
+  sendResponse(filteredBookings, res);
 });
 
 // serve one booking using an ID
@@ -45,12 +53,7 @@ app.get("/bookings/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const filteredBooking = bookings.filter((booking) => booking.id === id);
 
-  filteredBooking.length === 0
-    ? res.status(404).json({
-        success: false,
-        message: `No booking with ID of ${id} was found`,
-      })
-    : res.json({ success: true, booking: filteredBooking });
+  sendResponse(filteredBooking, res);
 });
 
 const listener = app.listen(3000, () => {
