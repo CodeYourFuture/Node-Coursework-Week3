@@ -5,6 +5,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const validator = require("email-validator");
+const moment = require("moment");
+
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
@@ -75,25 +78,52 @@ app.delete("/bookings/:id", (req, res) => {
   });
 });
 
+/* simple validation on passed data
+  @param {var} value - value from the objects key/value pairs
+  @param {string} key - key from the objects key/value pairs 
+  @returns {boolean} */
+const validateData = function (value, key) {
+  switch (key) {
+    case "checkInDate":
+    case "checkOutDate":
+      if (!moment(value, "YYYY-MM-DD", true).isValid()) return false;
+      break;
+    // validate all the simple strings we have
+    case "title":
+    case "firstName":
+    case "surname":
+      if (!value.trim()) return false;
+      break;
+    case "email":
+      if (!validator.validate(value)) return false;
+      break;
+    case "roomId":
+      // has to be between 1 and (arbitrarily) 30
+      if (!(value > 0 && value <= 30)) return false;
+      break;
+    default:
+      // if any extra keys that we don't want are present in the payload
+      return false;
+  }
+  return true;
+};
+
 // create a new booking
 app.post("/bookings", (req, res) => {
   const payloadData = req.body;
 
   for (let key in payloadData) {
-    if (typeof payloadData[key] === "number") {
-      if (!payloadData[key]) {
-        return res.status(404).json({
-          success: false,
-          message: "Cannot make new booking as you are missing some data",
-        });
-      }
-    } else if (!payloadData[key].trim()) {
-      return res.status(404).json({
-        success: false,
-        message: "Cannot make new booking as you are missing some data",
-      });
+    if (validateData(payloadData[key], key)) {
+      continue;
+    } else {
+      console.log("some data was not valid");
+      return res
+        .status(404)
+        .json({ success: false, message: "some data was not valid" });
     }
   }
+
+  console.log("all data was valid");
 
   bookings.push({
     id: bookings.length === 0 ? 1 : bookings[bookings.length - 1].id + 1,
