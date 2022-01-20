@@ -50,11 +50,9 @@ app.post("/bookings", function (request, response) {
     new Date(`${request.body.checkOutDate}`) <=
     new Date(`${request.body.checkInDate}`)
   ) {
-    response
-      .status(400)
-      .json({
-        msg: "Check In Date can not be same or greater than Check Out Date",
-      });
+    response.status(400).json({
+      msg: "Check In Date can not be same or greater than Check Out Date",
+    });
   }
   bookings.push(newBooking);
   newBooking.id = bookings.indexOf(newBooking) + 1;
@@ -87,6 +85,25 @@ app.get("/bookings/search", function (request, response) {
       .json({ msg: `No booking related to date:${searchedDate} found ` });
   }
   return response.status(200).json(filteredBookings);
+});
+
+// Search for booking with Name or Email
+// Method: /bookings/search?term=jones
+app.get("/bookings/search", function (request, response) {
+  const searchTerm = request.query.term;
+  const filteredBookings = bookings.filter((booking) => {
+    return (
+      booking.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      booking.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      booking.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+  if (filteredBookings.length === 0) {
+    response
+      .status(400)
+      .json({ msg: `No booking found related to term ${searchTerm}` });
+  }
+  return response.json(filteredBookings);
 });
 
 // Get a booking with a specific ID
