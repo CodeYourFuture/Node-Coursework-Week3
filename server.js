@@ -1,4 +1,5 @@
 const express = require("express");
+const moment = require("moment");
 // const cors = require("cors");
 
 const app = express();
@@ -49,6 +50,27 @@ app.get("/bookings", function (request, response) {
   response.status(200).json(bookings);
 });
 
+// Search for booking with Date
+// Run this command to use moment (npm install moment --save)
+// https://momentjscom.readthedocs.io/en/latest/moment/05-query/06-is-between/
+app.get("/bookings/search", function (request, response) {
+  const searchedDate = new Date(request.query.date);
+
+  const filteredBookings = bookings.filter((booking) =>
+    moment(`${searchedDate}`).isBetween(
+      `${booking.checkInDate}`,
+      `${booking.checkOutDate}`
+    )
+  );
+
+  if (filteredBookings.length === 0) {
+    response
+      .status(400)
+      .json({ msg: `No booking related to date:${searchedDate} found ` });
+  }
+  response.status(200).json(filteredBookings);
+});
+
 // Get a booking with a specific ID
 app.get("/bookings/:id", function (request, response) {
   const requestedBooking = bookings.filter(
@@ -63,6 +85,7 @@ app.get("/bookings/:id", function (request, response) {
   }
 });
 
+// Delete a booking
 app.delete("/bookings/:id", function (request, response) {
   const bookingIndex = bookings.findIndex(
     (booking) => booking.id == request.params.id
@@ -78,8 +101,6 @@ app.delete("/bookings/:id", function (request, response) {
     });
   }
 });
-
-// Delete a booking
 
 // TODO add your routes and helper functions here
 const PORT = process.env.PORT || 5001;
