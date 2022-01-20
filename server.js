@@ -25,7 +25,19 @@ app.post("/bookings", function (request, response) {
     checkInDate: request.body.checkInDate,
     checkOutDate: request.body.checkOutDate,
   };
-
+  // Simple Validation
+  if (
+    !request.body.title ||
+    !request.body.firstName ||
+    !request.body.surname ||
+    !request.body.email ||
+    !request.body.checkInDate ||
+    !request.body.checkOutDate
+  ) {
+    response
+      .status(400)
+      .json({ msg: "Please fill in all the required fields!" });
+  }
   bookings.push(newBooking);
   newBooking.id = bookings.indexOf(newBooking) + 1;
   newBooking.roomId = newBooking.id + 5;
