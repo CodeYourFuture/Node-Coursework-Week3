@@ -99,7 +99,7 @@ In this case your server should return a status code of 400, and should NOT stor
 
 For this level your API must also allow a client to:
 
-Search for bookings which span a date (given by the client).
+Searchwhich span a date for bookings  (given by the client).
 
 It should accept requests of the following format:
 
