@@ -1,5 +1,6 @@
 const express = require("express");
 const moment = require("moment");
+const validator = require("email-validator");
 // const cors = require("cors");
 
 const app = express();
@@ -39,6 +40,22 @@ app.post("/bookings", function (request, response) {
       .status(400)
       .json({ msg: "Please fill in all the required fields!" });
   }
+  //npm install email-validator
+  if (!validator.validate(`${request.body.email}`)) {
+    response.status(400).json({
+      msg: `Invalid email address:${request.body.email}`,
+    });
+  }
+  if (
+    new Date(`${request.body.checkOutDate}`) <=
+    new Date(`${request.body.checkInDate}`)
+  ) {
+    response
+      .status(400)
+      .json({
+        msg: "Check In Date can not be same or greater than Check Out Date",
+      });
+  }
   bookings.push(newBooking);
   newBooking.id = bookings.indexOf(newBooking) + 1;
   newBooking.roomId = newBooking.id + 5;
@@ -51,24 +68,25 @@ app.get("/bookings", function (request, response) {
 });
 
 // Search for booking with Date
+// Method: /bookings/search?date=2019-05-20
 // Run this command to use moment (npm install moment --save)
 // https://momentjscom.readthedocs.io/en/latest/moment/05-query/06-is-between/
 app.get("/bookings/search", function (request, response) {
   const searchedDate = new Date(request.query.date);
 
-  const filteredBookings = bookings.filter((booking) =>
-    moment(`${searchedDate}`).isBetween(
+  const filteredBookings = bookings.filter((booking) => {
+    return moment(`${searchedDate}`).isBetween(
       `${booking.checkInDate}`,
       `${booking.checkOutDate}`
-    )
-  );
+    );
+  });
 
   if (filteredBookings.length === 0) {
     response
       .status(400)
       .json({ msg: `No booking related to date:${searchedDate} found ` });
   }
-  response.status(200).json(filteredBookings);
+  return response.status(200).json(filteredBookings);
 });
 
 // Get a booking with a specific ID
@@ -103,7 +121,7 @@ app.delete("/bookings/:id", function (request, response) {
 });
 
 // TODO add your routes and helper functions here
-const PORT = process.env.PORT || 5001;
+const PORT = process.env.PORT;
 const listener = app.listen(PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
