@@ -118,7 +118,7 @@ app.post("/bookings", (req, res) => {
     } else {
       console.log("some data was not valid");
       return res
-        .status(404)
+        .status(400)
         .json({ success: false, message: "some data was not valid" });
     }
   }
