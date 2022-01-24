@@ -20,18 +20,26 @@ app.get("/bookings", function (request, response) {
   response.status(200).json(bookings);
 });
 
-// Get a booking with a specific ID
-app.get("/bookings/:id", function (request, response) {
-  const requestedBooking = bookings.filter(
-    (booking) => booking.id == request.params.id
-  );
-  if (requestedBooking.length <= 0) {
-    response.status(404).json({
-      msg: `You have searched for an invalid id:${request.params.id}`,
-    });
-  } else {
-    response.status(200).json(requestedBooking);
+// Search for booking with Date
+// Method: /bookings/search?date=2019-05-20
+// Run this command to use moment (npm install moment --save)
+// https://momentjscom.readthedocs.io/en/latest/moment/05-query/06-is-between/
+app.get("/bookings/search", function (request, response) {
+  const searchedDate = new Date(request.query.date);
+
+  const filteredBookings = bookings.filter((booking) => {
+    return moment(`${searchedDate}`).isBetween(
+      `${booking.checkInDate}`,
+      `${booking.checkOutDate}`
+    );
+  });
+
+  if (filteredBookings.length === 0) {
+    response
+      .status(400)
+      .json({ msg: `No booking related to date:${searchedDate} found ` });
   }
+  response.status(200).json(filteredBookings);
 });
 
 // Search for booking with Name or Email
@@ -98,6 +106,20 @@ app.post("/bookings", function (request, response) {
   return response.json(bookings);
 });
 
+// Get a booking with a specific ID
+app.get("/bookings/:id", function (request, response) {
+  const requestedBooking = bookings.filter(
+    (booking) => booking.id == request.params.id
+  );
+  if (requestedBooking.length <= 0) {
+    response.status(404).json({
+      msg: `You have searched for an invalid id:${request.params.id}`,
+    });
+  } else {
+    response.status(200).json(requestedBooking);
+  }
+});
+
 // Delete a booking
 app.delete("/bookings/:id", function (request, response) {
   const bookingIndex = bookings.findIndex(
@@ -113,28 +135,6 @@ app.delete("/bookings/:id", function (request, response) {
       msg: `Booking with id:${request.params.id} has been deleted`,
     });
   }
-});
-
-// Search for booking with Date
-// Method: /bookings/search?date=2019-05-20
-// Run this command to use moment (npm install moment --save)
-// https://momentjscom.readthedocs.io/en/latest/moment/05-query/06-is-between/
-app.get("/bookings/search", function (request, response) {
-  const searchedDate = new Date(request.query.date);
-
-  const filteredBookings = bookings.filter((booking) => {
-    return moment(`${searchedDate}`).isBetween(
-      `${booking.checkInDate}`,
-      `${booking.checkOutDate}`
-    );
-  });
-
-  if (filteredBookings.length === 0) {
-    response
-      .status(400)
-      .json({ msg: `No booking related to date:${searchedDate} found ` });
-  }
-  return response.status(200).json(filteredBookings);
 });
 
 // TODO add your routes and helper functions here
