@@ -8,64 +8,53 @@ app.use(cors());
 
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
+const req = require("express/lib/request");
 
-app.get("/", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
-});
+// app.get("/", function (request, response) {
+//   response.send("Hotel booking server.  Ask for /bookings, etc.");
+// });
 
-app.get ("/bookings", function ( request ,response){
+app.get ("/", function ( request ,response){
 response.json(bookings);
 });
 
-app.get("/bookings/bookingId", function (request, response){
-  const bookingId = request.params.bookingId;
-  const booking = bookings.find(function (booking) {
-    return booking.bookingId === bookingId;
-      response.json(booking[0]);
-  });
-
-  app.put("/bookings/;bookingId", function (request, response) {
-    bookings.forEach((el, index) => {
-      if (el.id == request.params.bookingId) {
-        let newBooking = { ...el, ...request.body };
-        bookings[index] = newBooking;
-      }
-    });
-    response.json({ success: true });
-  });
-
-// TODO add your routes and helper functions here
-let Id = 1;
-app.post("/bookings", (request, response) => {
-  const bookings = {};
-  booking.id = Id;
-  booking.from = request.body.from;
-  booking.text = request.body.text;
-
-  if (booking.from != " " && booking.text != "") {
-    booking.push(booking);
-    Id = Id + 1;
-    save();
-    response.json({
-      status: "success",
-      booking: "request.body",
-    });
+app.post("/booking", (request, response) => {
+  const bookingId = request.body.id;
+  const booking = bookings.find((booking) => booking.id == bookingId);
+  if (booking) {
+    response.status(404).send({ message: "This booking already exists" });
   } else {
-    response.json(404);
+    bookings.push(request.body);
+    response.status(201).send();
   }
 });
 
-// app.get("/bookings/:bookingId", function (request, response) {
-//   let booking = bookings.filter((booking) => booking.id == request.params.bookingId);
+app.get("/bookings/:id", (request, response) =>{
+  const bookingId = request.params.id;
+  const booking = bookings.find((booking) => {
+    return booking.id == bookingId;
+  });
 
-//   response.json(booking[0]);
-// });
+  if (booking) {
+    response.send(booking);
+  } else {
+    response.status(404).send({ message: "Booking not found" });
+  }
+});
+  
+  app.delete("/bookings/:id", (request, response) => {
+   const bookingId = request.params.id;
+
+   bookings = bookings.filter((booking) => 
+      booking.id != request.params.id);
+  });
+      response.json(bookings);
+  
+
+const listener = app.listen(process.env.PORT, function () {
+  console.log("Your app is listening on port " + listener.address().port);
+});
 
 
 
-// If the booking to be read cannot be found by id, return a 404.
 
-// If the booking for deletion cannot be found by id, return a 404.
-
-// All booking content should be passed as JSON.
-app.listen(process.env.PORT)});
