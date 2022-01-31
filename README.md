@@ -99,7 +99,11 @@ In this case your server should return a status code of 400, and should NOT stor
 
 For this level your API must also allow a client to:
 
+<<<<<<< Updated upstream
 Search for bookings which span a date (given by the client).
+=======
+Search which span a date for bookings  (given by the client).
+>>>>>>> Stashed changes
 
 It should accept requests of the following format:
 

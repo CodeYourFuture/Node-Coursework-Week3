@@ -10,8 +10,14 @@
     "start": "node server.js"
   },
   "dependencies": {
+<<<<<<< Updated upstream
     "express": "^4.16.4",
     "cors": "^2.8.5"
+=======
+    "cors": "^2.8.5",
+    "express": "^4.17.2",
+    "moment": "^2.29.1"
+>>>>>>> Stashed changes
   },
   "engines": {
     "node": "8.x"
