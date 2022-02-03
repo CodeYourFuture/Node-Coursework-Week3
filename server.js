@@ -25,15 +25,20 @@ app.get("/bookings/:id", (req, res) => {
   if(booking) {
     res.status(200).send(booking);
   } else {
-    res.status(404).send({booking: "User not found"});
+    res.status(404).send({message: "User not found"});
   }
 })
 
 app.delete("/bookings/:id", (req, res) => {
  const bookingId = parseInt(req.params.id);
  let bookingIndex = bookings.findIndex(booking => booking.Id === bookingId);
- bookings.splice(bookingIndex, 1);
- res.send();
+ if(bookingIndex < 0) {
+   res.status(404).json({ message: "No Booking was found with this id"})
+ } else {
+  bookings.splice(bookingIndex, 1);
+  res.status(200).json({ message: "Booking was deleted"});
+ }
+ 
 })
 
 
@@ -48,8 +53,22 @@ app.post('/bookings', (req, res) => {
     checkInDate: req.body.checkInDate,
     checkOutDate: req.body.checkOutDate
   }
-  bookings.push(newBooking);
-  res.json(bookings);
+if(
+    newBooking.title &&
+    newBooking.firstName &&
+    newBooking.surname &&
+    newBooking.email &&
+    newBooking.roomId &&
+    newBooking.checkInDate &&
+    newBooking.checkOutDate
+  ) {
+    bookings.push(newBooking);
+    res.status(200).json({ message: "The new booking is added successfully" });
+  } else {
+    res.status(404).json({
+      message: "Title, FirstName, Surname, Email, RoomId, CheckInDate and CheckOutDate is required",
+    });
+  }
 })
 
 
