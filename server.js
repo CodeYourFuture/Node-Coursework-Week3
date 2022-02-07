@@ -21,10 +21,10 @@ app.get("/bookings", function (request, response) {
 });
 
 // Search for booking with Date
-// Method: /bookings/search?date=2019-05-20
+// Method: bookings/searchDate?date=2017-11-22
 // Run this command to use moment (npm install moment --save)
 // https://momentjscom.readthedocs.io/en/latest/moment/05-query/06-is-between/
-app.get("/bookings/search", function (request, response) {
+app.get("/bookings/searchDate", function (request, response) {
   const searchedDate = new Date(request.query.date);
 
   const filteredBookings = bookings.filter((booking) => {
@@ -138,7 +138,7 @@ app.delete("/bookings/:id", function (request, response) {
 });
 
 // TODO add your routes and helper functions here
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5001;
 const listener = app.listen(PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
