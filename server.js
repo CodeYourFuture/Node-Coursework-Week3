@@ -20,50 +20,38 @@ app.get("/", function (req, res) {
 // TODO add your routes and helper functions here
 
 app.post("/bookings", function (request, response) {
-  const { roomId, title, firstName, surName, email, checkInDate, checkOutDate } = request.body;
+  const { roomId, title, firstName, surname, email, checkInDate, checkOutDate } = request.body;
   const newBooking = {
-    // ...request.body,
     id: bookings[bookings.length - 1].id + 1,
     title,
     firstName,
-    surName,
+    surname,
     email,
     roomId,
     checkInDate,
     checkOutDate
   }
+  const date1 = moment(checkInDate);
+  const date2 = moment(checkOutDate);
+  let difDays = date2.diff(date1, 'days');
   if (
     !firstName ||
     !title ||
-    !surName ||
+    !surname ||
     !email ||
     !roomId ||
     !checkInDate ||
     !checkOutDate ||
-    !moment(checkOutDate).isSameOrAfter(checkInDate) ||
+    !(difDays && difDays > 0) ||
     !validator.validate(email)
   ) {
-    response.status(404).send(request.body);
+    response.status(404).send("please fill out everything correctly");
   } else {
-    //   // I had help with getting the id automatically generated
     bookings.push(newBooking);
     response.status(200).json(bookings);
   }
 });
 
-app.get("/bookings", function (_, response) {
-  response.send(bookings);
-});
-
-app.get('/bookings/:id', (req, res) => {
-  const bookingById = bookings.filter(booking => booking.id === Number(req.params.id));
-
-  if (bookingById.length > 0) {
-    res.status(200).send(...bookingById)
-  } else {
-    res.status(404).send('The is no booking with that ID');
-  }
-})
 
 app.delete('/bookings/:id', (req, res) => {
   const bookingToDelete = bookings.find(booking => booking.id === Number(req.params.id));
@@ -76,75 +64,36 @@ app.delete('/bookings/:id', (req, res) => {
   }
 });
 
-// app.delete("/bookings/:id", function (request, response) {
-//   let booking_to_delete;
-//   for (let i = 0; i < bookings.length; i++) {
-//     if (bookings[i].id == request.params.id) {
-//       booking_to_delete = bookings[i];
-//       bookings.splice(i, 1);
-//     }
-//   }
-//   // I needed help for the next line
-//   if (booking_to_delete) {
-//     response.send(booking_to_delete);
-//   } else {
-//     response.status(404).send(request.params.id);
-//   }
-// });
+app.get("/bookings/search", function (request, response) {
+  let { date, term } = request.query;
+  let searchInput = date
+    ? bookings.filter(d => moment(date).isSameOrAfter(d.checkInDate) || moment(date).isSameOrBefore(d.checkOutDate))
+    : searchTerm(term);
+  response.json(searchInput);
 
-// // I had help on L3
-// app.get("/bookings/search", function (request, response) {
-//   // I had help to get two search options into this route
-//   if (request.query.date) {
-//     let bookingsInDateRange = [];
-//     let date = request.query.date;
+})
 
-//     for (let bookingIndex in bookings) {
-//       let booking = bookings[bookingIndex];
-//       let checkInDate = booking["checkInDate"];
-//       let checkOutDate = booking["checkOutDate"];
-//       if (
-//         moment(date).isSameOrAfter(checkInDate) &&
-//         moment(date).isSameOrBefore(checkOutDate)
-//       ) {
-//         bookingsInDateRange.push(booking);
-//       }
-//     }
-//     response.send(bookingsInDateRange);
-//   } else if (request.query.term) {
-//     let term = request.query.term;
-//     term = term.toLowerCase();
-//     let foundBookings = searchBooking(term);
-//     response.send(foundBookings);
-//   }
-// });
+function searchTerm(filTerm) {
+  return bookings.filter(t => {
+    return t.firstName.toLowerCase().includes(filTerm.toLowerCase())
+      || t.surname.toLowerCase().includes(filTerm.toLowerCase())
+      || t.email.includes(filTerm.toLowerCase())
+  });
+}
 
-// const searchBooking = (term) => {
-//   let searchedArrayOfBookings = [];
-//   for (let booking of bookings) {
-//     const emailLowered = booking.email.toLowerCase();
-//     const firstNameLowered = booking.firstName.toLowerCase();
-//     const surnameLowered = booking.surname.toLowerCase();
-//     if (
-//       emailLowered.includes(term) ||
-//       firstNameLowered.includes(term) ||
-//       surnameLowered.includes(term)
-//     ) {
-//       searchedArrayOfBookings.push(booking);
-//     }
-//   }
-//   return searchedArrayOfBookings;
-// };
+app.get("/bookings", function (_, response) {
+  response.send(bookings);
+});
 
 app.get("/bookings/:id", function (request, response) {
-  let booking = bookings.find((booking) => booking.id == request.params.id);
-  if (booking) {
-    response.send(booking);
+  let bookingById = bookings.find((booking) => booking.id == request.params.id);
+  if (bookingById) {
+    response.send(bookingById);
   } else {
-    response.status(404).send(request.params.id);
+    response.status(404).send("The is no booking ID  with  " + request.params.id);
   }
 });
 
-const listener = app.listen(process.env.PORT || 3000, function () {
+const listener = app.listen(process.env.PORT || 5000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
