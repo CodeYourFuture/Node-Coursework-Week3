@@ -81,6 +81,18 @@ app.get('/bookings/search', (req, res) => {
     
 });
 
+//API must also allow a client to: Search for bookings which match a given search term
+//`/bookings/search?term=jones`
+app.get('/bookings/search', (req, res) => {
+  const {firstName, surname, email} = req.query;
+  const foundTerm = bookings.filter(
+    (booking) => firstName === booking.firstName || surname === booking.surname || email === booking.email
+      
+  );
+
+  res.send(foundTerm);
+});
+
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
