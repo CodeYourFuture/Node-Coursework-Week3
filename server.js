@@ -41,6 +41,11 @@ app.post("/bookings", function (req, res) {
   res.send(bookings);
 });
 
+// Read all bookings
+app.get("/bookings", function (req, res) {
+  res.send(bookings);
+});
+
 // TODO add your routes and helper functions here
 
 const listener = app.listen(process.env.PORT || 5001, function () {
