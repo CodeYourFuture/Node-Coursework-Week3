@@ -41,6 +41,16 @@ app.post("/bookings", function (req, res) {
   res.send(bookings);
 });
 
+// Read one booking, specified by an ID
+app.get("/bookings/:id", function (req, res) {
+  const booking = bookings.find((booking) => booking.id === parseInt(req.params.id));
+  if (!booking) {
+    res.status(404).send("Booking not found");
+  }
+  res.send(booking);
+});
+
+
 // Read all bookings
 app.get("/bookings", function (req, res) {
   res.send(bookings);
