@@ -50,6 +50,16 @@ app.get("/bookings/:id", function (req, res) {
   res.send(booking);
 });
 
+// Delete a booking, specified by an ID
+app.delete("/bookings/:id", function (req, res) {
+  const booking = bookings.find((booking) => booking.id === parseInt(req.params.id));
+  if (!booking) {
+    res.status(404).send("Booking not found");
+  }
+  const index = bookings.indexOf(booking);
+  bookings.splice(index, 1);
+  res.send(bookings);
+});
 
 // Read all bookings
 app.get("/bookings", function (req, res) {
