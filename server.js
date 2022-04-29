@@ -34,7 +34,7 @@ app.post("/bookings", function (req, res) {
     !newBooking.checkInDate ||
     !newBooking.checkOutDate
   ) {
-    res.status(400).send("Invalid data");
+    res.status(400).send("Please provide all required fields");
   }
   bookings.push(newBooking);
 
