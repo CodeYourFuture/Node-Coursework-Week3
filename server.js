@@ -119,12 +119,12 @@ const checkValidate = (req, res) => {
   return result
 }
 
-const isDateValid = (dateIn, dateOut) => {
-  const _dateIn = moment(dateIn)
-  const _dateOut = moment(dateOut)
-  return (
-    moment(_dateIn).isValid() &&
-    moment(_dateOut).isValid() &&
-    moment(_dateOut).isAfter(_dateIn)
-  )
-}
+// const isDateValid = (dateIn, dateOut) => {
+//   const _dateIn = moment(dateIn)
+//   const _dateOut = moment(dateOut)
+//   return (
+//     moment(_dateIn).isValid() &&
+//     moment(_dateOut).isValid() &&
+//     moment(_dateOut).isAfter(_dateIn)
+//   )
+// }
