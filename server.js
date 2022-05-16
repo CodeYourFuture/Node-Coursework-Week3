@@ -16,6 +16,8 @@ app.get("/", (req, res) => {
 });
 
 // TODO add your routes and helper functions here
+
+// Adds a new booking
 app.post("/bookings", (req, res) => {
   const newBooking = {
     id: req.body.id,
@@ -27,15 +29,27 @@ app.post("/bookings", (req, res) => {
     checkInDate: req.body.checkInDate,
     checkOutDate: req.body.checkOutDate,
   };
+
+  // Loops through and checks if something is missing in the object
+  for (let key in newBooking) {
+    if (!newBooking[key]) {
+      return res.status(400).send("Please enter all the information");
+    }
+  }
+
+  // If everything is present
   bookings.push(newBooking);
   res.json(bookings);
 });
 
+// Gets all the bookings
 app.get("/bookings", (req, res) => res.json(bookings));
 
+// Helper for finding a booking using it's id
 const findBooking = (id) =>
   bookings.find((booking) => booking.id === Number(id));
 
+// Finds a single booking
 app.get("/bookings/:id", (req, res) => {
   const id = req.params.id;
   if (findBooking(id)) {
@@ -45,10 +59,11 @@ app.get("/bookings/:id", (req, res) => {
   }
 });
 
+// Deletes a booking
 app.delete("/bookings/:id", (req, res) => {
   const id = req.params.id;
   if (findBooking(id)) {
-    const index = bookings.indexOf(findBooking(id));
+    const index = bookings.indexOf(findBooking(id)); // Gets the index of the booking using id if it exists in the array
     bookings.splice(index, 1);
     res.json(bookings);
   } else {
