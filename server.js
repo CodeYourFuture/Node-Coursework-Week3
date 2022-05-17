@@ -47,7 +47,10 @@ app.get("/bookings", (req, res) => res.json(bookings));
 
 app.get("/bookings/search", (req, res) => {
   const search = req.query.date;
-  const date = bookings.find((booking) => booking.checkInDate === search);
+  const date = bookings.find(
+    (booking) =>
+      booking.checkInDate === search || booking.checkOutDate === search
+  );
   res.json(date);
 });
 
