@@ -62,13 +62,21 @@ app.post("/bookings", (req, res) => {
 // Gets all the bookings
 app.get("/bookings", (req, res) => res.json(bookings));
 
+// Search
 app.get("/bookings/search", (req, res) => {
-  const search = req.query.date;
-  const date = bookings.find(
+  const date = req.query.date;
+  const term = req.query.term;
+
+  const result = bookings.filter(
     (booking) =>
-      booking.checkInDate === search || booking.checkOutDate === search
+      booking.checkInDate === date ||
+      booking.checkOutDate === date ||
+      booking.email.includes(term) ||
+      booking.firstName.includes(term) ||
+      booking.surname.includes(term)
   );
-  res.json(date);
+
+  res.json(result);
 });
 
 // Helper for finding a booking using it's id
