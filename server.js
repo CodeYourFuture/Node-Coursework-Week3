@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
+const emailValidator = require("email-validator");
 
 const app = express();
 
@@ -35,6 +37,21 @@ app.post("/bookings", (req, res) => {
     if (!newBooking[key]) {
       return res.status(400).send("Please enter all the information");
     }
+  }
+
+  // Check if the email id is valid
+  if (!emailValidator.validate(newBooking.email)) {
+    return res.status(400).send("Email not valid");
+  }
+
+  // Checks if the check in date and checkout dates are alright
+  if (
+    moment(newBooking.checkOutDate).diff(
+      moment(newBooking.checkInDate),
+      "days"
+    ) < 0
+  ) {
+    return res.status(400).send("Error, please check the dates");
   }
 
   // If everything is present
