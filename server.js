@@ -45,6 +45,12 @@ app.post("/bookings", (req, res) => {
 // Gets all the bookings
 app.get("/bookings", (req, res) => res.json(bookings));
 
+app.get("/bookings/search", (req, res) => {
+  const search = req.query.date;
+  const date = bookings.find((booking) => booking.checkInDate === search);
+  res.json(date);
+});
+
 // Helper for finding a booking using it's id
 const findBooking = (id) =>
   bookings.find((booking) => booking.id === Number(id));
