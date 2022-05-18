@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(cors());
 
 //Use this array as your (in-memory) data store.
-const bookings = require("./bookings.json");
+let bookings = require("./bookings.json");
 
 app.get("/", function (req, res) {
   res.send("Hotel booking server.  Ask for /bookings, etc.");
@@ -20,7 +20,7 @@ app.get("/", function (req, res) {
 app.post("/booking", (req, res) => {
   let { title, firstName, surname, email, roomId, checkInDate, checkOutDate } =
     req.body;
-
+  req.body.id = bookings.length + 1;
   bookings.push(req.body);
   res.send({ booking: "Booking is recorded successfully!" });
 });
@@ -37,6 +37,20 @@ app.get("/bookings/:id", (req, res) => {
   findById
     ? res.send(findById)
     : res.status(404).send("Booking can not found!");
+});
+
+//Delete a booking, specified by an ID
+app.delete("/bookings/:id", (req, res) => {
+  const bookingId = Number(req.params.id);
+  const checkIfBookingExist = bookings.find(
+    (booking) => booking.id === bookingId
+  );
+  if (checkIfBookingExist) {
+    bookings = bookings.filter((booking) => booking.id !== bookingId);
+    res.send(bookings);
+  } else {
+    res.status(404).send("Booking can not found!");
+  }
 });
 
 app.listen(3000, () => "app now listening on port 3000");
