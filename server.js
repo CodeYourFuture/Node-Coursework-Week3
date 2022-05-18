@@ -6,7 +6,6 @@ const PORT = 3000;
 
 app.use(express.json());
 app.use(cors());
-app.use(express.urlencoded());
 
 //Use this array as your (in-memory) data store.
 let bookings = require("./bookings.json");
@@ -23,8 +22,29 @@ const listener = app.listen(PORT, function () {
 
 // Create a new booking
 let idCounter = bookings.length;
-
 app.post("/bookings", (request, response) => {
+  const {
+    title,
+    firstName,
+    surname,
+    email,
+    roomId,
+    checkInDate,
+    checkOutDate,
+  } = request.body;
+
+  if (
+    !title ||
+    !firstName ||
+    !surname ||
+    !email ||
+    !roomId ||
+    !checkInDate ||
+    !checkOutDate
+  ) {
+    return response.status(400).send("All fields must be completed.");
+  }
+
   bookings.push({
     id: ++idCounter,
     ...request.body,
