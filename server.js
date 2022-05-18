@@ -17,7 +17,6 @@ app.get("/", function (req, res) {
 // TODO add your routes and helper functions here
 
 //Create new booking
-
 app.post("/booking", (req, res) => {
   let { title, firstName, surname, email, roomId, checkInDate, checkOutDate } =
     req.body;
@@ -31,6 +30,4 @@ app.get("/bookings", (req, res) => {
   res.send(bookings);
 })
 
-const listener = app.listen(process.env.PORT, function () {
-  console.log("Your app is listening on port " + listener.address().port);
-});
+app.listen(3000, () => "app now listening on port 3000");
