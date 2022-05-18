@@ -21,13 +21,22 @@ app.post("/booking", (req, res) => {
   let { title, firstName, surname, email, roomId, checkInDate, checkOutDate } =
     req.body;
 
-   bookings.push(req.body);
-   res.send({booking:"Booking is recorded successfully!"})
+  bookings.push(req.body);
+  res.send({ booking: "Booking is recorded successfully!" });
 });
 
 //Read all bookings
 app.get("/bookings", (req, res) => {
   res.send(bookings);
-})
+});
+
+//Read one booking, specified by an ID
+app.get("/bookings/:id", (req, res) => {
+  const bookingId = Number(req.params.id);
+  const findById = bookings.find((booking) => booking.id === bookingId);
+  findById
+    ? res.send(findById)
+    : res.status(404).send("Booking can not found!");
+});
 
 app.listen(3000, () => "app now listening on port 3000");
