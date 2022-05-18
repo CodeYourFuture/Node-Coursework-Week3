@@ -1,4 +1,3 @@
-# Challenge: A Hotel Booking Server
 
 ### Overview: what is this challenge?
 
