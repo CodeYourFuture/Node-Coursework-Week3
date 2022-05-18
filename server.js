@@ -11,7 +11,7 @@ const bookings = require("./bookings.json");
 const { response } = require("express");
 
 app.get("/", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
+  response.json("Hotel booking server.  Ask for /bookings, etc.");
 });
 
 // TODO add your routes and helper functions here
@@ -22,13 +22,13 @@ app.get("/bookings/search", (req, res) => {
   const findDate = bookings.filter(
     (booking) => booking.checkInDate === req.query.searchDate
   );
-  res.send(findDate);
+  res.json(findDate);
 });
 
 //Search for bookings
 app.get("/bookings/search", (req, res)=>{
-  let filteredBookings = bookings.filter((booking)=>booking.firstName.includes(req.query.text));
-  res.send(filteredBookings);
+  let filteredBookings = bookings.filter((booking)=>booking.firstName.includes(req.query.term));
+  res.json(filteredBookings);
 })
 
 //Creat a new booking
@@ -53,15 +53,15 @@ app.post("/bookings", (req, res) => {
     !checkInDate ||
     !checkOutDate
   ) {
-    return res.status(404).send("Booking, not successful!");
+    return res.status(404).json("Booking, not successful!");
   }
   bookings.push({ id: id++, ...req.body});
-  return res.status(200).send("Booking successful!");
+  return res.status(200).json("Booking successful!");
 });
 
 //Read all bookings
 app.get("/bookings", (req, res) => {
-  res.send(bookings);
+  res.json(bookings);
 });
 
 //Read one booking, specified by an ID
@@ -69,8 +69,8 @@ app.get("/bookings/:id", (req, res) => {
   const findById = bookings.find(
     (booking) => booking.id === parseInt(req.params.id)
   );
-  if (!findById) res.status(404).send("Booking not found");
-  res.send(findById);
+  if (!findById) res.status(404).json("Booking not found");
+  res.json(findById);
 });
 
 //Delete a booking, specified by id
@@ -80,7 +80,7 @@ app.delete("/bookings/:id", (req, res) => {
   );
   bookings.splice(deleteById, 1);
   if (deleteById === -1) res.sendStatus(404);
-  res.sendStatus(200).send("Booking successfully deleted");
+  res.status(200).json("Booking successfully deleted");
 });
 
 const listener = app.listen(process.env.PORT || 3500, function () {
