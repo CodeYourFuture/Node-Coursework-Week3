@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-let id =6
+
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
@@ -14,14 +14,16 @@ app.get("/", (req, res) => {
   res.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
+let id =6
 app.post("/bookings", (req, res) => {
-  // res.send.apply("  ")
-  bookings.push({ ...req.body, "id": id++ });
-
-  console.log(bookings);
-  res.sendStatus(201)
-
+  const {title, firstName, surname, email, roomId, checkInDate, checkOutDate}= req.params
+  if (!title || !firstName || !surname || !email || !roomId || !checkInDate || !checkOutDate) {
+    return res.sendStatus(404);
+  }
+  bookings.push({ ...request.body, id: id++ });
+  return res.sendStatus(201);
 });
+
 
 app.get("/bookings", (req, res) => {
   res.send(bookings)
@@ -41,7 +43,7 @@ app.delete("/bookings/:id", (req, res) => {
    if (deleteById === -1) res.sendStatus(404);
   res.sendStatus(200).send();
   
-  });
+         });
 
 
 
