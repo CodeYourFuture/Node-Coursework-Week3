@@ -58,7 +58,7 @@ router.get("/:id", (req, res) => {
 });
 
 //create new booking
-//in Postman we should set header (content-type & application/json)
+
 router.post("/", (req, res) => {
   const {
     title,
