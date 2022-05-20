@@ -49,7 +49,7 @@ app.post("/bookings", (req, res) => {
     moment(newBooking.checkOutDate).diff(
       moment(newBooking.checkInDate),
       "days"
-    ) < 0
+    ) < 1
   ) {
     return res.status(400).send("Error, please check the dates");
   }
