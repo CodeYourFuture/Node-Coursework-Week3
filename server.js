@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 
 const app = express();
 
@@ -7,14 +8,65 @@ app.use(express.json());
 app.use(cors());
 
 //Use this array as your (in-memory) data store.
-const bookings = require("./bookings.json");
+let bookings = require("./bookings.json");
 
-app.get("/", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
+app.get("/", function (req, res) {
+  res.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
 // TODO add your routes and helper functions here
 
-const listener = app.listen(process.env.PORT, function () {
-  console.log("Your app is listening on port " + listener.address().port);
+//Create new booking
+app.post("/booking", (req, res) => {
+  let { title, firstName, surname, email, roomId, checkInDate, checkOutDate } =
+    req.body;
+  req.body.id = bookings.length + 1;
+  if (checkInDate >= checkOutDate) {
+    res.send("Check-out date should be later than check-In date");
+  } else if (
+    title.length > 0 &&
+    firstName.length > 0 &&
+    surname.length > 0 &&
+    email.length > 0 &&
+    typeof roomId == "number" &&
+    checkInDate.length > 0 &&
+    checkOutDate.length > 0
+  ) {
+    bookings.push(req.body);
+    res.send({ booking: "Booking is recorded successfully!" });
+  } else {
+    res.status(404).send("Please complete each part of the booking form!");
+  }
+});
+
+//Read all bookings
+app.get("/bookings", (req, res) => {
+  res.send(bookings);
+});
+
+//Read one booking, specified by an ID
+app.get("/bookings/:id", (req, res) => {
+  const bookingId = Number(req.params.id);
+  const findById = bookings.find((booking) => booking.id === bookingId);
+  findById
+    ? res.send(findById)
+    : res.status(404).send("Booking can not found!");
+});
+
+//Delete a booking, specified by an ID
+app.delete("/bookings/:id", (req, res) => {
+  const bookingId = Number(req.params.id);
+  const checkIfBookingExist = bookings.find(
+    (booking) => booking.id === bookingId
+  );
+  if (checkIfBookingExist) {
+    bookings = bookings.filter((booking) => booking.id !== bookingId);
+    res.send(bookings);
+  } else {
+    res.status(404).send("Booking can not found!");
+  }
+});
+
+app.listen(3001, () => {
+  console.log("app now listening on port 3001"), 3001;
 });
