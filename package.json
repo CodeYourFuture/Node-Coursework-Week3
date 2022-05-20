@@ -11,7 +11,8 @@
   },
   "dependencies": {
     "express": "^4.16.4",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "nodemon": "^2.0.16"
   },
   "engines": {
     "node": "8.x"
@@ -24,5 +25,7 @@
     "node",
     "glitch",
     "express"
-  ]
+  ],
+  "devDependencies": {},
+  "author": ""
 }
