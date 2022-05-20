@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-
+const moment = require("moment");
 const app = express();
 
 app.use(express.json());
@@ -14,21 +14,33 @@ app.get("/bookings/:bookingId", function (request, response) {
   const bookingIndex = bookings.findIndex(
     (booking) => booking.id !== Number(bookingId)
   );
+  response.json(bookings[bookingIndex]);
 });
 
 // TODO add your routes and helper functions here
 
 app.get("/bookings", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
+  response.send(bookings);
+});
+
+app.get("/bookings/search", function (request, response) {
+  const searchWord = request.query.term.toLowerCase();
+  const searchResults = bookings.filter(
+    ({ firstName, surname, email }) =>
+      firstName.toLowerCase().includes(searchResults) ||
+      surname.toLowerCase().includes(searchResults) ||
+      email.toLowerCase().includes(searchResults)
+  );
+  response.send(searchResults);
 });
 
 app.get("/", function (request, response) {
-  response.send();
+  response.send("The Hotel Booking Server, use /bookings");
 });
 
 //if can not get booking then return 404
 
-app.post("/", function (request, response) {
+app.post("/bookings", function (request, response) {
   const {
     title,
     firstName,
@@ -46,17 +58,16 @@ app.post("/", function (request, response) {
     email === undefined ||
     roomId === undefined ||
     checkInDate === undefined ||
-    checkOutDate === undefined ||
-    id === undefined
+    checkOutDate === undefined
   ) {
     const responseMiss = {
-      message: ` you are missing something `},
+      message: ` you are missing something here(e.g. title, email, check in date), please try again `,
     };
     return response.status(400).json(responseMiss);
   }
 
   const theBookingObject = {
-    id: messages.length,
+    id: bookings.length,
     title,
     firstName,
     surname,
@@ -65,7 +76,7 @@ app.post("/", function (request, response) {
     checkInDate,
     checkOutDate,
   };
-  messages.push(theBookingObject);
+  bookings.push(theBookingObject).json();
   response.json("You've POST a booking");
 });
 
