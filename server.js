@@ -21,8 +21,22 @@ app.post("/booking", (req, res) => {
   let { title, firstName, surname, email, roomId, checkInDate, checkOutDate } =
     req.body;
   req.body.id = bookings.length + 1;
-  bookings.push(req.body);
-  res.send({ booking: "Booking is recorded successfully!" });
+  if (checkInDate >= checkOutDate) {
+    res.send("Check-out date should be later than check-In date");
+  } else if (
+    title.length > 0 &&
+    firstName.length > 0 &&
+    surname.length > 0 &&
+    email.length > 0 &&
+    typeof roomId == "number" &&
+    checkInDate.length > 0 &&
+    checkOutDate.length > 0
+  ) {
+    bookings.push(req.body);
+    res.send({ booking: "Booking is recorded successfully!" });
+  } else {
+    res.status(404).send("Please complete each part of the booking form!");
+  }
 });
 
 //Read all bookings
@@ -53,4 +67,6 @@ app.delete("/bookings/:id", (req, res) => {
   }
 });
 
-app.listen(3001, () => {console.log("app now listening on port 3001"), 3001});
+app.listen(3001, () => {
+  console.log("app now listening on port 3001"), 3001;
+});
