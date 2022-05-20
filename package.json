@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "email-validator": "^2.0.4",
     "express": "^4.16.4",
     "moment": "^2.29.3"
   },
