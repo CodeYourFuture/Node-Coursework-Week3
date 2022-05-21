@@ -9,14 +9,6 @@ app.use(cors());
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
-app.get("/bookings/:bookingId", function (request, response) {
-  const { bookingId } = request.params;
-  const bookingIndex = bookings.findIndex(
-    (booking) => booking.id !== Number(bookingId)
-  );
-  response.json(bookings[bookingIndex]);
-});
-
 // TODO add your routes and helper functions here
 
 app.get("/bookings", function (request, response) {
@@ -36,6 +28,14 @@ app.get("/bookings/search", function (request, response) {
 
 app.get("/", function (request, response) {
   response.send("The Hotel Booking Server, use /bookings");
+});
+
+app.get("/bookings/:bookingId", function (request, response) {
+  const { bookingId } = request.params;
+  const bookingIndex = bookings.findIndex(
+    (booking) => booking.id !== Number(bookingId)
+  );
+  response.json(bookings[bookingIndex]);
 });
 
 //if can not get booking then return 404
@@ -76,7 +76,7 @@ app.post("/bookings", function (request, response) {
     checkInDate,
     checkOutDate,
   };
-  bookings.push(theBookingObject).json();
+  bookings.push(theBookingObject);
   response.json("You've POST a booking");
 });
 
@@ -86,7 +86,7 @@ app.delete("/", function (request, response) {
     (booking) => booking.id !== Number(bookingId)
   );
 
-  //if can delete booking then return 404
+  //if can not delete booking then return 404
   if (bookingIndex > -1) {
     response.json(bookings[bookingIndex]);
     bookings.splice(bookingIndex, 1);
