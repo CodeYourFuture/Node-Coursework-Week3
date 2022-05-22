@@ -38,10 +38,11 @@ app.post("/bookings", (request, response) => {
 
   const validEmail = emailValidation.validate(email);
   if (!validEmail) {
-    response.send("Please include a valid email")
-  }
-  if (!title || !firstName || !surname || !email || !roomId || !checkInDate || !checkOutDate) {
-    response.status(404).json({
+    return response.status(400).json({msg: "Please include a valid email"});
+  } else if (!moment(checkOutDate).isAfter(checkInDate)) {
+    return response.status(400).json({ msg: "Please check your dates, you cannot check out before you check in." });
+  } else if (!title || !firstName || !surname || !email || !roomId || !checkInDate || !checkOutDate) {
+    return response.status(400).json({
       msg: `Please include ${
         !newBooking.title
           ? "a title."
@@ -59,7 +60,7 @@ app.post("/bookings", (request, response) => {
         }.`,
       });
     } else {
-      (newBooking.id = count++), bookings.push(newBooking);
+    (newBooking.id = count++); bookings.push(newBooking);
       response.json("Booking Added");
     }
   });
@@ -75,7 +76,7 @@ app.post("/bookings", (request, response) => {
     } else if (isBetween.length > 0) {
       response.json(isBetween);
     } else {
-      response.send(`Sorry, no bookings could be found for the date ${dateSearched}`);
+      response.status(404).send(`Sorry, no bookings could be found for the date ${dateSearched}`);
     }
   });
   
