@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment")
+// import moment from "moment";
 
 const app = express();
 
@@ -7,7 +9,7 @@ app.use(express.json());
 app.use(cors());
 
 //Use this array as your (in-memory) data store.
-const bookings = require("./bookings.json");
+let bookings = require("./bookings.json");
 let count = bookings.length + 1;
 
 app.get("/", function (request, response) {
@@ -50,17 +52,29 @@ app.post("/bookings", (request, response) => {
           : !newBooking.checkInDate
           ? "a check in date."
           : !newBooking.checkOutDate && "a check out date"
-      }.`,
-    });
-  } else {
-    (newBooking.id = count++), bookings.push(newBooking);
-    response.json("Booking Added");
-  }
-});
-app.get("/bookings", (request, response) => {
-  response.send(bookings);
-});
-
+        }.`,
+      });
+    } else {
+      (newBooking.id = count++), bookings.push(newBooking);
+      response.json("Booking Added");
+    }
+  });
+  app.get("/bookings", (request, response) => {
+    response.send(bookings);
+  });
+  app.get("/bookings/search?", (request, response) => {
+    let dateSearched = request.query.date;
+    const isBetween = bookings.filter(booking => {return moment(dateSearched).isBetween(booking.checkInDate, booking.checkOutDate, undefined, "[]");
+    })
+    if ( dateSearched.length !== 10 || !dateSearched.match("\\d{4}-\\d{2}-\\d{2}")) {
+      response.send("Please enter a valid date with the format YYYY-MM-DD");
+    } else if (isBetween.length > 0) {
+      response.json(isBetween);
+    } else {
+      response.send(`Sorry, no bookings could be found for the date ${dateSearched}`);
+    }
+  });
+  
 app.get("/bookings/:id", (request, response) => {
   const findBooking = bookings.some((booking) => booking.id === Number(request.params.id));
   if (findBooking) {
@@ -73,13 +87,13 @@ app.get("/bookings/:id", (request, response) => {
 app.delete("/bookings/:id", (request, response) => {
   const findBooking = bookings.some((booking) => booking.id === Number(request.params.id));
   if (findBooking) {
-    bookingIndex = bookings.findIndex((booking) => booking.id === Number(request.params.id));
-    bookings.splice(bookingIndex, 1);
+    bookings = bookings.filter((booking) => booking.id !== Number(request.params.id));
     response.json({ msg: "Booking deleted successfully", bookings });
   } else {
     response.status(404).send(`Sorry, there is no booking with id ${request.params.id}`);
   }
 });
+
 
 const PORT = process.env.PORT || 7555;
 
