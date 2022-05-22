@@ -69,14 +69,25 @@ app.post("/bookings", (request, response) => {
   });
   app.get("/bookings/search?", (request, response) => {
     let dateSearched = request.query.date;
+    let termSearched = request.query.term;
     const isBetween = bookings.filter(booking => {return moment(dateSearched).isBetween(booking.checkInDate, booking.checkOutDate, undefined, "[]");
     })
-    if ( dateSearched.length !== 10 || !dateSearched.match("\\d{4}-\\d{2}-\\d{2}")) {
+    const includesTermSearched = bookings.filter(
+      (booking) => {return booking.firstName.includes(termSearched) || booking.surname.includes(termSearched) || booking.email.includes(termSearched)}
+    );
+    if (dateSearched) {
+      if (dateSearched.length !== 10 || !dateSearched.match("\\d{4}-\\d{2}-\\d{2}")) {
       response.send("Please enter a valid date with the format YYYY-MM-DD");
     } else if (isBetween.length > 0) {
       response.json(isBetween);
     } else {
       response.status(404).send(`Sorry, no bookings could be found for the date ${dateSearched}`);
+    }}
+    if (termSearched) {
+      if (includesTermSearched.length > 0) {
+        response.json(includesTermSearched)
+      } else response.status(404).send(`Sorry, no bookings could be found including the term ${termSearched}`)
+      
     }
   });
   
