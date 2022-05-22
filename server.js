@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment")
-// import moment from "moment";
+const emailValidation = require("nodejs-email-validation");
 
 const app = express();
 
@@ -36,6 +36,10 @@ app.post("/bookings", (request, response) => {
     checkOutDate,
   };
 
+  const validEmail = emailValidation.validate(email);
+  if (!validEmail) {
+    response.send("Please include a valid email")
+  }
   if (!title || !firstName || !surname || !email || !roomId || !checkInDate || !checkOutDate) {
     response.status(404).json({
       msg: `Please include ${
