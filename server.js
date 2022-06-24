@@ -60,8 +60,9 @@ app.post("/bookings", (request, response) => {
   return response.sendStatus(201);
 });
 
+// bookings api
 app.get("/bookings", (req, res) => {
-  res.send(bookings);
+  res.json(bookings);
 });
 
 // get bookings by ID
