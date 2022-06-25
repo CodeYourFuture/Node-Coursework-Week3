@@ -14,7 +14,9 @@
     "cors": "^2.8.5",
     "email-validator": "^2.0.4",
     "express": "^4.16.4",
-    "moment": "^2.29.3"
+    "moment": "^2.29.3",
+    "nanoid": "^4.0.0",
+    "pg": "^8.7.3"
   },
   "engines": {
     "node": "8.x"
