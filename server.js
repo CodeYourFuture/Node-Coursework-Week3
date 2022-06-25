@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 // const moment = require("moment");
 const app = express();
+const { Pool } = require("pg");
 
 app.use(express.json());
 app.use(cors());
@@ -60,9 +61,21 @@ app.post("/bookings", (request, response) => {
   return response.sendStatus(201);
 });
 
+//export DATABASE_URL=postgres://mohammad:8808@localhost:5432/cyf_hotels?sslmode=disable
+//export DATABASE_URL=postgres://nrbwnbfxjwtqna:466572b6529bb67e4ad9a605133e8cb3d49e07b04399e2b89fbea55fddde2398@ec2-54-77-40-202.eu-west-1.compute.amazonaws.com:5432/dc5jjgn7tuaqps
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+    rejectUnauthorized: false,
+  },
+});
+
 // bookings api
-app.get("/bookings", (req, res) => {
-  res.json(bookings);
+app.get("/customers", (req, res) => {
+  pool
+  .query('SELECT * FROM customers')
+  .then((result) => res.json(result.rows))
 });
 
 // get bookings by ID
@@ -82,8 +95,18 @@ app.delete("/bookings/:id", (req, res) => {
   deleteById === -1 ? res.sendStatus(404) : res.sendStatus(200).send();
 });
 
+
+// const pool = new Pool({
+//   user: "mohammad",
+//   host: "localhost",
+//   database: "cyf_ecommerce",
+//   password: "8808",
+//   port: 5432,
+// });
+
+
 // TODO add your routes and helper functions here
 
-const listener = app.listen(process.env.PORT || 3000, function () {
+const listener = app.listen(process.env.PORT || 9999, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
