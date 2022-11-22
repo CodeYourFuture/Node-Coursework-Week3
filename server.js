@@ -8,7 +8,7 @@ app.use(express.json());
 app.use(cors());
 
 //Use this array as your (in-memory) data store.
-const bookings = require("./bookings.json");
+let bookings = require("./bookings.json");
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
@@ -55,6 +55,24 @@ app.get("/bookings/:id", (req, res) => {
   } else {
     res.status(404).json({
       msg: `No booking with id ${bookingId} found`,
+    });
+  }
+});
+
+//delete bookings by ID
+
+app.delete("/bookings/:id", (req, res) => {
+  let bookingsId = parseInt(req.params.id);
+  let found = bookings.some((booking) => booking.id === bookingsId);
+  if (found) {
+    res.json(
+      (bookings = bookings.filter(
+        (booking) => booking.id !== bookingsId
+      ))
+    );
+  } else {
+    res.status(404).json({
+      msg: `No booking with the id of ${bookingsId} found`,
     });
   }
 });
