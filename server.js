@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const port = process.env.PORT || 3001;
 const moment = require("moment");
+const EmailSyntax = require("email-syntax").EmailSyntax;
 
 const app = express();
 
@@ -43,10 +44,11 @@ app.post("/bookings", (req, res) => {
     !newBooking.email ||
     !newBooking.checkInDate ||
     !newBooking.checkOutDate ||
+    !EmailSyntax.validate(newBooking.email) ||
     !ifBefore
   ) {
     res.status(400).json({
-      msg: "Please ensure that all fields have the required data and that the dates are set correctly",
+      msg: "Please ensure that all fields have the required data and that all dates are set correctly",
     });
   } else {
     bookings.push(newBooking);
