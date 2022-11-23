@@ -28,8 +28,13 @@ app.post("/bookings", (req, res) => {
     surname: req.body.surname,
     email: req.body.email,
     checkInDate: req.body.checkInDate,
-    checkOutDate: req.body.checkInDate,
+    checkOutDate: req.body.checkOutDate,
   };
+  // check if the checkInDate is not after the checkOutDate
+  const ifBefore = moment(newBooking.checkInDate).isBefore(
+    newBooking.checkOutDate
+  );
+
   if (
     !newBooking.roomId ||
     !newBooking.title ||
@@ -37,17 +42,19 @@ app.post("/bookings", (req, res) => {
     !newBooking.surname ||
     !newBooking.email ||
     !newBooking.checkInDate ||
-    !newBooking.checkOutDate
+    !newBooking.checkOutDate ||
+    !ifBefore
   ) {
-    res
-      .status(400)
-      .json({ msg: "Please fill in all required fields" });
+    res.status(400).json({
+      msg: "Please ensure that all fields have the required data and that the dates are set correctly",
+    });
+  } else {
+    bookings.push(newBooking);
+    res.json(bookings);
   }
-  bookings.push(newBooking);
-  res.send(bookings);
 }); // End of add a booking
 
-// Level 3
+// Level 3 Search List by date range
 app.get("/bookings/search", (req, res) => {
   const date = moment().format(req.query.date);
 
