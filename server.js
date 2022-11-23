@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const port = process.env.PORT || 3001;
+const moment = require("moment");
 
 const app = express();
 
@@ -45,6 +46,31 @@ app.post("/bookings", (req, res) => {
   bookings.push(newBooking);
   res.send(bookings);
 }); // End of add a booking
+
+// Level 3
+app.get("/bookings/search", (req, res) => {
+  const date = moment().format(req.query.date);
+
+  const found = bookings.some(
+    (item) =>
+      item.checkInDate.includes(date) ||
+      item.checkOutDate.includes(date)
+  );
+
+  if (found) {
+    res.json(
+      bookings.filter(
+        (booking) =>
+          booking.checkInDate.includes(date) ||
+          booking.checkOutDate.includes(date)
+      )
+    );
+  } else {
+    res.status(200).json({
+      msg: "No bookings found for specified date of " + date + ".",
+    });
+  }
+});
 
 // Read booking by ID
 app.get("/bookings/:id", (req, res) => {
