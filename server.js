@@ -15,22 +15,22 @@ app.get("/", function (request, response) {
 
 app.post("/bookings", (req, res) => {
 
-  const booking = {
-    "id": bookings.length,
-    "title": req.body.title,
-    "firstName": req.body.firstName,
-    "surname": req.body.surname,
-    "email": req.body.email,
-    "roomId": req.body.roomId,
-    "checkInDate": req.body.checkInDate,
-    "checkOutDate": req.body.checkOutDate
-  };
+  const { id, title, firstName, surname, email, roomId, checkInDate, checkOutDate } = req.body;
+  const booking = { id: bookings.length + 1, title, firstName, surname, email, roomId, checkInDate, checkOutDate };
 
+  if(Object.values(booking).every(v => v)) res.status(404);
+
+  bookings.push(booking);
   res.status(200).json(booking);
 })
 
 app.get("/bookings", (req, res) => {
   res.json(bookings);
+})
+
+app.get("/bookings/search", (req, res) => {
+  const date = req.query.date;
+  res.json(bookings.find(d => d.checkInDate === date || d.checkOutDate === date))
 })
 
 app.get("/bookings/:id", (req, res) => {
@@ -40,6 +40,7 @@ app.get("/bookings/:id", (req, res) => {
     res.status(404).json({ message: "unsuccessful" });
   }
 })
+
 
 app.delete("/bookings/:id", (req, res) => {
   if (bookings.some(b => b.id === req.params.id - "")) {
