@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const port = process.env.PORT || 3001
 
 const app = express();
 
@@ -50,6 +51,6 @@ app.delete('/bookings/delete/:id', (req, res) => {
 
 // TODO add your routes and helper functions here
 
-const listener = app.listen(3001, () => {
+const listener = app.listen(port, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });
