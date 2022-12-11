@@ -16,7 +16,11 @@ app.get("/", function (request, response) {
 // TODO add your routes and helper functions here
 
 //Create a new booking
-
+app.post("/bookings", function (request, response) {
+  let newBooking = request.body;
+  bookings.push(newBooking);
+  response.status(200).send(bookings);
+});
 // Read all bookings
 app.get("/bookings", function (request, response) {
   response.json(bookings);
