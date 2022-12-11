@@ -18,9 +18,24 @@ app.get("/", function (request, response) {
 //Create a new booking
 app.post("/bookings", function (request, response) {
   let newBooking = request.body;
-  bookings.push(newBooking);
-  response.status(200).send(bookings);
+  let testBooking = Object.values(newBooking).map((el, inx) => {
+    if ((!Number.isInteger(el) && el === null) || el === "") {
+      return false;
+    } else {
+      return true;
+    }
+  });
+
+  let validBooking = testBooking.every((el) => el);
+
+  if (validBooking) {
+    bookings.push(newBooking);
+    response.status(200).send(bookings);
+  } else {
+    response.status(404).send("Insufficient Information, please enter again");
+  }
 });
+
 // Read all bookings
 app.get("/bookings", function (request, response) {
   response.json(bookings);
@@ -30,12 +45,11 @@ app.get("/bookings", function (request, response) {
 app.get("/bookings/:id", function (request, response) {
   let id = parseInt(request.params.id);
   let booking = bookings.filter((el) => el.id === id);
-    if (booking) {
-     response.status(200).json(booking);
-    } else {
-      response.status(404).send("Incorrect ID, please enter again");
-    }
-  
+  if (booking) {
+    response.status(200).json(booking);
+  } else {
+    response.status(404).send("Incorrect ID, please enter again");
+  }
 });
 
 // Delete a booking, specified by an ID
