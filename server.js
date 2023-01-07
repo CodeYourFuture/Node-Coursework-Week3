@@ -1,4 +1,5 @@
 const express = require("express");
+const fs = require("fs");
 const cors = require("cors");
 // const crypto = require("crypto");
 
@@ -8,7 +9,8 @@ app.use(express.json());
 app.use(cors());
 
 //Use this array as your (in-memory) data store.
-const bookings = require("./bookings.json");
+let bookings = require("./bookings.json");
+// let data = JSON.parse(fs.readFileSync("data.json", "utf-8"));
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
@@ -40,6 +42,7 @@ app.post("/bookings", (req, res) => {
   };
   bookings.push(createdBooking);
   console.log(createdBooking);
+  save();
   res.status(201).json(createdBooking);
 });
 
@@ -68,10 +71,23 @@ app.delete("/bookings/:id", (req, res) => {
     return;
   }
   bookings.splice(foundBookingIndex, 1);
+  save();
   res.sendStatus(204);
 });
 
 // TODO add your routes and helper functions here
+
+// const save = () => {
+//   fs.writeFileSync("data.json", JSON.stringify(data, null, 2));
+// };
+
+const save = () => {
+  fs.writeFile("bookings.json", JSON.stringify(bookings, null, 2), function writeJSON(err) {
+    if (err) return console.log(err);
+    console.log(JSON.stringify(bookings));
+    console.log("writing to " + "bookings.json");
+  });
+};
 
 const listener = app.listen(process.env.PORT || 3000, function () {
   console.log("Your app is listening on port " + listener.address().port);
