@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Hotel Booking logger</title>
+  </head>
+  <body>
+    <h1>CYF Hotel</h1>
+    <h2>Create a new booking</h2>
+    <form action="/messages" method="post">
+      <p>
+
+  <label for="title">Title:</label>
+<select name="title">
+    <option value="">Select Title</option>
+    <option value="Mr">Mr</option>
+    <option value="Miss">Miss</option>
+    <option value="Mrs">Mrs</option>
+</select> <br />
+  First Name: <input type="text" name="firstName" placeholder="First Name" /> <br />
+  Surname: <input type="text" name="surname" placeholder="Surname" /> <br />
+  Email: <input type="text" name="email" placeholder="Email" /> <br />
+  Room Id: <input type="number" name="roomId" placeholder="Room Id no.:" /> <br />
+  Check in date: <input type="date" name="checkInDate" placeholder="Title" /> <br />
+  Check out date: <input type="date" name="checkOutDate" placeholder="Title" /> <br />
+  
+      </p>
+      <button type="submit">Send</button>
+    </form>
+
+    <a href="/bookings">See all bookings</a>
+  </body>
+</html>
