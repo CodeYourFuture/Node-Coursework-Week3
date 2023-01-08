@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 const fs = require("fs");
 
 const app = express();
@@ -91,12 +92,32 @@ app.delete("/bookings/:id", function (req, res) {
   res.send("Booking has been deleted ! ");
 });
 
+//search for bookings based on given date
+app.get("/bookings/search/date", function (req, res) {
+  const dateString = req.query.date;
+  const date = moment(dateString);
+  bookings.forEach((booking) => {
+    let checkInAsNumber = moment(booking.checkInDate);
+    let checkOutAsNumber = moment(booking.checkOutDate);
+    if (date.isBetween(checkInAsNumber, checkOutAsNumber)) {
+      res.send("Found!!!!!");
+      return
+    }
+    if(!date.isBetween(checkInAsNumber, checkOutAsNumber)){
+      res.sendStatus(404).send("Not Found!!!!")
+    }
+  });
+});
+
 //saving data to the database
 const save = () => {
   fs.writeFileSync("bookings.json", JSON.stringify(bookings, null, 2));
 };
 
 //listening for the server
-const listener = app.listen(process.env.PORT, function () {
-  console.log("Your app is listening on port " + listener.address().port);
-});
+// const listener = app.listen(process.env.PORT, function () {
+//   console.log("Your app is listening on port " + listener.address().port);
+// });
+app.listen(3000,()=>{
+  console.log("running on 3000");
+})
