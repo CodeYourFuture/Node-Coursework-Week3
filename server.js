@@ -115,9 +115,6 @@ const save = () => {
 };
 
 //listening for the server
-// const listener = app.listen(process.env.PORT, function () {
-//   console.log("Your app is listening on port " + listener.address().port);
-// });
-app.listen(3000,()=>{
-  console.log("running on 3000");
-})
+const listener = app.listen(process.env.PORT, function () {
+  console.log("Your app is listening on port " + listener.address().port);
+});
