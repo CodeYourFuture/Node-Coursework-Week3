@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
+const EmailSyntax = require("email-syntax").EmailSyntax;
 const port = process.env.PORT || 3001;
 
 const app = express();
@@ -44,7 +46,8 @@ let ifBefore = moment(newBooking.checkInDate).isBefore(
     !newBooking.email ||
     !newBooking.checkInDate ||
     !newBooking.checkOutDate ||
-    !ifBefore
+    !ifBefore ||
+    !EmailSyntax.validate(newBooking.email)
   ) {
     res.status(400).json({ msg: "Please fill in all fields and make sure all the dates are correct" });
   } else {
