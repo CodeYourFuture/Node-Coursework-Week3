@@ -16,11 +16,10 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
-
 // Create new booking
 app.post("/bookings", function (request, response) {
   for (const key in bookings[0]) {
-    if (!request.body[key]) {
+    if (!request.body[key] && key !== "id") {
       response.status(400).send("Please enter all fields");
     }
   }
