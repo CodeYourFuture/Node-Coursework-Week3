@@ -71,7 +71,32 @@ app.delete("/bookings/:id", (req, res) => {
   }
 });
 
+//Search by date
+app.get("/bookings/search", (req, res) => {
+  const date = moment().format(req.query.date);
+
+  const found = bookings.some(
+    (item) =>
+      item.checkInDate.includes(date) || item.checkOutDate.includes(date)
+  );
+
+  if (found) {
+    res.json(
+      bookings.filter(
+        (booking) =>
+          booking.checkInDate.includes(date) ||
+          booking.checkOutDate.includes(date)
+      )
+    );
+  } else {
+    res.status(200).json({
+      msg: "Bookings with this date not found" + date,
+    });
+  }
+});
+
 // const listener
+
 const listener = app.listen(port, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
