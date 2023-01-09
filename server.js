@@ -16,6 +16,14 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
+// Get all bookings
+app.get("/bookings", function (request, response) {
+  if (bookings.length <= 0) {
+    response.status(500).send("No Available Data");
+  }
+  response.json(bookings);
+});
+
 // Create new booking
 app.post("/bookings", function (request, response) {
   for (const key in bookings[0]) {
@@ -44,7 +52,7 @@ app.post("/bookings", function (request, response) {
   };
 
   bookings.push(newBooking);
-  response.json(bookings);
+  response.json(newBooking);
 });
 
 const listener = app.listen(process.env.PORT, function () {
