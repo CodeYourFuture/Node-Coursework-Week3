@@ -24,6 +24,17 @@ app.get("/bookings", function (request, response) {
   response.json(bookings);
 });
 
+// Get one booking by id
+app.get("/bookings/:id", function (request, response) {
+  let booking = bookings.find((elt) => elt.id == request.params.id);
+  if (booking) {
+    response.json(booking);
+  }
+  response
+    .status(400)
+    .send("No booking with Id: " + request.params.id + " is found");
+});
+
 // Create new booking
 app.post("/bookings", function (request, response) {
   for (const key in bookings[0]) {
