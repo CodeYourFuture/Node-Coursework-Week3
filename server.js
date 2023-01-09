@@ -1,5 +1,8 @@
 const express = require("express");
 const cors = require("cors");
+const uuid = require("uuid");
+const moment = require("moment");
+const validator = require("email-validator");
 
 const app = express();
 
@@ -13,7 +16,37 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
-// TODO add your routes and helper functions here
+
+// Create new booking
+app.post("/bookings", function (request, response) {
+  for (const key in bookings[0]) {
+    if (!request.body[key]) {
+      response.status(400).send("Please enter all fields");
+    }
+  }
+
+  if (validator.validate(request.body.email) === false) {
+    response.status(400).send("Please enter a valid email");
+  }
+
+  if (moment(request.body.checkInDate) > moment(request.body.checkOutDate)) {
+    response.status(400).send("Please enter a valid dates");
+  }
+
+  const newBooking = {
+    id: uuid.v4(),
+    roomId: request.body.roomId,
+    title: request.body.title,
+    firstName: request.body.firstName,
+    username: request.body.username,
+    email: request.body.email,
+    checkInDate: request.body.checkInDate,
+    checkOutDate: request.body.checkOutDate,
+  };
+
+  bookings.push(newBooking);
+  response.json(bookings);
+});
 
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
