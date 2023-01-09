@@ -31,6 +31,10 @@ app.post("/bookings", (req, res) => {
     checkInDate: req.body.checkInDate,
     checkOutDate: req.body.checkOutDate,
   };
+  //Rejected if checkoutDate is not after checkinDate
+let ifBefore = moment(newBooking.checkInDate).isBefore(
+  newBooking.checkOutDate
+);
 
   if (
     !newBooking.roomId ||
@@ -39,12 +43,17 @@ app.post("/bookings", (req, res) => {
     !newBooking.surname ||
     !newBooking.email ||
     !newBooking.checkInDate ||
-    !newBooking.checkOutDate
+    !newBooking.checkOutDate ||
+    !ifBefore
   ) {
-    res.status(400).json({ msg: "Please fill in all fields" });
+    res.status(400).json({ msg: "Please fill in all fields and make sure all the dates are correct" });
+  } else {
+    booking.push(newBooking);
+    res.json(bookings);
   }
-  bookings.push(newBooking);
-  res.send(bookings);
+
+  // bookings.push(newBooking);
+  // res.send(bookings);
 });
 
 //Read one booking, specified by an ID
@@ -94,6 +103,9 @@ app.get("/bookings/search", (req, res) => {
     });
   }
 });
+
+
+
 
 // const listener
 
