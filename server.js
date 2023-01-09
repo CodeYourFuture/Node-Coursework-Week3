@@ -96,17 +96,19 @@ app.delete("/bookings/:id", function (req, res) {
 app.get("/bookings/search/date", function (req, res) {
   const dateString = req.query.date;
   const date = moment(dateString);
+  let result = [];
   bookings.forEach((booking) => {
     let checkInAsNumber = moment(booking.checkInDate);
     let checkOutAsNumber = moment(booking.checkOutDate);
     if (date.isBetween(checkInAsNumber, checkOutAsNumber)) {
-      res.send("Found!!!!!");
-      return
-    }
-    if(!date.isBetween(checkInAsNumber, checkOutAsNumber)){
-      res.sendStatus(404).send("Not Found!!!!")
+      result.push(booking);
     }
   });
+  if (result.length === 0) {
+    res.sendStatus(404).send("Not found a match search");
+  } else {
+    res.send(result);
+  }
 });
 
 //saving data to the database

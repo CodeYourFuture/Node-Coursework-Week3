@@ -31,12 +31,12 @@
   },
   {
     "id": 4,
-    "title": "Mr",
-    "firstName": "Stevie",
-    "surname": "Wonder",
-    "email": "stevie@example.com",
-    "roomId": 6,
-    "checkInDate": "2017-12-25",
-    "checkOutDate": "2018-01-03"
+    "roomId": 5,
+    "title": "Ali",
+    "firstName": "Aretha",
+    "surname": "Franklin",
+    "email": "aretha@example.com",
+    "checkInDate": "2018-03-01",
+    "checkOutDate": "2018-04-09"
   }
 ]
