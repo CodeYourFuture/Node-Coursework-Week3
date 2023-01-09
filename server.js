@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
+const validator = require("email-validator");
 const fs = require("fs");
 
 const app = express();
@@ -27,6 +28,17 @@ app.post("/create/booking", function (req, res) {
   const email = req.body.email;
   const checkInDate = req.body.checkInDate;
   const checkOutDate = req.body.checkOutDate;
+  const isValidEmail = validator.validate(email);
+  if (!isValidEmail) {
+    res.status(400).send("Email is not valid");
+    return;
+  }
+  if (moment(checkInDate).isAfter(checkOutDate)) {
+    res
+      .status(400)
+      .send("Check in date is after check out date !! Correct them please");
+    return;
+  }
   if (
     !roomId ||
     !title ||

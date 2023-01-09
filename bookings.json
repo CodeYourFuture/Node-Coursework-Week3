@@ -38,5 +38,15 @@
     "email": "aretha@example.com",
     "checkInDate": "2018-03-01",
     "checkOutDate": "2018-04-09"
+  },
+  {
+    "id": 5,
+    "roomId": 5,
+    "title": "Feri",
+    "firstName": "Aretha",
+    "surname": "Franklin",
+    "email": "aretha@farzad.com",
+    "checkInDate": "2018-03-01",
+    "checkOutDate": "2018-04-09"
   }
 ]
