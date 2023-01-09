@@ -77,12 +77,35 @@ app.get("/bookings", function (request, response) {
 //read one booking based on ID
 app.get("/bookings/:id", function (req, res) {
   const queryId = Number(req.params.id);
+  const term = req.query.term;
+  const searchedTermResult = [];
   if (!queryId) {
-    res.send("Provide a Number, Please");
+    if (term) {
+      const result = bookings.map((booking) => {
+        if (
+          booking.title.includes(term) ||
+          booking.surname.includes(term) ||
+          booking.firstName.includes(term) ||
+          booking.email.includes(term)
+        ) {
+          searchedTermResult.push(booking);
+        }
+      });
+      if (searchedTermResult.length === 0) {
+        res.status(400).send("There is no match with your term");
+        return;
+      } else {
+        res.send(searchedTermResult);
+        return;
+      }
+    } else {
+      res.status(400).send("Provide a Number, Please");
+      return;
+    }
   }
-  const result = bookings.find((booking) => booking.id === queryId);
-  if (result) {
-    res.status(200).send(result);
+  const bookingSearchedResult = bookings.find((booking) => booking.id === queryId);
+  if (bookingSearchedResult) {
+    res.status(200).send(bookingSearchedResult);
   } else {
     res.status(404).send("Booking Does Not Exist In The DataBase");
   }
