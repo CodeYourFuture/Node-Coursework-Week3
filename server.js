@@ -35,9 +35,14 @@ app.post("/bookings", (req,res) => {
     "id": ++maxID, 
     body: req.body,
   }
-  bookings.push(newBooking);
-  res.status(200).json(newBooking)
-})
+
+  if(!req.body.roomId || !req.body.title || !req.body.firstName || !req.body.surname || !req.body.email || !req.body.checkInDate || !req.body.checkOutDate){
+    res.status(400).send("All fields are required to be entered");
+  } else{
+    bookings.push(newBooking);
+    res.status(200).json(newBooking)
+  }
+});
 
 // delete a booking
 app.delete("/bookings/:id", (req, res) => {
@@ -51,7 +56,7 @@ app.delete("/bookings/:id", (req, res) => {
 
   bookings.splice(bookingIndex, 1);
   res.send("booking deleted")
-})
+});
 
 
 const port = 3000;
