@@ -7,6 +7,7 @@ const validator = require("email-validator");
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 //Use this array as your (in-memory) data store.
