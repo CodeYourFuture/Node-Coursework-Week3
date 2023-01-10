@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const firstName = require("./bookings.json");
+const moment = require("moment"); 
 
 const app = express();
 
@@ -72,6 +73,7 @@ app.post("/bookings", (req, res) => {
   res.status(200).json(bookings);
     }
 });
+
 //(get booking by id) Read one booking, specified by an ID
 app.get("/bookings/:id", function (req, res) {
   let id = parseInt(req.params.id);
@@ -79,6 +81,20 @@ app.get("/bookings/:id", function (req, res) {
 
   res.send(filterBooking);
 });
+
+//(get booking by date) Read one booking, specified by date
+app.get("/bookings/search", function (req, res) {
+  const dateSt = req.query.date;
+  
+  let filterBookings = bookings.filter(
+    (elt) =>
+      !date ||
+      (moment(elt.checkInDate) <= moment(date) &&
+        moment(elt.checkOutDate) >= moment(date))
+  );
+
+});
+
 app.delete("/bookings/:id", function (req, res) {
   let id = parseInt(req.params.id); // int = integer
   bookings = bookings.filter((book) => book.id !== id); // take all the bookings except the passed id for delete and over write.
