@@ -63,8 +63,14 @@ app.post("/bookings", (req, res) => {
     checkInDate: checkInDate,
     checkOutDate: checkOutDate,
   };
+  //validation
+  if (!newBooking.title || !newBooking.roomId || !newBooking.firstName || !newBooking.surname || !newBooking.email ||
+    !newBooking.checkInDate || !newBooking.checkOutDate){
+       return res.status(400).json("Please complete the booking form");
+    } else {
   bookings.push(newBooking);
   res.status(200).json(bookings);
+    }
 });
 //(get booking by id) Read one booking, specified by an ID
 app.get("/bookings/:id", function (req, res) {
