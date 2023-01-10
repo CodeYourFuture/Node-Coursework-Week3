@@ -20,6 +20,22 @@ app.get("/bookings", (req, res) => {
   res.send(bookings)
 });
 
+// return bookings by search term
+
+app.get("/bookings/search", (req, res) => {
+  let searchTerm = req.query.term.toLowerCase()
+ 
+  let searchBookings = bookings.filter((booking) => booking.firstName.toLowerCase().includes(searchTerm)|| 
+  booking.surname.toLowerCase().includes(searchTerm) || 
+  booking.email.toLowerCase().includes(searchTerm))
+
+  if(searchBookings.length > 0){
+    res.status(200).json(searchBookings)
+  } else{
+    res.send({message: 'no bookings found'})
+  }
+});
+
 // return one booking /bookings/:id
 
 app.get("/bookings/:id", (req,res) => {
@@ -27,6 +43,7 @@ app.get("/bookings/:id", (req,res) => {
   const getbooking = bookings.find(booking => booking.id === id);
   res.status(200).json(getbooking)
 })
+
 
 let maxID = Math.max(...bookings.map(c => c.id));
 
@@ -58,8 +75,6 @@ app.delete("/bookings/:id", (req, res) => {
   bookings.splice(bookingIndex, 1);
   res.send("booking deleted")
 });
-
-
 
 
 const port = 3000;
