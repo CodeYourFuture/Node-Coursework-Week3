@@ -41,7 +41,7 @@ app.get("/bookings", (req, res) => {
   res.send(bookings);
 });
 // Create a new message
-app.post("/booking", (req, res) => {
+app.post("/bookings", (req, res) => {
   let lastIndex = bookings.length - 1; // find last index(4) of the array eg. 5 bookings are there 5(length) - 1 = 4(length) is the last index
   let lastId = bookings[lastIndex].id; // giving us last id of the index eg. 5id
   let idPosition = lastId + 1; // incrementing last by 1 eg. 5 + 1 = 6id
@@ -69,7 +69,7 @@ app.post("/booking", (req, res) => {
 //(get booking by id) Read one booking, specified by an ID
 app.get("/bookings/:id", function (req, res) {
   let id = parseInt(req.params.id);
-  let filterBooking = bookings.filter(book => book.id === id);
+  let filterBooking = bookings.filter((book) => book.id === id);
 
   res.send(filterBooking);
 });
