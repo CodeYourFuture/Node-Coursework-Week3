@@ -58,6 +58,47 @@ app.get("/bookings/search", (req, res) => {
   res.send(filteredBookings);
 });
 
+// Get one booking by id
+app.get("/bookings/:id", (req, res) => {
+  let bookingIndex = bookings.findIndex((elt) => elt.id == req.params.id);
+
+  isInvalidId(req.params.id, bookingIndex, res);
+
+  if (bookingIndex >= 0) {
+    let booking = bookings[bookingIndex];
+    res.json(booking);
+  }
+});
+
+// Create new booking
+app.post("/bookings",   (req, res) => {
+  for (const key in bookings[0]) {
+    if (!req.body[key] && key !== "id") {
+      res.status(400).send("Please enter all fields");
+    }
+  }
+  if (validator.validate(req.body.email) === false) {
+    res.status(400).send("Please enter a valid email");
+  }
+  if (moment(req.body.checkInDate) > moment(req.body.checkOutDate)) {
+    res.status(400).send("Please enter a valid dates");
+  }
+
+  const newBooking = {
+    id: uuid.v4(),
+    roomId: req.body.roomId,
+    title: req.body.title,
+    firstName: req.body.firstName,
+    username: req.body.username,
+    email: req.body.email,
+    checkInDate: req.body.checkInDate,
+    checkOutDate: req.body.checkOutDate,
+  };
+
+  bookings.push(newBooking);
+  res.json(newBooking);
+});
+
 app.listen(port, () => {
   console.log("Your app is listening on port " + port);
 });
