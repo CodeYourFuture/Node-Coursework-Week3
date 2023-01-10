@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 
 const app = express();
 
@@ -57,6 +58,8 @@ app.delete("/bookings/:id", (req, res) => {
   bookings.splice(bookingIndex, 1);
   res.send("booking deleted")
 });
+
+
 
 
 const port = 3000;
