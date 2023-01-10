@@ -38,16 +38,20 @@ app.get("/bookings/search", function (request, response) {
   let date = request.query.date;
   let term = request.query.term;
 
-  let filteredBookings = bookings.filter(
-    (elt) =>
-      (date &&
-        moment(elt.checkInDate) <= moment(date) &&
-        moment(elt.checkOutDate) >= moment(date)) ||
-      (term &&
-        (elt.firstName.toLowerCase().includes(term.toLowerCase()) ||
-          elt.surname.toLowerCase().includes(term.toLowerCase()) ||
-          elt.email.toLowerCase().includes(term.toLowerCase())))
-  );
+  let filteredBookings = bookings
+    .filter(
+      (elt) =>
+        !date ||
+        (moment(elt.checkInDate) <= moment(date) &&
+          moment(elt.checkOutDate) >= moment(date))
+    )
+    .filter(
+      (elt) =>
+        !term ||
+        elt.firstName.toLowerCase().includes(term.toLowerCase()) ||
+        elt.surname.toLowerCase().includes(term.toLowerCase()) ||
+        elt.email.toLowerCase().includes(term.toLowerCase())
+    );
 
   if (filteredBookings.length <= 0) {
     (term || date) && response.status(400).send("No matching results");
