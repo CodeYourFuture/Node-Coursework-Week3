@@ -1,7 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const firstName = require("./bookings.json");
-const moment = require("moment"); 
+const moment = require("moment");
 
 const app = express();
 
@@ -39,6 +39,7 @@ const listener = app.listen(port, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
 app.get("/bookings", (req, res) => {
+  //console.log("/bookings get");
   res.send(bookings);
 });
 // Create a new message
@@ -53,7 +54,7 @@ app.post("/bookings", (req, res) => {
   let roomId = req.body.roomId;
   let checkInDate = req.body.checkInDate;
   let checkOutDate = req.body.checkOutDate;
-
+  //console.log("/bookings post");
   const newBooking = {
     id: idPosition,
     title: title,
@@ -65,34 +66,43 @@ app.post("/bookings", (req, res) => {
     checkOutDate: checkOutDate,
   };
   //validation
-  if (!newBooking.title || !newBooking.roomId || !newBooking.firstName || !newBooking.surname || !newBooking.email ||
-    !newBooking.checkInDate || !newBooking.checkOutDate){
-       return res.status(400).json("Please complete the booking form");
-    } else {
-  bookings.push(newBooking);
-  res.status(200).json(bookings);
-    }
+  if (
+    !newBooking.title ||
+    !newBooking.roomId ||
+    !newBooking.firstName ||
+    !newBooking.surname ||
+    !newBooking.email ||
+    !newBooking.checkInDate ||
+    !newBooking.checkOutDate
+  ) {
+    return res.status(400).json("Please complete the booking form");
+  } else {
+    bookings.push(newBooking);
+    res.status(200).json(bookings);
+  }
+});
+
+//(get booking by date) Read one booking, specified by date
+app.get("/bookings/search", function (req, res) {
+  const date = req.query.date;
+  //console.log("/bookings/search get");
+  let filterBookings = bookings.filter((elt) => {
+    return (
+      !date ||
+      (moment(elt.checkInDate) <= moment(date) &&
+        moment(elt.checkOutDate) >= moment(date))
+    );
+  });
+  //console.log(moment(date));
+  res.send(filterBookings);
 });
 
 //(get booking by id) Read one booking, specified by an ID
 app.get("/bookings/:id", function (req, res) {
   let id = parseInt(req.params.id);
   let filterBooking = bookings.filter((book) => book.id === id);
-
+  //console.log("/bookings/id get");
   res.send(filterBooking);
-});
-
-//(get booking by date) Read one booking, specified by date
-app.get("/bookings/search", function (req, res) {
-  const dateSt = req.query.date;
-  
-  let filterBookings = bookings.filter(
-    (elt) =>
-      !date ||
-      (moment(elt.checkInDate) <= moment(date) &&
-        moment(elt.checkOutDate) >= moment(date))
-  );
-
 });
 
 app.delete("/bookings/:id", function (req, res) {
