@@ -75,20 +75,18 @@ app.delete("/bookings/:id", (req, res) => {
   res.sendStatus(204);
 });
 
-// TODO add your routes and helper functions here
-
-// const save = () => {
-//   fs.writeFileSync("data.json", JSON.stringify(data, null, 2));
-// };
-
 const save = () => {
-  fs.writeFile("bookings.json", JSON.stringify(bookings, null, 2), function writeJSON(err) {
-    if (err) return console.log(err);
-    console.log(JSON.stringify(bookings));
-    console.log("writing to " + "bookings.json");
-  });
+  fs.writeFile(
+    "bookings.json",
+    JSON.stringify(bookings, null, 2),
+    (writeJSON = (err) => {
+      if (err) return console.log(err);
+      console.log(JSON.stringify(bookings));
+      console.log("writing to " + "bookings.json");
+    })
+  );
 };
 
-const listener = app.listen(process.env.PORT || 3000, function () {
+const listener = app.listen(process.env.PORT || 3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
 });

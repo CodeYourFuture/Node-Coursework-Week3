@@ -48,25 +48,5 @@
     "roomId": 3,
     "checkInDate": "2017-08-30",
     "checkOutDate": "2017-10-02"
-  },
-  {
-    "id": 1673055079308,
-    "title": "Mr",
-    "firstName": "Simeon",
-    "surname": "B",
-    "email": "lennon@example.com",
-    "roomId": 3,
-    "checkInDate": "2017-08-30",
-    "checkOutDate": "2017-10-02"
-  },
-  {
-    "id": 1673055101847,
-    "title": "Mr",
-    "firstName": "Simeon",
-    "surname": "B",
-    "email": "lennon@example.com",
-    "roomId": 3,
-    "checkInDate": "2017-08-30",
-    "checkOutDate": "2017-10-02"
   }
 ]
