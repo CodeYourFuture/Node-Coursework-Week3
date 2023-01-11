@@ -30,6 +30,61 @@ app.get("/bookings", function (request, response) {
   }
   response.json(bookings);
 });
+
+
+// Get one booking by id
+app.get("/bookings/:id", function (request, response) {
+  let bookingIndex = bookings.findIndex((elt) => elt.id == request.params.id);
+
+  isInvalidId(request.params.id, bookingIndex, response);
+
+  if (bookingIndex >= 0) {
+    let booking = bookings[bookingIndex];
+    response.json(booking);
+  }
+});
+
+// Create new booking
+app.post("/bookings", function (request, response) {
+  for (const key in bookings[0]) {
+    if (!request.body[key] && key !== "id") {
+      response.status(400).send("Please enter all fields");
+    }
+  }
+
+  if (validator.validate(request.body.email) === false) {
+    response.status(400).send("Please enter a valid email");
+  }
+
+  if (moment(request.body.checkInDate) > moment(request.body.checkOutDate)) {
+    response.status(400).send("Please enter a valid dates");
+  }
+
+  const newBooking = {
+    id: uuid.v4(),
+    roomId: request.body.roomId,
+    title: request.body.title,
+    firstName: request.body.firstName,
+    username: request.body.username,
+    email: request.body.email,
+    checkInDate: request.body.checkInDate,
+    checkOutDate: request.body.checkOutDate,
+  };
+
+  bookings.push(newBooking);
+  response.json(newBooking);
+});
+
+// Delete one booking by id
+app.delete("/bookings/:id", function (request, response) {
+  let bookingIndex = bookings.findIndex((elt) => elt.id == request.params.id);
+
+  isInvalidId(request.params.id, bookingIndex, response);
+
+  bookings.splice(bookingIndex, 1);
+  response.send("booking successfully deleted");
+});
+
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
