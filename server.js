@@ -31,6 +31,37 @@ app.get("/bookings", function (request, response) {
   response.json(bookings);
 });
 
+// Search bookings
+app.get("/bookings/search", function (request, response) {
+  let date = request.query.date;
+  let term = request.query.term;
+
+  let filteredBookings = bookings
+    .filter(
+      (elt) =>
+        !date ||
+        (moment(elt.checkInDate) <= moment(date) &&
+          moment(elt.checkOutDate) >= moment(date))
+    )
+    .filter(
+      (elt) =>
+        !term ||
+        elt.firstName.toLowerCase().includes(term.toLowerCase()) ||
+        elt.surname.toLowerCase().includes(term.toLowerCase()) ||
+        elt.email.toLowerCase().includes(term.toLowerCase())
+    );
+
+  if (filteredBookings.length <= 0) {
+    (term || date) && response.status(400).send("No matching results");
+  }
+
+  if (!term && !date) {
+    response.status(400).send("Please enter search term");
+  }
+
+  response.send(filteredBookings);
+});
+
 
 // Get one booking by id
 app.get("/bookings/:id", function (request, response) {
