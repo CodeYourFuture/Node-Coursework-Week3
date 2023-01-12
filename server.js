@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
 const validator = require("email-validator");
+const bookings = require("./bookings.json");
+const fs = require("fs");
 
 const app = express();
 
@@ -9,7 +11,6 @@ app.use(express.json());
 app.use(cors());
 
 //Use this array as your (in-memory) data store.
-const bookings = require("./bookings.json");
 
 let Model = [
   "title",
@@ -59,7 +60,6 @@ app.get("/bookings/search", (req, res) => {
   }
 });
 
-
 app.get("/bookings/:id", (req, res) => {
   const id = req.params.id;
   const result = bookings.find((item) => item.id === +id);
@@ -70,7 +70,6 @@ app.get("/bookings/:id", (req, res) => {
   }
 });
 
-
 app.post("/bookings", (req, res) => {
   const result = {};
   const id = getMaxId(bookings) + 1;
@@ -80,24 +79,28 @@ app.post("/bookings", (req, res) => {
       result[key] = req.body[key];
     }
     bookings.push(result);
+    fs.writeFile("bookings.json", JSON.stringify(bookings), (err) =>
+      res.send(err)
+    );
     res.json(bookings);
   } else {
     res.status(400).send("Please provide all mandatory data or a valid email");
   }
 });
 
-
 app.delete("/bookings/:id", (req, res) => {
   let id = req.params.id;
   const id_data = bookings.find((item) => item.id === +id);
   if (id_data) {
     const result = bookings.filter((item) => item.id !== +id);
+    fs.writeFile("bookings.json", JSON.stringify(result), (err) =>
+      res.send(err)
+    );
     res.json(result);
   } else {
     res.status(404).send("Not found");
   }
 });
-
 
 const listener = app.listen(process.env.PORT || 5000, function () {
   console.log("Your app is listening on port " + 5000);
