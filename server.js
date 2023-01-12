@@ -36,6 +36,24 @@ app.get("/booking/:id", (req, res) => {
     return;
   }
 });
+
+// Delete one booking, specified by an ID
+app.delete("/booking/:id", (req, res) => {
+  const bookingId = req.params.id;
+  const updateBookings = bookings.filter(
+    (elm) => elm.id !== parseInt(bookingId)
+  );
+
+  if (updateBookings.length < bookings.length) {
+    bookings = [...updateBookings];
+    res.send(bookings);
+    return;
+  } else {
+    res.sendStatus(404);
+    return;
+  }
+});
+
 //1. Create a new booking
 app.post("/booking", (req, res, next) => {
   if (
