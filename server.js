@@ -39,14 +39,14 @@ app.get("/bookings/search", (req, res) => {
   let searchTerm = req.query.term;
 
   let filteredBookings = bookings.filter(
-    (elt) =>
+    (e) =>
       (searchDate &&
-        moment(elt.checkInDate) <= moment(searchDate) &&
-        moment(elt.checkOutDate) >= moment(searchDate)) ||
+        moment(e.checkInDate) <= moment(searchDate) &&
+        moment(e.checkOutDate) >= moment(searchDate)) ||
       (searchTerm &&
-        (elt.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          elt.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          elt.email.toLowerCase().includes(searchTerm.toLowerCase())))
+        (e.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          e.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          e.email.toLowerCase().includes(searchTerm.toLowerCase())))
   );
 
   if (filteredBookings.length <= 0) {
@@ -60,7 +60,7 @@ app.get("/bookings/search", (req, res) => {
 
 // Get one booking by id
 app.get("/bookings/:id", (req, res) => {
-  let bookingIndex = bookings.findIndex((elt) => elt.id == req.params.id);
+  let bookingIndex = bookings.findIndex((e) => e.id == req.params.id);
 
   isInvalidId(req.params.id, bookingIndex, res);
 
@@ -97,6 +97,16 @@ app.post("/bookings",   (req, res) => {
 
   bookings.push(newBooking);
   res.json(newBooking);
+});
+
+// Delete one booking by id
+app.delete("/bookings/:id",   (req, res) => {
+  let deleteBooking = bookings.findIndex((e) => e.id == req.params.id);
+
+  isInvalidId(req.params.id, deleteBooking, res);
+
+  bookings.splice(deleteBooking, 1);
+  res.send("booking deleted");
 });
 
 app.listen(port, () => {
