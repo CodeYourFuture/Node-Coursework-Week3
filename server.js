@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const { response, json } = require("express");
 
 const app = express();
 
@@ -10,43 +11,35 @@ app.use(cors());
 const bookings = require("./bookings.json");
 
 app.get("/", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
+response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 // gets all bookings 
-app.get("/bookings", (request, response) => {
+app.get("/bookings", (req, res) => {
 res.send(bookings);
 });
 
-//Creates a new booking for data
-app.post("/bookings", (request, response) => {
-  let newBookingTable = {
-    id: 0,
-    title: request.body.title,
-    firstName: request.body.firstName,
-    surname: request.body.surname,
-    email: request.body.email,
-    roomId: 0,
-    checkInDate: request.body. checkInDate,
-    checkOutDate: request.body.checkOutDate,
-  }
+app.post("/bookings", (req, res) => {
+const { title, firstName, surname, email, checkInDate, checkOutDate} = req.body;
+if (!title || !surname || !email || !checkInDate || !checkOutDate){
+res.status(400).send({message: " ERROR All fields have not been completed please try again"});
+}
+let newBookingTable = {
+id: 0,
+title: req.body.title,
+firstName: req.body.firstName,
+surname: req.body.surname,
+email: req.body.email,
+roomId: 0,
+checkInDate: req.body.checkInDate,
+checkOutDate: req.body.checkOutDate,
+}
+bookings.push(newBookingTable);
+newBookingTable.id = bookings.findIndex(newBooking) + 1;
+newBookingTable.roomId = newBookingTable.id + 10;
+res.send(newBookingTable);
 });
-let  {title, firstName, surname, email, checkInDate, checkOutDate} = request.body;
-  if(
-    !title ||
-    !surname ||
-    !email ||
-    !checkInDate ||
-    !checkOutDate 
-  ){
-  
-    response.status(400).send({message: " ERROR All fields have not been completed please try again"});
-  }
-  bookings.push(newBookingTable);
-  newBookingTable.id = bookings.findIndex(newBooking) + 1;
-  newBookingTable.roomId = newBookingTable.id + 10;
-
 // TODO add your routes and helper functions here
 
 const listener = app.listen(process.env.PORT, function () {
-  console.log("Your app is listening on port " + listener.address().port);
+console.log("Your app is listening on port " + listener.address().port);
 });
