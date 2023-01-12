@@ -11,27 +11,31 @@ app.use(cors());
 let bookings = require("./bookings.json");
 let maxID = Math.max(...bookings.map((c) => c.id));
 
-
-
-
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
 // TODO add your routes and helper functions here
 
-
 //Read All bookings
 app.get("/allBookings", (req, res) => {
-  res.json(bookings)
-})
+  res.json(bookings);
+});
 
-//Read one booking, specified by an ID
-// app.get("/booking/:id", (req, res) => {
-//   const bookingId=req.params.id;
-//   if()
-//   res.json(bookings);
-// });
+// Read one booking, specified by an ID
+app.get("/booking/:id", (req, res) => {
+  const bookingId = req.params.id;
+  const indexBooking = bookings.findIndex(
+    (booking) => booking.id === parseInt(bookingId)
+  );
+  if (indexBooking >= 0) {
+    res.send(bookings[indexBooking]);
+    return;
+  } else {
+    res.sendStatus(404);
+    return;
+  }
+});
 //1. Create a new booking
 app.post("/booking", (req, res, next) => {
   if (
