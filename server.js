@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const app = express();
 const bp = require("body-parser");
+const moment = require("moment");
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(express.json());
@@ -51,6 +52,22 @@ app.delete("/booking/:id", (req, res) => {
   } else {
     res.sendStatus(404);
     return;
+  }
+});
+
+// Search by Date
+app.get("/bookings/search", (req, res) => {
+  const bookingWithDate = moment(req.query.date);
+  if (!bookingWithDate.isValid()) {
+    res.status(400).send("the date is not valid");
+  } else {
+    let bookingsInValidDates=[];
+     bookings.map((elm) => {
+      moment(elm.checkInDate).isBefore(bookingWithDate)? 
+      bookingsInValidDates.push(elm): null;
+    });
+    // console.log(bookingsInValidDates);
+    res.send(bookingsInValidDates);
   }
 });
 
