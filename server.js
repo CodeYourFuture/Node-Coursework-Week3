@@ -29,8 +29,6 @@ app.post("/booking", (req, res, next) => {
     res.status(400).send(`Some details are missing`);
     return;
   } else {
-    console.log(req.body.title);
-    console.log(req.body.surname);
     const newBooking = {
       id: ++maxID,
       title: req.body.title,
@@ -41,9 +39,9 @@ app.post("/booking", (req, res, next) => {
       checkInDate: req.body.checkInDate,
       checkOutDate: req.body.checkOutDate,
     };
-    // console.log(bookings);
-    bookings.push(newBooking);
-    // res.send(bookings.length);
+    // console.log(newBooking);
+    bookings = [...bookings, newBooking];
+    res.send(bookings);
     // console.log(bookings);
     return;
   }
