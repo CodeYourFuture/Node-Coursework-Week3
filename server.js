@@ -17,6 +17,11 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 
+
+//Read All bookings
+app.get("/allBookings", (req, res) => {
+  res.json(bookings)
+})
 //1. Create a new booking
 app.post("/booking", (req, res, next) => {
   if (
