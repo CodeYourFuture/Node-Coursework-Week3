@@ -13,6 +13,47 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
+app.get("/bookings", function(request,response){
+  response.send(bookings);
+})
+
+app.post("/bookings", (req, res) => {
+  let {
+    id,
+    title,
+    firstName,
+    surname,
+    email,
+    roomId,
+    checkInDate,
+    checkOutDate,
+  } = req.body;
+  let newBooking = {
+    id: bookings.length + 1,
+    title: title,
+    firstName: firstName,
+    surname: surname,
+    email: email,
+    roomId: roomId,
+    checkInDate: checkInDate,
+    checkOutDate: checkOutDate,
+  };
+  if (
+    !newBooking.title ||
+    !newBooking.firstName ||
+    !newBooking.surname ||
+    !newBooking.email ||
+    !newBooking.roomId ||
+    !newBooking.checkInDate ||
+    !newBooking.checkOutDate
+  ) {
+    res.status(400).send("Please make sure all require information is sent");
+  } else {
+    bookings.push(newBooking);
+    res.sendStatus(200);
+  }
+});
+
 // TODO add your routes and helper functions here
 
 const listener = app.listen(process.env.PORT, function () {
