@@ -49,15 +49,20 @@ app.get("/bookings", (req, res) => {
 });
 
 app.get("/bookings/search", (req, res) => {
+  let result = bookings;
+
   if (req.query.date) {
     const inputDate = moment(req.query.date);
-    const result = bookings.filter((item) =>
+    result = bookings.filter((item) =>
       moment(item.checkInDate).isSame(moment(inputDate))
     );
-    res.json(result);
-  } else {
-    res.status(400).send("Bad request");
   }
+
+  if (req.query.term) {
+    let term = req.query.term
+    result = result.filter((item) => Object.values(item).includes(term));
+  }
+  res.json(result);
 });
 
 app.get("/bookings/:id", (req, res) => {
