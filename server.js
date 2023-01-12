@@ -61,18 +61,36 @@ app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
-// /bookings/search?date=2019-05-20
+// /bookings/search?date=2017-11-22
+// /bookings/search?term=jimi
 app.get("/bookings/search", (req, res) => {
+  const date = req.query.date;
+  const term = req.query.term;
 
-  const date = moment(req.query.date);
+  if (date) {
+    const foundBookingsByDate = bookings.filter((booking) => {
+      const checkInDate = moment(booking.checkInDate);
+      const checkOutDate = moment(booking.checkOutDate);
+      const searchDate = moment(date);
+      return searchDate.isBetween(checkInDate, checkOutDate);
+    });
+    res.json(foundBookingsByDate);
+  }
+  if (term) {
+    const foundBookingsByTerm = bookings.filter(
+      (booking) =>
+        booking.firstName.toLowerCase().includes(term.toLowerCase()) ||
+        booking.surname.toLowerCase().includes(term.toLowerCase()) ||
+        booking.email.toLowerCase().includes(term.toLowerCase())
+    );
+    if (!foundBookingsByTerm.length) {
+      res.sendStatus(204);
+      return;
+    }
+    res.json(foundBookingsByTerm);
+  }
 
-  const foundBookingsByDate = bookings.filter((booking) => {
-    const checkInDate = moment(booking.checkInDate);
-    const checkOutDate = moment(booking.checkOutDate);
-    return date.isBetween(checkInDate, checkOutDate);
-  });
-
-  res.json(foundBookingsByDate);
+  res.sendStatus(400);
 });
 
 app.get("/bookings/:id", (req, res) => {
