@@ -11,6 +11,9 @@ app.use(cors());
 let bookings = require("./bookings.json");
 let maxID = Math.max(...bookings.map((c) => c.id));
 
+
+
+
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
@@ -22,6 +25,13 @@ app.get("/", function (request, response) {
 app.get("/allBookings", (req, res) => {
   res.json(bookings)
 })
+
+//Read one booking, specified by an ID
+// app.get("/booking/:id", (req, res) => {
+//   const bookingId=req.params.id;
+//   if()
+//   res.json(bookings);
+// });
 //1. Create a new booking
 app.post("/booking", (req, res, next) => {
   if (
@@ -29,7 +39,8 @@ app.post("/booking", (req, res, next) => {
     !req.body.surname ||
     !req.body.email ||
     !req.body.checkInDate ||
-    !req.body.checkOutDate
+    !req.body.checkOutDate ||
+    !req.body.roomId
   ) {
     res.status(400).send(`Some details are missing`);
     return;
@@ -40,7 +51,7 @@ app.post("/booking", (req, res, next) => {
       firstName: req.body.firstName,
       surname: req.body.surname,
       email: req.body.email,
-      roomId: maxID + 100,
+      roomId: req.body.roomId,
       checkInDate: req.body.checkInDate,
       checkOutDate: req.body.checkOutDate,
     };
