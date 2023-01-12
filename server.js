@@ -1,16 +1,27 @@
 const express = require("express");
 const fs = require("fs");
 const cors = require("cors");
-// const crypto = require("crypto");
+const crypto = require("crypto");
+const moment = require("moment");
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-//Use this array as your (in-memory) data store.
 let bookings = require("./bookings.json");
-// let data = JSON.parse(fs.readFileSync("data.json", "utf-8"));
+
+const save = () => {
+  fs.writeFile(
+    "bookings.json",
+    JSON.stringify(bookings, null, 2),
+    (writeJSON = (err) => {
+      if (err) return console.log(err);
+      console.log(JSON.stringify(bookings));
+      console.log("writing to " + "bookings.json");
+    })
+  );
+};
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
@@ -30,8 +41,8 @@ app.post("/bookings", (req, res) => {
     return;
   }
   const createdBooking = {
-    // id: crypto.randomUUID(),
-    id: Number(new Date()),
+    id: crypto.randomUUID(),
+    // id: Number(new Date()),
     title: req.body.title,
     firstName: req.body.firstName,
     surname: req.body.surname,
@@ -48,6 +59,20 @@ app.post("/bookings", (req, res) => {
 
 app.get("/bookings", (req, res) => {
   res.json(bookings);
+});
+
+// /bookings/search?date=2019-05-20
+app.get("/bookings/search", (req, res) => {
+
+  const date = moment(req.query.date);
+
+  const foundBookingsByDate = bookings.filter((booking) => {
+    const checkInDate = moment(booking.checkInDate);
+    const checkOutDate = moment(booking.checkOutDate);
+    return date.isBetween(checkInDate, checkOutDate);
+  });
+
+  res.json(foundBookingsByDate);
 });
 
 app.get("/bookings/:id", (req, res) => {
@@ -74,18 +99,6 @@ app.delete("/bookings/:id", (req, res) => {
   save();
   res.sendStatus(204);
 });
-
-const save = () => {
-  fs.writeFile(
-    "bookings.json",
-    JSON.stringify(bookings, null, 2),
-    (writeJSON = (err) => {
-      if (err) return console.log(err);
-      console.log(JSON.stringify(bookings));
-      console.log("writing to " + "bookings.json");
-    })
-  );
-};
 
 const listener = app.listen(process.env.PORT || 3000, () => {
   console.log("Your app is listening on port " + listener.address().port);
