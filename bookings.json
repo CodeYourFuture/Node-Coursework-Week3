@@ -48,5 +48,15 @@
     "roomId": 3,
     "checkInDate": "2017-08-30",
     "checkOutDate": "2017-10-02"
+  },
+  {
+    "id": 1673527654284,
+    "title": "Mr",
+    "firstName": "S",
+    "surname": "B",
+    "email": "lennon@example.com",
+    "roomId": 3,
+    "checkInDate": "2017-08-30",
+    "checkOutDate": "2017-10-02"
   }
 ]

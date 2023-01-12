@@ -1,7 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const cors = require("cors");
-const crypto = require("crypto");
+// const crypto = require("crypto");
 const moment = require("moment");
 
 const app = express();
@@ -40,9 +40,15 @@ app.post("/bookings", (req, res) => {
     res.sendStatus(400);
     return;
   }
+
+  if (req.body.checkInDate >= req.body.checkOutDate) {
+    res.status(400).json({ msg: "check out Date is not after check in Date" });
+    return;
+  }
+
   const createdBooking = {
-    id: crypto.randomUUID(),
-    // id: Number(new Date()),
+    // id: crypto.randomUUID(),
+    id: Number(new Date()),
     title: req.body.title,
     firstName: req.body.firstName,
     surname: req.body.surname,
@@ -61,8 +67,8 @@ app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
-// /bookings/search?date=2017-11-22
-// /bookings/search?term=jimi
+// path: /bookings/search?date=2017-11-22
+// path: /bookings/search?term=jimi
 app.get("/bookings/search", (req, res) => {
   const date = req.query.date;
   const term = req.query.term;
@@ -89,7 +95,6 @@ app.get("/bookings/search", (req, res) => {
     }
     res.json(foundBookingsByTerm);
   }
-
   res.sendStatus(400);
 });
 
