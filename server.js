@@ -2,15 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
 const validator = require("email-validator");
-const bookings = require("./bookings.json");
 const fs = require("fs");
 
 const app = express();
-
 app.use(express.json());
 app.use(cors());
 
 //Use this array as your (in-memory) data store.
+const bookings = require("./bookings.json");
+
 
 let Model = [
   "title",
@@ -37,18 +37,8 @@ function isValid(obj) {
   return false;
 }
 
-//.....................Routes................................................
-
-app.get("/", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
-});
-
-// 1. Read all bookings
-app.get("/bookings", (req, res) => {
-  res.json(bookings);
-});
-
-app.get("/bookings/search", (req, res) => {
+// Controller Functions.....................................
+const queryBookings = (req, res) => {
   let result = bookings;
 
   if (req.query.date) {
@@ -59,13 +49,17 @@ app.get("/bookings/search", (req, res) => {
   }
 
   if (req.query.term) {
-    let term = req.query.term
+    let term = req.query.term;
     result = result.filter((item) => Object.values(item).includes(term));
   }
   res.json(result);
-});
+};
 
-app.get("/bookings/:id", (req, res) => {
+const getAllBookings = (req, res) => {
+  res.json(bookings);
+};
+
+const getBooking = (req, res) => {
   const id = req.params.id;
   const result = bookings.find((item) => item.id === +id);
   if (result) {
@@ -73,9 +67,9 @@ app.get("/bookings/:id", (req, res) => {
   } else {
     res.status(404).send("Not Found");
   }
-});
+};
 
-app.post("/bookings", (req, res) => {
+const createBooking = (req, res) => {
   const result = {};
   const id = getMaxId(bookings) + 1;
   if (isValid(req.body)) {
@@ -91,9 +85,9 @@ app.post("/bookings", (req, res) => {
   } else {
     res.status(400).send("Please provide all mandatory data or a valid email");
   }
-});
+};
 
-app.delete("/bookings/:id", (req, res) => {
+const deleteBooking = (req, res) => {
   let id = req.params.id;
   const id_data = bookings.find((item) => item.id === +id);
   if (id_data) {
@@ -105,7 +99,15 @@ app.delete("/bookings/:id", (req, res) => {
   } else {
     res.status(404).send("Not found");
   }
+};
+//.....................Routes................................................
+
+app.get("/", function (request, response) {
+  response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
+app.get("/bookings/search", queryBookings);
+app.route("/bookings").get(getAllBookings).post(createBooking);
+app.route("/bookings/:id").get(getBooking).delete(deleteBooking);
 
 const listener = app.listen(process.env.PORT || 5000, function () {
   console.log("Your app is listening on port " + 5000);
