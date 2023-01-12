@@ -12,11 +12,12 @@ let bookings = require("./bookings.json");
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
-
+//Read all bookings
 app.get("/bookings", function(request,response){
   response.send(bookings);
 })
 
+//Create new bookings
 app.post("/bookings", (req, res) => {
   let {
     id,
@@ -53,6 +54,17 @@ app.post("/bookings", (req, res) => {
     res.sendStatus(200);
   }
 });
+
+// Read one booking, specified by an ID
+app.get("/bookings/:id", (req,res) => {
+  let id = parseInt(req.params.id);
+  let requiredBooking = bookings.find(reqId => reqId.id === id)
+  if(!requiredBooking){
+    res.status(404).send("Please type a valid ID");
+  } else{
+  res.send(requiredBooking);
+  }
+})
 
 // TODO add your routes and helper functions here
 
