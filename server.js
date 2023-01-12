@@ -37,7 +37,30 @@ bookings.push(newBookingTable);
 newBookingTable.id = bookings.findIndex(newBooking) + 1;
 newBookingTable.roomId = newBookingTable.id + 10;
 res.send(newBookingTable);
+res.json(bookings);
 });
+// defines IsInvalidId function
+function isInvalidId(id, bookingIndex, res) {
+  if (bookingIndex === -1) {
+    ({ message: "Booking not found" });
+    return true;
+  }
+  if (isNaN(id)) {
+    ({ message: "Invalid id parameter" });
+    return true;
+  }
+  return false;
+}
+// Get one booking by id
+app.get("/bookings/:id", function (request, response) {
+  let bookingIndex = bookings.findIndex((newBookingTable) => newBookingTable.id == request.params.id);
+  isInvalidId(request.params.id, bookingIndex, response);
+  if (bookingIndex >= 0) {
+    let booking = bookings[bookingIndex];
+    response.json(booking);
+  }
+});
+
 // TODO add your routes and helper functions here
 
 const listener = app.listen(process.env.PORT, function () {
