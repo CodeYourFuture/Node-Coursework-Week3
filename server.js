@@ -3,6 +3,7 @@ const fs = require("fs");
 const cors = require("cors");
 // const crypto = require("crypto");
 const moment = require("moment");
+const validator = require("email-validator");
 
 const app = express();
 
@@ -23,6 +24,8 @@ const save = () => {
   );
 };
 
+const isValidEmail = (email) => validator.validate(email);
+
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
@@ -32,7 +35,7 @@ app.post("/bookings", (req, res) => {
     !req.body.title ||
     !req.body.firstName ||
     !req.body.surname ||
-    !req.body.email ||
+    !isValidEmail(req.body.email) ||
     !req.body.roomId ||
     !req.body.checkInDate ||
     !req.body.checkOutDate
