@@ -60,6 +60,13 @@ app.get("/bookings/:id", function (request, response) {
     response.json(booking);
   }
 });
+// Delete one booking by id
+app.delete("/bookings/:id", function (request, response) {
+  let bookingIndex = bookings.findIndex((newBookingTable) => newBookingTable.id == req.params.id);
+  if (isInvalidId(request.params.id, bookingIndex, response)) return;
+  bookings.splice(bookingIndex, 1);
+  response.send({ message: "Booking deleted" });
+});
 
 // TODO add your routes and helper functions here
 
