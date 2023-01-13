@@ -1,20 +1,113 @@
 const express = require("express");
 const cors = require("cors");
+const firstName = require("./bookings.json");
+const moment = require("moment");
 
 const app = express();
 
+app.use(cors({ origin: "*" }));
+
 app.use(express.json());
-app.use(cors());
 
 //Use this array as your (in-memory) data store.
-const bookings = require("./bookings.json");
+let bookings = require("./bookings.json");
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
-// TODO add your routes and helper functions here
+app.get("/firstName", function (request, response) {
+  let result = bookings.map((a) => a.firstName);
+  response.json(result);
+});
+//This array is our "data store".
+// const hotelBookings = {
+//   id: 0,
+//   roomId: 123,
+//   title: "Mr",
+//   firstName: "John",
+//   surname: "Doe",
+//   email: "johndoe@doe.com",
+//   checkInDate: "2017-11-21",
+//   checkOutDate: "2017-11-23",
+// };
+//let bookings = [hotelBookings];
 
-const listener = app.listen(process.env.PORT, function () {
+// TODO add your routes and helper functions here
+const port = process.env.PORT || 3001;
+const listener = app.listen(port, function () {
   console.log("Your app is listening on port " + listener.address().port);
+});
+app.get("/bookings", (req, res) => {
+  //console.log("/bookings get");
+  res.send(bookings);
+});
+// Create a new message
+app.post("/bookings", (req, res) => {
+  let lastIndex = bookings.length - 1; // find last index(4) of the array eg. 5 bookings are there 5(length) - 1 = 4(length) is the last index
+  let lastId = bookings[lastIndex].id; // giving us last id of the index eg. 5id
+  let idPosition = lastId + 1; // incrementing last by 1 eg. 5 + 1 = 6id
+  let title = req.body.title;
+  let firstName = req.body.firstName;
+  let surname = req.body.surname;
+  let email = req.body.email;
+  let roomId = req.body.roomId;
+  let checkInDate = req.body.checkInDate;
+  let checkOutDate = req.body.checkOutDate;
+  //console.log("/bookings post");
+  const newBooking = {
+    id: idPosition,
+    title: title,
+    roomId: roomId,
+    firstName: firstName,
+    surname: surname,
+    email: email,
+    checkInDate: checkInDate,
+    checkOutDate: checkOutDate,
+  };
+  //validation
+  if (
+    !newBooking.title ||
+    !newBooking.roomId ||
+    !newBooking.firstName ||
+    !newBooking.surname ||
+    !newBooking.email ||
+    !newBooking.checkInDate ||
+    !newBooking.checkOutDate
+  ) {
+    return res.status(400).json("Please complete the booking form");
+  } else {
+    bookings.push(newBooking);
+    res.status(200).json(bookings);
+  }
+});
+
+//(get booking by date) Read one booking, specified by date
+app.get("/bookings/search", function (req, res) {
+  const date = req.query.date;
+  //console.log("/bookings/search get");
+  let filterBookings = bookings.filter((elt) => {
+    return (
+      !date ||
+      (moment(elt.checkInDate) <= moment(date) &&
+        moment(elt.checkOutDate) >= moment(date))
+    );
+  });
+  //console.log(moment(date));
+  res.send(filterBookings);
+});
+
+//(get booking by id) Read one booking, specified by an ID
+app.get("/bookings/:id", function (req, res) {
+  let id = parseInt(req.params.id);
+  let filterBooking = bookings.filter((book) => book.id === id);
+  //console.log("/bookings/id get");
+  res.send(filterBooking);
+});
+
+app.delete("/bookings/:id", function (req, res) {
+  let id = parseInt(req.params.id); // int = integer
+  bookings = bookings.filter((book) => book.id !== id); // take all the bookings except the passed id for delete and over write.
+
+  res.send(bookings);
 });
