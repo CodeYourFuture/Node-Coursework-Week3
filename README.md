@@ -15,7 +15,8 @@ You should have completed at least Level 1-3 of the Chat Server challenge before
 ## Level 1 Challenge - make the booking server
 
 At this first level, your API must allow a client to:
-
+ 
+ 
 1. Create a new booking
 1. Read all bookings
 1. Read one booking, specified by an ID
