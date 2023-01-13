@@ -1,5 +1,4 @@
 const express = require("express");
-
 const app = express();
 const uuid = require("uuid");
 const cors = require("cors");
@@ -15,14 +14,11 @@ function isInvalidId(id, index, response) {
   if (index < 0) {
     response.status(400).send("No booking with Id: " + id + " is found");
   }
-}
+ }
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
-
-// TODO add your routes and helper functions here
-
 
 // Get all bookings
 app.get("/bookings", function (request, response) {
@@ -116,6 +112,7 @@ app.delete("/bookings/:id", function (request, response) {
   bookings.splice(bookingIndex, 1);
   response.send("booking successfully deleted");
 });
+
 
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
