@@ -1,28 +1,44 @@
 {
-  "//1": "describes your app and its dependencies",
-  "//2": "https://docs.npmjs.com/files/package.json",
-  "//3": "updating this file will download and update your packages",
-  "name": "hello-express",
-  "version": "0.0.1",
-  "description": "A simple Node app built on Express, instantly up and running.",
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
+  "name": "react-hotel",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "express": "^4.16.4",
-    "cors": "^2.8.5"
+    "moment": "^2.29.4",
+    "nodemon": "^2.0.20",
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6",
+    "react-scripts": "^3.4.1",
+    "react-spinners": "^0.13.6"
   },
-  "engines": {
-    "node": "8.x"
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "npm i && react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "host": "node ./server/server.js && npm start",
+    "dev": "nodemon ./server/server.js"
   },
-  "repository": {
-    "url": "https://glitch.com/edit/#!/hello-express"
+  "proxy": "http://localhost:3001",
+  "devDependencies": {
+    "husky": "^2.3.0",
+    "prettier": "^1.17.0",
+    "pretty-quick": "^1.10.0"
   },
-  "license": "MIT",
-  "keywords": [
-    "node",
-    "glitch",
-    "express"
-  ]
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged --verbose"
+    }
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  }
 }
