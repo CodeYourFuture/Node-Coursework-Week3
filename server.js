@@ -3,6 +3,7 @@ const cors = require("cors");
 const app = express();
 const bp = require("body-parser");
 const moment = require("moment");
+var validator = require("email-validator");
 app.use(bp.json());
 app.use(bp.urlencoded({ extended: true }));
 app.use(express.json());
@@ -57,7 +58,9 @@ app.delete("/booking/:id", (req, res) => {
 
 // Search by Date
 app.get("/bookings/search", (req, res) => {
+ if(req.query.date){
   const bookingWithDate = moment(req.query.date);
+  // console.log(req.query.date)
   if (!bookingWithDate.isValid()) {
     res.status(400).send("the date is not valid");
   } else {
@@ -68,7 +71,38 @@ app.get("/bookings/search", (req, res) => {
     });
     // console.log(bookingsInValidDates);
     res.send(bookingsInValidDates);
+    return;
   }
+}
+if (req.query.term){
+const  term= req.query.term;
+// console.log(term)
+const bookingWithThisTerm=[];
+bookings.map( elm => (
+  elm.firstName.toLowerCase().includes(term) ||
+  elm.surname.toLowerCase().includes(term)  ||
+  elm.email.toLowerCase().includes(term)) ? bookingWithThisTerm.push(elm):null
+)
+
+  res.send(bookingWithThisTerm);
+  return;
+}
+});
+
+
+//free search 
+app.get("/bookings/search", (req, res) => {
+  const  term= req.query.term;
+  // console.log(term)
+  const bookingWithThisTerm=bookings.filter( elm => {
+    elm.firstName.includes(term) ||
+    elm.surname.includes(term)  ||
+    elm.email.includes(term)
+  })
+  
+    res.send(bookingWithThisTerm);
+    return
+  
 });
 
 //1. Create a new booking
@@ -83,7 +117,12 @@ app.post("/booking", (req, res, next) => {
   ) {
     res.status(400).send(`Some details are missing`);
     return;
-  } else {
+  } else if (!validator.validate(req.body.email) ||
+  moment(req.body.checkOutDate).isBefore(moment(req.body.checkInDate))    ){
+    res.status(400).send(`Email is not valid or the date is not consist`);
+  }
+  
+    else {
     const newBooking = {
       id: ++maxID,
       title: req.body.title,
@@ -94,6 +133,7 @@ app.post("/booking", (req, res, next) => {
       checkInDate: req.body.checkInDate,
       checkOutDate: req.body.checkOutDate,
     };
+
     // console.log(newBooking);
     bookings = [...bookings, newBooking];
     res.send(bookings);
