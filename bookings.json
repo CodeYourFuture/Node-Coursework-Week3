@@ -41,12 +41,48 @@
   },
   {
     "id": 5,
-    "title": "Mr",
-    "firstName": "John",
-    "surname": "Lennon",
+    "title": "Ms",
+    "firstName": "Jon",
+    "surname": "Snow",
     "email": "lennon@example.com",
-    "roomId": 3,
-    "checkInDate": "2017-08-30",
-    "checkOutDate": "2017-10-02"
+    "checkInDate": "2023-08-30",
+    "checkOutDate": "2023-10-02"
+  },
+  {
+    "id": 7,
+    "title": "Ms",
+    "firstName": "Jon",
+    "surname": "Snow",
+    "email": "lennon@example.com",
+    "checkInDate": "2023-08-30",
+    "checkOutDate": "2023-10-02"
+  },
+  {
+    "id": 8,
+    "title": "Ms",
+    "firstName": "Jon",
+    "email": "lennon@example.com",
+    "checkInDate": "2023-08-30",
+    "checkOutDate": "2023-10-02"
+  },
+  {
+    "id": 9,
+    "title": "Mr",
+    "firstName": "Jimi",
+    "surname": "Hendrix",
+    "email": "jimi@example.com",
+    "roomId": 2,
+    "checkInDate": "2023-11-21",
+    "checkOutDate": "2017-11-23"
+  },
+  {
+    "id": 10,
+    "title": "Mr",
+    "firstName": "Jimi",
+    "surname": "Hendrix",
+    "email": "jimi@example.com",
+    "roomId": 2,
+    "checkInDate": "2029-11-21",
+    "checkOutDate": "2056-11-23"
   }
 ]
