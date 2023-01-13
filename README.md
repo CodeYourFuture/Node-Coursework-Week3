@@ -1,217 +1,142 @@
-A hotel booking application in React. Homework for the [CodeYourFuture React module](https://codeyourfuture.github.io/syllabus-master/react/)
+# Challenge: A Hotel Booking Server
 
-![Bookings Search page](Bookings.png)
+### Overview: what is this challenge?
 
-# Installation
+In this challenge you must make an Express app which provides an API to manage a list of hotel bookings, in JSON format.
 
-1. Follow [the instructions](https://codeyourfuture.github.io/syllabus-master/others/making-a-pull-request.html#how-to-fork-a-github-repo) to fork & clone the GitHub repo
-2. Install the dependencies by running `npm install`
-3. Launch the server using `npm start`
-4. It should automatically open `http://localhost:3000/` in your browser
+In the advanced part of this exercise you will modify your React hotel app which you built during the React module, to read, create, and delete room bookings.
 
-# Exercises
+We also provide a basic React front-end to allow you to test some of the functionality.
 
-## Lesson 1
+### Requirements
 
-#### 1. Extract the search button in its own component
+You should have completed at least Level 1-3 of the Chat Server challenge before attempting this challenge.
 
-**Instructions:** Extract the search `<button>` from the `src/Search.js` file to be its own separate component. You can name it `SearchButton`. Import and use this new component in `src/Search.js`.
+## Level 1 Challenge - make the booking server
 
-**Test:** The search button should still render on the page.
+At this first level, your API must allow a client to:
 
-#### 2. Extract the header in its own component
+1. Create a new booking
+1. Read all bookings
+1. Read one booking, specified by an ID
+1. Delete a booking, specified by an ID
 
-**Instructions:** Extract the `<header>` from the `src/App.js` file to be its own separate component called `Heading`. Make sure that you import and render the `<Heading />` component within `src/App.js`. In the `Heading` component, render the hotel's logo in an `<img>` (you can use `https://image.flaticon.com/icons/svg/139/139899.svg` or find your own image URL). You can adjust the CSS by editing `src/App.css` to make your Heading looks better if necessary.
+If the booking to be read cannot be found by id, return a 404.
 
-**Test:** The header should be displayed with a logo on the page.
+If the booking for deletion cannot be found by id, return a 404.
 
-#### 3. Create and use a new component to show info cards
+All booking content should be passed as JSON.
 
-**Instructions:** In `src/App.js`, above the `<Bookings />` component add a new component called `TouristInfoCards` which shows 3 _cards_. A card is a common user interface pattern with an image at the top and some related text underneath. The cards must link to `peoplemakeglasgow.com`, `visitmanchester.com` and `visitlondon.com`. The cards should contain the name of the city and an image of the city. Here is an example of what an info card should look like:
+See the later spoiler section "Correct Routes" if you are not sure of the correct routes.
 
-![Info Card](InfoCard.png)
+### Testing
 
-**Hint:** Use the same className as the example below to benefit from [Bootstrap](https://getbootstrap.com/docs/4.2/components/card) library which is already imported for you in the project. Use the JSX code below as an example of one card (note that in JSX, you'll need to use `className` instead of `class`):
+You should use the app "postman" to test creating and deleting bookings.
 
-```
-<div className="card">
-	<img src="..." className="card-img-top" />
-	<div className="card-body">
-		<a href="#" className="btn btn-primary">Go somewhere</a>
-	</div>
-</div>
-```
+You can also try with this ALPHA-version [hotel tester app: https://cyf-hotel-tester.netlify.com/](https://cyf-hotel-tester.netlify.com/).
 
-**Test:** 3 info cards should be displayed on the page for each city (Glasgow, Manchester, London). Each card should link to the correct website.
+- Note that you'll have to click `set API` and enter your own base URL (e.g. https://alisina-hotel-server.glitch.me)
+- Do not rely on this app for your testing. Be sure to check the javascript console if it misbehaves.
 
-#### 4. Create a Footer component
+## Data model
 
-**Instructions:** Create a `<Footer />` component which should be rendered at the bottom of the page. Pass the following array as a prop to this component: `["123 Fake Street, London, E1 4UD", "hello@fakehotel.com", "0123 456789"]`. Inside the component, use the data you passed as a prop to render a `<ul>` list with each item of the array displayed as a `<li>`.
+Each booking is an object with the following properties:
 
-**Hint:** The `.map()` method will by useful.
+| Name         | Type   | Example           |
+| ------------ | ------ | ----------------- |
+| id           | number | 1                 |
+| roomId       | number | 123               |
+| title        | string | "Mr"              |
+| firstName    | string | "John"            |
+| surname      | string | "Doe"             |
+| email        | string | "johndoe@doe.com" |
+| checkInDate  | string | "2017-11-21"      |
+| checkOutDate | string | "2017-11-23"      |
 
-**Test:** The footer should render at the bottom of the page with each address property displayed as a list item.
+- Dates are in the format YYYY-MM-DD
 
-#### 5. Create a table to show hotel bookings
+- The `id` field must be assigned on the server, not by the client.
 
-**Instructions:** Create a `<SearchResults />` component that shows hotel bookings in a `<table>` element. Each booking will have an `id`, `title`, `first name`, `surname`, `email`, `room id`, `check in date` and `check out date`. You can make up data in the `<SearchResults />` component to show in the table. Then show `<SearchResults />` component within the `<Bookings />` component that is provided. Be sure to split out your components into small well-named components, similar to the method used in exercise 1.
+## Want to run your code on the internet?
 
-**Hint:** You will find some useful `<table>` examples in the [Bootstrap documentation for tables](https://getbootstrap.com/docs/4.2/content/tables/#examples).
+If you want to share your server with other people the easiest way to do this is to use Glitch
 
-**Test:** A table should render with a column for each booking attribute. The table can show more than one booking. The bookings that are displayed can be made up and hardcoded for now.
+- [ ] Make sure you're logged in to https://glitch.com/
+- [ ] Remix this server on glitch - https://glitch.com/~cyf-hotel-start
+- [ ] Name your new server `yourname-hotel-server`
+- [ ] Make sure you're logged in so that it saves
+- [ ] Check that it is working by making a request to `/`
+- [ ] Take time to read the comments
+- [ ] Copy the code you've written to Glitch
 
-#### 6. Show more bookings in the table
+# Go ahead!
 
-**Instructions:** Instead of using your hard-coded data in the `<SearchResults />` component, load data from the `src/data/fakeBookings.json` file in the `<Bookings />` component and pass it as a prop to `<SearchResults />`. All the bookings in `src/data/fakeBookings.json` should now be displayed in your table.
+If you think you know how to do that, go ahead!
 
-**Hint:** Look in the `<Bookings />` component for how to import data from a JSON file.
+Try to use what you know to do this challenge on your own. It does not require any new knowledge.
 
-**Test:** All the bookings in the file `src/data/fakeBookings.json` should be displayed in your table.
+You may find useful the [express cheatsheet](https://github.com/nbogie/express-notes/blob/master/express-cheatsheet.md)
 
-#### 7. Calculate and show the number of nights for each booking
+# End of Level 1 challenge!
 
-**Instructions:** Add another column to your `<SearchResults />` table which shows the number of nights a guest is staying.
+Well done!
 
-**Hint:** Try installing the [moment.js library](http://momentjs.com/) (you'll need to install it with `npm install moment --save`) and using the [`.diff()` method](http://momentjs.com/docs/#/displaying/difference/) to compare dates.
+What to do now:
 
-**Test:** Each booking in your table should show the number of nights in a separate column. For example, Mr John Doe has a booking for **2** nights.
+Don't post on slack, unless there's a thread announced specifically for it.
+Instead, attach the URLs as links when you "mark done" your assignment in Google Classroom.
+You might want to download your project for safekeeping. (Tools: Git, Import, and Export: Download Project)
 
-## Lesson 2
+# Level 2 - simple validation
 
-#### 8. Render the Restaurant component
+For this level, your server must reject requests to create bookings if:
 
-**Instructions:** Within the `src/App.js` file, render the `<Restaurant />` component (that is provided for you in `src/Restaurant.js`) underneath the `<Bookings />` component.
+- any property of the booking object is missing or empty.
 
-**Test:** The restaurant orders should render on the page.
+In this case your server should return a status code of 400, and should NOT store the booking in the bookings array.
 
-#### 9. Preparing to add more pizzas
+# Level 3 (Optional, advanced) - search by date
 
-**Instructions:** At the moment, the number of pizzas a guest can order is static and set to 0, even if they click on the 'Add' button. We will change that in the following to let a guest add more pizzas to their order. First, declare a new state variable `orders` along with the function to set the orders state `setOrders`. The initial value of the `orders` state should be **0**. Use the new `orders` variable instead of the `pizzas` variable (that you can now delete).
+For this level your API must also allow a client to:
 
-**Hint:** You need to use the React function `useState` to create a state variable. Remember to import the function at the top with `import React, {useState} from "react";`.
+Search for bookings which span a date (given by the client).
 
-**Test:** Verify the number of ordered pizzas it still **0** on the screen.
+It should accept requests of the following format:
 
-#### 10. Add more pizzas
+`/bookings/search?date=2019-05-20`
 
-**Instructions:** In the `<Restaurant />` component, create a new function named `orderOne`. The `orderOne` function doesn't take any parameters and should use the `setOrders` function to increment the `orders` state variable by 1. Then, add a `onClick` handler to the Add `<button>` that calls the `orderOne` function when it's being clicked.
+Hint: use the `moment` library to make this easier.
 
-**Test:** Try to click on the Add button a few times and verify that the number of pizzas increases accordingly.
+# Level 4 (Optional, advanced) - advanced validation
 
-#### 11. Extract the Add button to its own component
+In this level, bookings should also be rejected if:
 
-**Instructions:** Extract the `<button>` currently in the `<Restaurant />` component to a new component named `RestaurantButton`. Pass the `orderOne` function as a prop to the `<RestaurantButton />` component and use this prop in the `onClick` handler.
+- email address is not valid (hint: use a library to do this - [search here](https://www.npmjs.com/))
+- checkoutDate is not after checkinDate (hint: use the `moment` library to check this)
 
-**Test:** Clicking the button should still increment the number of pizzas.
+# Level 5 (Optional, easy) - free-text search
 
-#### 12. Extract pizza order to its own Order component
+For this level your API must also allow a client to:
 
-**Instructions:** Extract the `<li>` containing "Pizzas" from the `<Restaurant />` component to a new component named `Order`. Also, move the declaration of the `orders` state and the `orderOne` function from the `<Restaurant />` component to the new `<Order />` component. Use the `<Order />` component in the `<ul>` list of the `<Restaurant />` component.
+Search for bookings which match a given search term.
 
-**Test:** Make sure the pizza order is still rendered on the page and that clicking on the "Add" button still increments the number of orders.
+It should accept requests of the following format:
 
-#### 13. Render more orders
+`/bookings/search?term=jones`
 
-**Instructions:** Pass a new prop named `orderType` to the `<Order />` component with the value "Pizzas". Then render the `orderType` prop instead of "Pizzas" in the `<Order />` component. Make sure that "Pizzas" is still displayed on the screen. In the `<ul>` list of the `<Restaurant />` component, render 2 others `<Order />` components but this time pass different values for the `orderType` prop: "Salads" and "Chocolate cake".
+It should match if the term occurs in _any_ of `email`, `firstName`, or `surname` fields.
 
-**Test:** For each order, the number of items can be incremented independently. Verify that you are able to explain what is happening.
+# Level 6 (Optional) - make your React app use your new server
 
-#### 14. Passing bookings from a state variable
+For this level, change your react hotel front-end to use your own back-end API that you have designed here in this challenge. Adjust it so that all the functionality works.
 
-**Instructions:** In the `<Bookings />` component, declare a new state `bookings` with the corresponding setter function `setBookings` to hold the `FakeBookings` data. Instead of passing `FakeBookings` directly to the `<SearchResults />` component, pass the new `bookings` state variable.
+# Spoiler: Correct Routes
 
-**Hint:** The new `bookings` state should be initialised with the `FakeBookings` variable.
-
-**Test:** Check that the bookings are still rendered correctly in the page.
-
-#### 15. Highlight booking row when clicked
-
-**Instructions:** Within the `<SearchResults />` component or its child components, add an `onClick` handler to each row in the table (hint: on the `<tr>` element). When clicked, the row is "selected" and highlighted with a different colour. When clicked again, the row is unselected and the coloured highlighting is removed.
-
-**Hint:** Use a new state variable for each row to record if the row is selected or not, and use this value to set a class to the `className` prop of the row.
-
-**Test:** Verify that each row of your table can be highlighted (on and off) independently when being clicked.
-
-## Lesson 3
-
-#### 16. Load bookings remotely
-
-**Instructions:** Instead of getting the existing bookings from the file `data/fakeBookings.json`, we will get and load the bookings from a remote API. In the `<Bookings />` component, use the React function `useEffect` to `console.log()` some text only when the page first renders on the screen. Verify that when you refresh the page, the text appears once in the console. Then, in the `useEffect` function, use the `fetch()` function to get data from `https://cyf-react.glitch.me`.
-
-**Hints:**
-
-- Replace `FakeBookings` in the bookings state and initialise it with `[]` (because we haven't fetched any results yet!)
-- After calling the `fetch()` function, use `.then()` to handle the response. Try looking at your Pokemon app that you worked on in class for an example
-- When the response comes back, use `setBookings` to update the results
-
-**Test:** Verify the customers data are still displayed correctly in the table.
-
-#### 17. Storing the search input in a state
-
-**Instructions:** In the following, we will implement the functionality to search for a customer name given the text typed into the customer name field. In the `src/Search.js` file, declare a new state variable named `searchInput` with the corresponding setter function `setSearchInput` (hint: use the React function `useState`). The initial value of the `searchInput` variable can be an empty string. Add a `value` property to the `<input>` tag that is set to the new `searchInput` state variable. Create a new function `handleSearchInput` taking an `event` parameter. This function should use the `setSearchInput` function to update the state variable `searchInput` with what the user typed in the input field. Finally, add a `onChange` prop to the `<input>` tag that is set to the function `handleSearchInput`. Use `console.log()` to output the value received in the `handleSearchInput` function.
-
-**Hint:** Use `event.target.value` to get the input value.
-
-**Test:** In the developer console, check that everything you type in the search input is printed successively for each new character you enter.
-
-#### 18. Triggering search when submitting the form
-
-**Instructions:** Still in the `<Search />` component, add a `onSubmit` handler to the `<form>` tag. When the form is submitted (try clicking the search button), get the value of the state `searchInput` and pass it as a parameter to the `search` prop function that has been provided for you (the `search` prop is passed from the `<Bookings />` component).
-
-**Note:** Also your submit handler should take an `event` parameter and add the line `event.preventDefault()` to prevent the browser to implicitely submit the form).
-
-**Test:** Look in the console, you should see the text that is typed in the search input field when submitting the form.
-
-#### 19. Implementing the search functionality
-
-**Instructions:** Still in the `<Bookings />` component, implement the `search` method. It must use the `searchVal` variable (that you just passed from the `<Search />` component) to **filter** the search results. The filter function should return bookings where `firstName` or `surname` match `searchVal`. Once filtered, use the `setBookings` function to update the results rendered in `<SearchResults />`.
-
-**Test:** Verify that when you enter an existing first name or surname and submit the form, the results are filtered accordingly in the customers table.
-
-#### 20. Display a customer profile - step 1
-
-**Instructions:** Add a new column in the table of the `<SearchResults />` component and display a `<button>` for each row. The text of the button should read "Show profile". Then, create a new `<CustomerProfile />` component. This component should be rendered next to the table in the `<SearchResults />` component. This component should receive one prop `id`. When clicking on a "Show profile" button for a given row, the component `<CustomerProfile />` should display the text "Customer <ID> Profile", where <ID> is the id of the selected customer. Initially, the `<CustomerProfile />` component doesn't show anything.
-
-**Hint:** You need to record the selected customer id after clicking on a "Show profile" button. In which component do you think this state should be defined?
-
-**Test:** When first showing the page, no customer profile is displayed. When clicking the first "Show profile" button of the table, the text "Customer 1 profile" appears. When clickong the second "Show profile" button of the table, the text "Customer 2 profile" appears instead.
-
-#### 21. Display a customer profile - step 2
-
-**Instructions:** When a "Show profile" button is clicked in the table, fetch the corresponding customer profile from `https://cyf-react.glitch.me/customers/<ID>` in the `<CustomerProfile />` component. A customer profile should show the customer ID, their email, if they are VIP and their phone number in a list.
-
-**Hint:** You need to use `useEffect` and the correct dependency array. You'll need to fetch customers data from the API every time a "Show profile" button is clicked and render it accordingly.
-
-**Test:** When you click on a "Show profile" button in the table, the corresponding customer profile is loaded and rendered on the screen.
-
-#### 22. Show a loading message
-
-**Instructions:** Do you remember in the Homework of the Lesson 2, we fetched the bookings from a remote API. Now show a _loading state_ in `<Bookings />` while the data from the server is being fetched. To test this, try loading data from `https://cyf-react.glitch.me/delayed`, which has a 5 second delay before returning the data. You will need to use another state to record when your application is loading data (this can be a boolean) and display a loading message whenever the application is loading data.
-
-**Hint:** Try looking at your Pokemon app that you worked on in class for an example.
-
-**Test:** A message inviting the user to wait should be displayed on the screen until bookings data can be rendered on the screen. When bookings are rendered, the loading message should be hidden.
-
-#### 23. Show an error message
-
-**Instructions:** Finally, display an error message in `<Bookings />` if there is an HTTP error when fetching data from the server. To test this, try loading data from `https://cyf-react.glitch.me/error`, which will return a 500 HTTP error.
-
-**Hint:** Try looking at your Pokemon app that you worked on in class for an example.
-
-**Test:** When loading bookings data from the `/error` endpoint, an error message should be displayed on the screen.
-
-## Stretch Goals
-
-#### 24. Create a new booking
-
-**Instructions:** Add a form with `<input>`s for each of the booking fields (first name, surname, title, room id, check in date, check out date) to the bottom of the page. Submitting the form adds the booking to the result table. Note that the new booking won't persist if you refresh the page.
-
-**Test:** When adding a new booking in the form, it should be displayed in the table.
-
-#### 25. Sort table columns
-
-**Instructions:** Add an `onClick` handler to the columns of the result table, which sorts the results ascending (A -> Z). Clicking the column again will reverse the sort order to descending (Z -> A).
-
-**Hint:** Try using the `.sort()` method with a callback to do custom sorting.
-
-**Test:** Each column in the table should be clickable to sort results in ascending or descending order.
+| method | example path                     | behaviour                                   |
+| ------ | -------------------------------- | ------------------------------------------- |
+| GET    | /bookings                        | return all bookings                         |
+| GET    | /bookings/17                     | get one booking by id                       |
+| GET    | /bookings/search?term=jones      | get all bookings matching a search term     |
+| POST   | /bookings                        | create a new booking                        |
+| DELETE | /bookings/17                     | delete a booking by id                      |
+| GET    | /bookings/search?date=2019-05-20 | return all bookings spanning the given date |
