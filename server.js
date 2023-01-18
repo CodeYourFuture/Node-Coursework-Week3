@@ -17,6 +17,12 @@ app.get("/bookings", function (req, res) {
   res.send(bookings);
 });
 
+app.get("/bookings/search", function (req, res) {
+  const date = dateToNumber(req.query.date);
+  console.log("date:", date);
+  res.send(bookings.filter((booking) => dateToNumber(booking.checkInDate) <= date && dateToNumber(booking.checkOutDate) >= date));
+});
+
 app.get("/bookings/:id", function (req, res) {
   const matched = bookings.find((booking) => booking.id === +req.params.id);
   if (!matched) return res.status(404).send("incorrect id");
@@ -44,3 +50,7 @@ app.delete("/bookings/:id", (req, res) => {
 const listener = app.listen(5000 || process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
+
+const dateToNumber = (date) => {
+  return +date.replaceAll("-", "");
+};
