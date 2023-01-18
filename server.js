@@ -95,7 +95,7 @@ app.post("/bookings", function (req, res) {
   }
 
   const newBooking = {
-    id: uuid.v4(),
+    id: req.body.id,
     roomId: req.body.roomId,
     title: req.body.title,
     firstName: req.body.firstName,
