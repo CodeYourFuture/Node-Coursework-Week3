@@ -31,8 +31,14 @@ app.get("/bookings/:id", function (req, res) {
 app.post("/bookings", function (req, res) {
   const newBooking = req.body;
   newBooking.id = bookings.length + 1;
-  bookings.push(newBooking);
-  res.send(bookings);
+  const { title, firstName, surname, email, roomId, checkInDate, checkOutDate } = newBooking;
+  const valid = !!title && !!firstName && !!surname && !!email && (roomId === 0 || !!roomId) && !!checkInDate && !!checkOutDate;
+  if (valid) {
+    bookings.push(newBooking);
+    res.send(bookings);
+  } else {
+    res.status(400).send("missing information");
+  }
 });
 
 app.delete("/bookings/:id", (req, res) => {
