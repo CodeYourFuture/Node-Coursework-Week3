@@ -53,10 +53,9 @@ app.post("/bookings", function (req, res) {
 });
 
 app.delete("/bookings/:id", (req, res) => {
-  const booking = bookings.find((booking) => booking.id === +req.params.id);
-  if (!booking) return res.status(404).send("incorrect id");
-  const index = bookings.indexOf(booking);
-  bookings.splice(index, 1);
+  const bookingIndex = bookings.findIndex((booking) => booking.id === +req.params.id);
+  if (bookingIndex === -1) return res.status(404).send("incorrect id");
+  bookings.splice(bookingIndex, 1);
   res.send(bookings);
 });
 
