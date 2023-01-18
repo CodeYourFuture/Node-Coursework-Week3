@@ -12,14 +12,14 @@ app.use(cors());
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
-function isInvalidId(id, index, response) {
+function isInvalidId(id, index, res) {
   if (index < 0) {
-    response.status(400).send("No booking with Id: " + id + " is found");
+    res.status(400).send("No booking with Id: " + id + " is found");
   }
 }
 
-app.get("/", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
+app.get("/", function (req, res) {
+  res.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
 // TODO add your routes and helper functions here
@@ -54,25 +54,27 @@ app.get("/bookings/search", function (req, res) {
     );
 
   if (fltBookings.length <= 0) {
-    (term || date) && response.status(400).send("No matching results");
+    (term || date) && res.status(400).send("No matching results");
   }
 
   if (!term && !date) {
-    response.status(400).send("Please enter search term");
+    res.status(400).send("Please enter search term");
   }
 
-  response.send(fltBookings);
+  res.send(fltBookings);
 });
 
 // Get one booking by id
 app.get("/bookings/:id", function (req, res) {
-  let bookingIndex = bookings.findIndex((elt) => elt.id == request.params.id);
+  let bookingIndex = bookings.findIndex((elt) => elt.id == req.params.id);
 
-  isInvalidId(request.params.id, bookingIndex, response);
+  isInvalidId(req.params.id, bookingIndex, res);
 
   if (bookingIndex >= 0) {
     let booking = bookings[bookingIndex];
-    response.json(booking);
+    res.json(booking);
+  }else {
+    res.sendStatus(404).send("Not Found!");
   }
 });
 
