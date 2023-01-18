@@ -28,7 +28,7 @@ app.get("/", function (request, response) {
 
 app.get("/bookings", function (req, res) {
   if (bookings.length <= 0) {
-    res.status(500).send("No Available Data");
+    res.status([]).send("No Available Data");
   }
   res.json(bookings);
 });
