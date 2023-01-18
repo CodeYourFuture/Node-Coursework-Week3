@@ -117,7 +117,7 @@ app.delete("/bookings/:id", function (req, res) {
   isInvalidId(req.params.id, bookingIndex, res);
 
   bookings.splice(bookingIndex, 1);
-  res.send("Booking has been successfully deleted.");
+  res.send({ message: "Booking has been successfully deleted." });
 });
 
 const listener = app.listen(process.env.PORT, function () {
