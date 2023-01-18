@@ -7,19 +7,16 @@ const validator = require("email-validator");
 const app = express();
 
 app.use(express.json());
-app.use(express.urlencoded({ extended: true}));
 app.use(cors());
 
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
-
 
 function isInvalidId(id, index, response) {
   if (index < 0) {
     response.status(400).send("No booking with Id: " + id + " is found");
   }
 }
-
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
@@ -29,11 +26,11 @@ app.get("/", function (request, response) {
 
 // GET All Bookings
 
-app.get("/bookings", function(req, res) {
-  if(bookings.length <= 0) {
+app.get("/bookings", function (req, res) {
+  if (bookings.length <= 0) {
     res.status(500).send("No Available Data");
   }
-  res.json(bookings)
+  res.json(bookings);
 });
 
 // Search Bookings
