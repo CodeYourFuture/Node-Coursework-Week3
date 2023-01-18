@@ -18,9 +18,13 @@ app.get("/bookings", function (req, res) {
 });
 
 app.get("/bookings/search", function (req, res) {
-  const date = dateToNumber(req.query.date);
-  console.log("date:", date);
-  res.send(bookings.filter((booking) => dateToNumber(booking.checkInDate) <= date && dateToNumber(booking.checkOutDate) >= date));
+  if (req.query.date) {
+    const date = dateToNumber(req.query.date);
+    res.send(bookings.filter((booking) => dateToNumber(booking.checkInDate) <= date && dateToNumber(booking.checkOutDate) >= date));
+  } else {
+    const term = req.query.term;
+    res.send(bookings.filter((booking) => booking.firstName.includes(term) || booking.surname.includes(term) || booking.email.includes(term)));
+  }
 });
 
 app.get("/bookings/:id", function (req, res) {
