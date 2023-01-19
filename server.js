@@ -33,7 +33,7 @@ app.post("/booking", (req, resp) => {
     bookings.push(newBooking);
     resp.send("New Booking has been added >>");
   } else {
-    resp.send("400");
+    resp.status(400).send("Missin Information >> ");
   }
 });
 //Read one booking, specified by an ID
@@ -41,7 +41,7 @@ app.get("/booking/:id", function (request, response) {
   const bookingID = +request.params.id;
   const fliterBooking = bookings.find((booking) => booking.id === bookingID);
   if (!fliterBooking) {
-    response.send("4040");
+    response.status(4040).send("4040");
   } else {
     response.send({ fliterBooking });
   }
@@ -50,11 +50,10 @@ app.get("/booking/:id", function (request, response) {
 app.delete("/booking/:id", (req, resp) => {
   const bookingID = +req.params.id;
   const fliterBooking = bookings.filter((booking) => booking.id !== bookingID);
-  console.log(fliterBooking);
   resp.send({ fliterBooking });
 });
 // TODO add your routes and helper functions here
 //process.env.PORT
-const listener = app.listen(9090, function () {
+const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + 9090);
 });
