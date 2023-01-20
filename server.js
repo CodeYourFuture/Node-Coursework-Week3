@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const port = process.env.PORT || 9000;
 
 const app = express();
 
@@ -15,6 +16,6 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 
-const listener = app.listen(process.env.PORT, function () {
+const listener = app.listen(port, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
