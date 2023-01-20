@@ -29,7 +29,7 @@ app.get("/bookings/search", (request, response) => {
       );
     });
   }
-  response.status(200).send(matchingBookings);
+  response.status(200).json({matchingBookings});
 });
 
 app.get("/bookings/:id", (request, response) => {
