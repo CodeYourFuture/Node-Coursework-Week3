@@ -1,11 +1,13 @@
 const express = require("express");
 const app = express();
-const bodyParser = require("body-parser");
+const cors= require("cors");
 
+const bodyParser = require("body-parser");
 const bookings = require("./bookings.json");
 
 app.use(bodyParser.json());
 app.use(express.json());
+app.use(cors())
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
