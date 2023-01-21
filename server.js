@@ -27,9 +27,35 @@ app.get("/bookings/:id" , (request ,response) =>{
     .status(404)
       .json({ message: `booking with the ${id} not found`});
   }
-  response.status(200).json({ findId})
+  response.status(200).json({ findId })
 });
-// TODO add your routes and helper functions here
+
+app.post("/bookings", (request, response) => {
+  if (
+    request.body.firstName === "" ||
+    request.body.email === "" ||
+    request.body.surname == "" ||
+    request.body.title === "" ||
+    request.body.checkInDate === "" ||
+    request.body.checkOutDate === "" ||
+    request.body.roomId === null
+  ) {
+    response.status(400).json({ message: "please fill all the fields" });
+    return;
+  }
+  const newBooking = {
+    id: bookings.length + 1,
+    title: request.body.title,
+    firstName: request.body.firstName,
+    surname: request.body.surname,
+    email: request.body.email,
+    roomId: request.body.roomId,
+    checkInDate: request.body.checkInDate,
+    checkOutDate: request.body.checkOutDate,
+  };
+  bookings.push(newBooking);
+  response.status(201).json({ bookings });
+});
 
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
