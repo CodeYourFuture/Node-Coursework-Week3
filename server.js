@@ -9,25 +9,41 @@ app.use(cors());
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 const { request, response } = require("express");
+
+
 // reading bookings
 app.get("/bookings", function (request, response) {
-  response.status(20).send({ bookings })
+  response.status(200).send({ bookings })
 });
 // create new booking
 app.post("/bookings", (req, res) => {
   const newId = booking[booking.length - 1].id + 1
   const { title, firstName, surname, email, roomId, checkInDate, checkOutDate } = req.body
   const obj = { id: newId, ...req.body }
-  console.log(obj); if (!title || !firstName || !surname || !email || !roomId || !checkInDate || !checkOutDate) { res.status(400).send("missing value"); } else { res.status(201).json({ obj }) }
-})
+  console.log(obj);
+  if (!title || !firstName || !surname || !email || !roomId || !checkInDate || !checkOutDate) {
+    res.status(201).json({ obj });
+  }
+});
 
 // get a booking by id
-app.get("/bookings/:id", function (request, response) {
-  const idToFind = Number(request.params.id);
+app.get("/bookings/:bookingId", function (request, response) {
+  const idToFind = Number(request.params.bookingId);
   const booking = bookings.find((booking) => booking.id === idToFind);
   response.status(200).send({ booking })
 });
+// delete booking
+app.delete('/bookings/:bookingId', (request, response) => {
+  const idToDelete = +request.params.bookingId
+  const deleteBooking = bookings.filter(item => item.id !== idToDelete)
+  if (deleteBooking) {
+    response.status(202).send(deleteBooking)
+  }
+  else {
+    response.status(404).send("not found")
+  }
 
+})
 // TODO add your routes and helper functions here
 
 const listener = app.listen(process.env.PORT || 3000, function () {
