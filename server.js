@@ -14,6 +14,51 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
+//reading all bookings
+app.get("/bookings", (req, res) => {
+  res.status(200).send(bookings);
+});
+
+app.post("/bookings", (req, res) => {
+  const requestBody = req.body;
+
+  const newBooking = {
+    id: requestBody.id,
+    title: requestBody.title,
+    firstName: requestBody.firstName,
+    surname: requestBody.surname,
+    email: requestBody.email,
+    roomId: requestBody.roomId,
+    checkInDate: requestBody.checkInDate,
+    checkOutDate: requestBody.checkOutDate,
+  };
+
+  // validation
+  bookings.push(newBooking);
+  res.status(200).send(bookings);
+});
+
+// Read by Id
+app.get("/bookings/:id", (req, res) => {
+  const bookingId = +req.params.id;
+  const searchedBooking = bookings.filter(
+    (booking) => booking.id === bookingId
+  );
+  res.status(200).send(searchedBooking);
+});
+
+//Deleting by id
+app.delete("/bookings/:id", (req, res) => {
+  const bookingId = +req.params.id;
+  const bookingIndex = bookings.findIndex(
+    (booking) => booking.id === bookingId
+  );
+
+  bookings.splice(bookingIndex, 1);
+
+  res.status(200).send(bookings);
+});
+
 // TODO add your routes and helper functions here
 
 const listener = app.listen(port, function () {
