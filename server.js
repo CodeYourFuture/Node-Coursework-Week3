@@ -14,23 +14,37 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
-app.post("/createbooking", (req, res) => {
-  let newBooking = req.body;
+app.post("/bookings", (req, res) => {
+  // let newBooking = req.body;
+  const {
+    roomId,
+    title,
+    firstName,
+    surname,
+    email,
+    checkInDate,
+    checkOutDate,
+  } = req.body;
   let newID = bookings[bookings.length - 1].id + 1;
-  console.log(newBooking);
 
-  let createbooking = {
-    id: newID,
-    roomId: newBooking.roomId,
-    title: newBooking.title,
-    firstName: newBooking.firstName,
-    surname: newBooking.surname,
-    email: newBooking.email,
-    checkInDate: newBooking.checkInDate,
-    checkOutDate: newBooking.checkOutDate,
-  };
-  bookings.push(createbooking);
-  res.json("New booking created");
+  if (
+    !roomId ||
+    !title ||
+    !firstName ||
+    !surname ||
+    !email ||
+    !checkInDate ||
+    !checkOutDate
+  ) {
+    res.status(404).json({ message: "Error with form" });
+  } else {
+    let createbooking = {
+      id: newID,
+      ...req.body,
+    };
+    bookings.push(createbooking);
+    res.json("New booking created");
+  }
 });
 
 app.get("/bookings", (req, res) => {
