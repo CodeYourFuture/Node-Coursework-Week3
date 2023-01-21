@@ -34,8 +34,23 @@ app.post("/bookings", (req, res) => {
   };
 
   // validation
-  bookings.push(newBooking);
-  res.status(200).send(bookings);
+
+  const validBooking =
+    (!!requestBody.id || requestBody.id === 0) &&
+    !!requestBody.title &&
+    !!requestBody.firstName &&
+    !!requestBody.surname &&
+    !!requestBody.email &&
+    !!requestBody.roomId &&
+    !!requestBody.checkInDate &&
+    !!requestBody.checkOutDate;
+
+  if (validBooking) {
+    bookings.push(newBooking);
+    res.status(200).send(bookings);
+  } else {
+    res.status(400).send("Some information is missing");
+  }
 });
 
 // Read by Id
