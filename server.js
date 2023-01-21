@@ -49,7 +49,8 @@ app.get("/bookings/:id", (request, response) => {
   }
 });
 
-//  to create bookings
+//  to create bookings & level :02 
+
 
 app.post("/createNewBookings", (request, response) => {
   //  console.log("hello hahha")
@@ -73,7 +74,7 @@ app.post("/createNewBookings", (request, response) => {
     !createNewBookings.checkInDate ||
     !createNewBookings.checkOutDate
   ) {
-    return response.status(404).json({
+    return response.status(400).json({
       msg: "Please include a title, FirstName, surName, Email, RoomId, CheckInDate & CheckOutDate",
     });
   }
