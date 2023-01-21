@@ -1,8 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const port = process.env.PORT || 9000;
-
 const app = express();
+const moment = require("moment");
 
 app.use(express.json());
 app.use(cors());
@@ -58,7 +58,7 @@ app.get("/bookings/:id", (req, res) => {
   const bookingId = +req.params.id;
   const searchedBooking = bookings.filter(
     (booking) => booking.id === bookingId
-  );
+  )
   res.status(200).send(searchedBooking);
 });
 
