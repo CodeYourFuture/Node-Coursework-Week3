@@ -22,7 +22,6 @@ At this first level, your API must allow a client to:
 1. Delete a booking, specified by an ID
 
 If the booking to be read cannot be found by id, return a 404.
-
 If the booking for deletion cannot be found by id, return a 404.
 
 All booking content should be passed as JSON.
