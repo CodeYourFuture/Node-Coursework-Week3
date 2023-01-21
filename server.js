@@ -26,18 +26,29 @@ app.post("/bookings", function (req, res) {
 
 app.get("/bookings/:id", function (req, res) {
   const bookingsId = +req.params.id;
-  const oneBooking = bookings.find((booking) => booking.id === bookingsId);
-  res.send(oneBooking);
+  let isInclude = bookings.some((booking) => booking.id === bookingsId);
+  if (isInclude) {
+    const oneBooking = bookings.find((booking) => booking.id === bookingsId);
+    res.send(oneBooking);
+  } else {
+    res.send(`We couldn't find the ID ${JSON.stringify(bookingsId)}`);
+  }
+  
 });
 
 app.delete("/bookings/:id", function (req, res) {
   let bookingsId = +req.params.id;
-  bookings = bookings.filter((booking) => booking.id !== bookingsId);
-  res.send({ bookings });
+  let isInclude = bookings.some((booking) => booking.id === bookingsId);
+  if (isInclude) {
+    bookings = bookings.filter((booking) => booking.id !== bookingsId);
+    res.send({ bookings });
+  } else {
+    res.send(`We couldn't find the ID ${JSON.stringify(bookingsId)}`);
+  }
 });
 
-const listener = app.listen(process.env.PORT, function () {
+const listener = app.listen(9000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
 
-app.listen(9000);
+
