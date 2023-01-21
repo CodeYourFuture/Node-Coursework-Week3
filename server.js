@@ -15,26 +15,29 @@ app.get("/", function (request, response) {
 });
 
 app.get("/bookings", function (req, res) {
-  res.send({bookings})
+  res.send({ bookings });
+});
+
+app.post("/bookings", function (req, res) {
+  const newBooking = req.body;
+  bookings.push(newBooking);
+  res.send(newBooking);
 })
 
 app.get("/bookings/:id", function (req, res) {
   const bookingsId = +req.params.id;
   const oneBooking = bookings.find((booking) => booking.id === bookingsId);
   res.send(oneBooking);
-})
+});
 
 app.delete("/bookings/:id", function (req, res) {
   let bookingsId = +req.params.id;
   bookings = bookings.filter((booking) => booking.id !== bookingsId);
-  res.send({bookings});
+  res.send({ bookings });
 });
 
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
-
-
-
 
 app.listen(9000);
