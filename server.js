@@ -15,14 +15,27 @@ const { request, response } = require("express");
 app.get("/bookings", function (request, response) {
   response.status(200).send({ bookings })
 });
+// delete booking
+app.delete("/bookings/:id", (req, resp) => {
+  const bookingID = +req.params.id;
+  let filterBooking = bookings.find((booking) => booking.id === bookingID);
+  if (!filterBooking) {
+    resp.status(404).send("Miss info ");
+  } else {
+    bookings = bookings.filter((book) => book.id !== bookingID);
+    resp.send({ bookings });
+  }
+});
 // create new booking
 app.post("/bookings", (req, res) => {
-  const newId = booking[booking.length - 1].id + 1
-  const { title, firstName, surname, email, roomId, checkInDate, checkOutDate } = req.body
-  const obj = { id: newId, ...req.body }
-  console.log(obj);
-  if (!title || !firstName || !surname || !email || !roomId || !checkInDate || !checkOutDate) {
-    res.status(201).json({ obj });
+  const newBooking = req.body;
+
+  if (newBooking.id && newBooking.title && newBooking.firstName && newBooking.surname && newBooking.email && newBooking.roomId && newBooking.checkInDate && newBooking.checkOutDate) {
+    bookings.push(newBooking);
+    res.status(201).send(bookings);
+  }
+  else {
+    res.status(400).send("Missing information")
   }
 });
 
@@ -32,18 +45,7 @@ app.get("/bookings/:bookingId", function (request, response) {
   const booking = bookings.find((booking) => booking.id === idToFind);
   response.status(200).send({ booking })
 });
-// delete booking
-app.delete('/bookings/:bookingId', (request, response) => {
-  const idToDelete = +request.params.bookingId
-  const deleteBooking = bookings.filter(item => item.id !== idToDelete)
-  if (deleteBooking) {
-    response.status(202).send(deleteBooking)
-  }
-  else {
-    response.status(404).send("not found")
-  }
 
-})
 // TODO add your routes and helper functions here
 
 const listener = app.listen(process.env.PORT || 3000, function () {
