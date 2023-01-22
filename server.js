@@ -46,7 +46,7 @@ app.post("/bookings", function (req, res) {
   ) {
     res.status(400).send("Rejected: empty or missing property.");
   } else {
-    messages.push(booking);
+    bookings.push(booking);
     res.redirect("/");
   }
 });
@@ -78,7 +78,7 @@ function search(word) {
 //  get one booking by id
 app.get("/bookings/:id", function (req, res) {
   const idToFind = Number(req.params.id);
-  const booking = messages.find((booking) => booking.id === idToFind);
+  const booking = bookings.find((booking) => booking.id === idToFind);
   if (booking) {
     res.status(200).send({ booking });
   } else {
@@ -92,7 +92,7 @@ app.delete("/bookings/:id", function (req, res) {
   const indexToDel = bookings.findIndex((booking) => booking.id === idToDel);
   if (indexToDel >= 0) {
     bookings.splice(indexToDel, 1);
-    res.status(200).send({ booking });
+    res.status(200).send({ bookings });
   } else {
     res.status(404).send("Not found.");
   }
