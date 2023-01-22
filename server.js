@@ -6,6 +6,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+const moment = require("moment");
+
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
@@ -50,6 +52,25 @@ app.post("/bookings", (req, res) => {
   }
 });
 
+//search date between checkIn and checkOut(important need to be before than :id code)
+app.get("/bookings/search", function (req, res) {
+  const dateSearch = req.query.date; //need to be the same you are using on postman
+  const date = moment(dateSearch); //convert to moment to check as number
+  let foundResult = [];
+  bookings.forEach((booking) => {
+    let checkInAsNumber = moment(booking.checkInDate);
+    let checkOutAsNumber = moment(booking.checkOutDate);
+    if (date.isBetween(checkInAsNumber, checkOutAsNumber, null, "[]")) {
+      foundResult.push(booking);
+    }
+  });
+  if (foundResult.length === 0) {
+    res.status(404).send("Not found a match search");
+  } else {
+    res.send(foundResult);
+  }
+});
+
 //delete one booking by ID
 app.delete("/bookings/:bookingId", function (req, res) {
   const toDelete = +req.params.bookingId;
@@ -71,9 +92,7 @@ app.get("/bookings/:bookingId", function (req, res) {
   const booking = bookings.find((booking) => booking.id === idToFind); //booking.id -> id -> property
   if (booking) {
     res.status(200).send({ booking });
-    console.log(booking);
   } else {
-    console.log("working");
     res.status(204).send("Not found");
   }
 });
