@@ -7,6 +7,7 @@ app.use(express.json());
 app.use(cors());
 
 const moment = require("moment");
+const validator = require("email-validator");
 
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
@@ -23,19 +24,23 @@ app.get("/bookings", function (req, res) {
 //Create a new booking
 app.post("/bookings", (req, res) => {
   const newID = bookings[bookings.length - 1].id + 1;
-  const {
-    title,
-    firstName,
-    surname,
-    email,
-    roomId,
-    checkInDate,
-    checkOutDate,
-  } = req.body;
-  const newBooking = {
-    id: newID,
-    ...req.body,
-  };
+
+  const title = req.body.title;
+  const firstName = req.body.firstName;
+  const surname = req.body.surname;
+  const email = req.body.email;
+  const roomId = req.body.roomId;
+  const checkInDate = req.body.checkInDate;
+  const checkOutDate = req.body.checkOutDate;
+  const isValidEmail = validator.validate(email);
+  if (!isValidEmail) {
+    res.status(400).send("Email is not valid");
+    return;
+  }
+  if (moment(checkInDate).isAfter(checkOutDate)) {
+    res.status(400).send("Check in date is after check out date");
+    return;
+  }
   if (
     !title ||
     !firstName ||
@@ -45,11 +50,23 @@ app.post("/bookings", (req, res) => {
     !checkInDate ||
     !checkOutDate
   ) {
-    res.status(400).send("missing value");
-  } else {
-    bookings.push(newBooking);
-    res.status(201).json({ bookings });
+    res.status(400).send("invalid data to be posted");
+    return;
   }
+  const newBooking = {
+    id: newID,
+    title: title,
+    firstName: firstName,
+    surname: surname,
+    email: email,
+    roomId: roomId,
+    checkInDate: checkInDate,
+    checkOutDate: checkOutDate,
+  };
+
+  bookings.push(newBooking);
+
+  res.send(newBooking);
 });
 
 //search date between checkIn and checkOut(important need to be before than :id code)
