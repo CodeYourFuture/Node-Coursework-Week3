@@ -61,10 +61,10 @@ app.post("/bookings", (req, res) => {
 // Read by Id
 app.get("/bookings/:id", (req, res) => {
   const bookingId = +req.params.id;
-  const searchedBooking = bookings.filter(
+  const searchedBookingById = bookings.filter(
     (booking) => booking.id === bookingId
   );
-  res.status(200).send(searchedBooking);
+  res.status(200).send(searchedBookingById);
 });
 
 //Deleting by id
@@ -114,6 +114,24 @@ const checkInAndOutDatedValidation = (checkInDate, checkOutDate) => {
     return "!! checkOutDate can not be earlier then the CheckInDate";
   }
 };
+
+//Level 5
+
+app.get("/bookings/search/:term", (req, res) => {
+  const term = req.params.term;
+  let searchedBookingByText = bookings.filter(
+    (booking) =>
+      booking.firstName.includes(term) ||
+      booking.surname.includes(term) ||
+      booking.email.includes(term)
+  );
+
+  if (searchedBookingByText) {
+    res.send(searchedBookingByText);
+  } else {
+    res.send(`${term} : is not in the bookings`);
+  }
+});
 
 const listener = app.listen(port, function () {
   console.log("Your app is listening on port " + listener.address().port);
