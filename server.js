@@ -119,6 +119,7 @@ const checkInAndOutDatedValidation = (checkInDate, checkOutDate) => {
 
 app.get("/bookings/search/:term", (req, res) => {
   const term = req.params.term;
+  console.log(term);
   let searchedBookingByText = bookings.filter(
     (booking) =>
       booking.firstName.includes(term) ||
