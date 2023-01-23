@@ -35,8 +35,14 @@ app.post(
 )
 
 app.delete('/bookings/:id', (req, res) => {
-  const body = req.body
-  console.log(body)
+  const id = Number(req.params.id)
+  let bookingId = bookings.find((booking) => booking.id === id)
+  const bookingIndex = bookings.findIndex((i) => i === id)
+
+  !bookingId && res.status(404).send('Not Found')
+
+  bookings.splice(bookingIndex, 1)
+  res.send('Booking deleted')
 })
 
 const listener = app.listen(process.env.PORT, function () {
