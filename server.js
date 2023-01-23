@@ -58,7 +58,7 @@ app.get("/bookings/:id", (req, res) => {
   const bookingId = +req.params.id;
   const searchedBooking = bookings.filter(
     (booking) => booking.id === bookingId
-  )
+  );
   res.status(200).send(searchedBooking);
 });
 
@@ -73,6 +73,31 @@ app.delete("/bookings/:id", (req, res) => {
 
   res.status(200).send(bookings);
 });
+
+//Level 3 search by date
+const dateToNumber = (date) => Number(date.replaceAll("-", ""));
+
+app.get("/bookings/search/:date", (req, res) => {
+  
+  const date = dateToNumber(req.params.date);
+
+  const bookingByDate = bookings.filter((booking) => {
+    // this is filtering out if the date is * earlier then the checkout and later then the checkin
+    return (
+      dateToNumber(booking.checkInDate) <= date &&
+      dateToNumber(booking.checkOutDate) >= date
+    );
+  });
+
+  if (bookingByDate) {
+    res.status(200).send(bookingByDate);
+  } else {
+    res.status(400).send("No booking has this date");
+  }
+});
+
+// convet date to numbers
+
 
 // TODO add your routes and helper functions here
 
