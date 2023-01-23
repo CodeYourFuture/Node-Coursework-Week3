@@ -26,10 +26,18 @@ app.get('/bookings/:id', (req, res) => {
   res.json(bookingsCopy.filter((booking) => booking.id === id))
 })
 
-app.post(('/bookings', (req, res) => {
-  let body = req.body
+app.post(
+  ('/bookings',
+  (req, res) => {
+    const body = req.body
+    console.log(body)
+  })
+)
+
+app.delete('/bookings/:id', (req, res) => {
+  const body = req.body
   console.log(body)
-}))
+})
 
 const listener = app.listen(process.env.PORT, function () {
   console.log('Your app is listening on port ' + listener.address().port)
