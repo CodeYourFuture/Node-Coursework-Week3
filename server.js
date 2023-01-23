@@ -42,7 +42,29 @@ app.delete("/booking/:id", function (request, response) {
   } else {
     response.status(404).send("Booking not found");
   }
+}); 
+// Search for bookings
+app.get("/booking/search", function (request, response) {
+  const term = request.query.term;
+  if (term) {
+    const filteredBookings = bookings.filter(
+      (booking) =>
+
+        booking.firstName.toLowerCase().includes(term.toLowerCase()) ||
+        booking.surname.toLowerCase().includes(term.toLowerCase()) ||
+        booking.email.toLowerCase().includes(term.toLowerCase()) ||
+        booking.roomId.toLowerCase().includes(term.toLowerCase()) ||
+        booking.checkInDate.toLowerCase().includes(term.toLowerCase()) ||
+        booking.checkOutDate.toLowerCase().includes(term.toLowerCase())
+    );
+    response.send(filteredBookings);
+  } else {
+    response.send(bookings);
+  }
 });
+
+
+
   
 
 
