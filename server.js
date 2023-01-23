@@ -31,6 +31,19 @@ app.post("/booking", function (request, response) {
   response.send(newBooking);
 });
 
+  //Delete a booking by ID
+app.delete("/booking/:id", function (request, response) {
+  const id = parseInt(request.params.id);
+  const booking = bookings.find((booking) => booking.id === id);
+  if (booking) {
+    const index = bookings.indexOf(booking);
+    bookings.splice(index, 1);
+    response.send(booking);
+  } else {
+    response.status(404).send("Booking not found");
+  }
+});
+  
 
 
 // TODO add your routes and helper functions here
