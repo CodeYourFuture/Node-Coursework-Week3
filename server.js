@@ -9,9 +9,22 @@ app.use(cors());
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
-app.get("/", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
+// read all bookings
+app.get("/booking", function (request, response) {
+  response.send({ bookings });
 });
+
+// read one booking specified by an id
+app.get("/booking/:id", function (request, response) {
+  const id = parseInt(request.params.id);
+  const booking = bookings.find((booking) => booking.id === id);
+  if (booking) {
+    response.send(booking);
+  } else {
+    response.status(404).send("Booking not found");
+  }
+});
+
 
 // TODO add your routes and helper functions here
 
