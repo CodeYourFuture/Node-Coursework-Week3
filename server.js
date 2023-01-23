@@ -41,9 +41,14 @@ app.post("/bookings", (req, res) => {
     !!requestBody.firstName &&
     !!requestBody.surname &&
     !!requestBody.email &&
+    emailValidation(requestBody.email) &&
     !!requestBody.roomId &&
     !!requestBody.checkInDate &&
-    !!requestBody.checkOutDate;
+    !!requestBody.checkOutDate &&
+    checkInAndOutDatedValidation(
+      requestBody.checkInDate,
+      requestBody.checkOutDate
+    );
 
   if (validBooking) {
     bookings.push(newBooking);
@@ -75,10 +80,11 @@ app.delete("/bookings/:id", (req, res) => {
 });
 
 //Level 3 search by date
+
+// convet date to numbers
 const dateToNumber = (date) => Number(date.replaceAll("-", ""));
 
 app.get("/bookings/search/:date", (req, res) => {
-  
   const date = dateToNumber(req.params.date);
 
   const bookingByDate = bookings.filter((booking) => {
@@ -96,10 +102,18 @@ app.get("/bookings/search/:date", (req, res) => {
   }
 });
 
-// convet date to numbers
+// level 4
 
+const emailValidation = (email) => {
+  email.includes("@") ? email : "Not valid email";
+};
 
-// TODO add your routes and helper functions here
+const checkInAndOutDatedValidation = (checkInDate, checkOutDate) => {
+  // only checking when the checkOutDate is earlier then the checkIndate
+  if (checkOutDate < checkInDate) {
+    return "!! checkOutDate can not be earlier then the CheckInDate";
+  }
+};
 
 const listener = app.listen(port, function () {
   console.log("Your app is listening on port " + listener.address().port);
