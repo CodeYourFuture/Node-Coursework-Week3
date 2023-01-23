@@ -23,7 +23,14 @@ app.get("/booking/:id", function (request, response) {
   } else {
     response.status(404).send("Booking not found");
   }
+}); 
+  //Create a new booking
+app.post("/booking", function (request, response) {
+  const newBooking = request.body;
+  bookings.push(newBooking);
+  response.send(newBooking);
 });
+
 
 
 // TODO add your routes and helper functions here
