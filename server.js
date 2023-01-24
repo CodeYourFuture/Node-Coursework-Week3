@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const port = process.env.PORT || 9090;
 const app = express();
+const moment = require("moment");
 
 app.use(express.json());
 app.use(cors());
@@ -14,6 +15,20 @@ app.get("/", function (request, response) {
 });
 
 // TODO add your routes and helper functions here
+
+// Search bookings by date
+
+app.get("/bookings/search", (req, res) => {
+  const dateFrom = moment(req.query.date, "YYYY-MM-DD");
+  const dateSearchResult = bookings.filter(
+    (booking) =>
+      moment(booking.checkInDate, "YYYY-MM-DD").diff(dateFrom, "days") === 0
+  );
+  if (!dateSearchResult)
+    return res.status(400).send({ error: "No Data Found" });
+
+  res.status(200).send(dateSearchResult);
+});
 
 //get a single booking using Id
 
