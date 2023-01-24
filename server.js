@@ -51,6 +51,40 @@ app.post("/bookings", function (request, response) {
   response.json(bookings);
 });
 
-const listener = app.listen(process.env.PORT, function () {
-  console.log("Your app is listening on port " + listener.address().port);
+
+// get a single booking by id
+app.get("/bookings/:id", (req, res) => {
+  const found = bookings.some(
+    (booking) => booking.id === parseInt(req.params.id)
+  );
+
+  if (found) {
+    res.json(
+      bookings.filter((booking) => booking.id === parseInt(req.params.id))
+    );
+  } else {
+    res.status(404).json({ msg: `No booking with the id of ${req.params.id}` });
+  }
+});
+
+// Delete booking by id
+app.delete("/bookings/:id", (req, res) => {
+  const found = bookings.some(
+    (booking) => booking.id === parseInt(req.params.id)
+  );
+
+  if (found) {
+    res.json({
+      msg: "Booking deleted",
+      bookings: bookings.filter(
+        (booking) => booking.id !== parseInt(req.params.id)
+      ),
+    });
+  } else {
+    res.status(404).json({ msg: `No booking with the id of ${req.params.id}` });
+  }
+});
+
+app.listen(process.env.PORT || 3000, function() {
+  console.log("Server is listening on port 3000. Ready to accept requests!");
 });
