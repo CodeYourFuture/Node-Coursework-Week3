@@ -56,9 +56,11 @@ app.get("/bookings", function (req, res) {
   res.status(200).send({ bookings });
 });
 
+
 // get all bookings matching a search term
+// return all bookings spanning the given date
 app.get("/bookings/search", function (req, res) {
-  const searchWord = req.query.term;
+  const searchWord = req.query.term || req.query.date;
   const result = search(searchWord);
   res.json(result);
 });
@@ -69,11 +71,12 @@ function search(word) {
     (booking) =>
       booking.firstName.toLowerCase().includes(word.toLowerCase()) ||
       booking.surname.toLowerCase().includes(word.toLowerCase()) ||
-      booking.email.toLowerCase().includes(word.toLowerCase())
+      booking.email.toLowerCase().includes(word.toLowerCase()) ||
+      booking.checkInDate.includes(word) ||
+      booking.checkOutDate.includes(word)
   );
 }
 
-// return all bookings spanning the given date
 
 //  get one booking by id
 app.get("/bookings/:id", function (req, res) {
