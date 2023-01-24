@@ -1,12 +1,15 @@
-const express = require("express");
-const cors = require("cors");
+const express = require("express"); 
+const app = express(); 
+const cors = require("cors"); // to enable CORS
 
-const app = express();
+ // Body parser middleware for POST requests
+app.use(express.json()); // to support JSON-encoded bodies
+app.use(express.urlencoded({extended : false})); // to support URL-encoded bodies
+app.use(cors());  // to enable CORS
 
-app.use(express.json());
-app.use(cors());
 
-//Use this array as your (in-memory) data store.
+
+//Use this array as your (in-machine) data store, in the future it will be replaced with a real database.
 const bookings = require("./bookings.json");
 
 // read all bookings
@@ -28,25 +31,28 @@ app.get("/booking/:id", (req, res) => {
 
 
 //Create a new booking
-app.post("/booking", function (request, response) {
-  const newBooking = request.body;
+app.post("/booking", function (req, res) {
+  const newBooking = req.body;
   bookings.push(newBooking);
-  response.send(newBooking);
+  res.send(newBooking);
 });
 
 //Delete a booking by ID
 app.delete("/booking/:id", function (request, response) {
   const id = parseInt(request.params.id);
-  const booking = bookings.find((booking) => booking.id === id);
+  const booking = bookings.some((booking) => booking.id === id);
   if (booking) {
     const index = bookings.indexOf(booking);
     bookings.splice(index, 1);
     response.send(booking);
   } else {
-    response.status(404).send("Booking not found");
+    response.status(404).send(`booking with id: ${id} not found`);
   }
 });
+
+
 // Search for bookings
+
 app.get("/booking/search", function (request, response) {
   const term = request.query.term;
   if (term) {
