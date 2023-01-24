@@ -15,23 +15,26 @@ app.get("/booking", function (request, response) {
 });
 
 // read one booking specified by an id
-app.get("/booking/:id", function (request, response) {
+
+app.get("/booking/:id", (req, res) => {
   const id = parseInt(request.params.id);
-  const booking = bookings.find((booking) => booking.id === id);
-  if (booking) {
-    response.send(booking);
+  const found = bookings.some((booking) => booking.id === id); // use .some() method to return either true or false 
+  if (found) {
+    res.json(bookings.filter((booking) => booking.id === id));
   } else {
-    response.status(404).send("Booking not found");
+    res.status(400).json(`booking with id: ${id} not found`);
   }
-}); 
-  //Create a new booking
+});
+
+
+//Create a new booking
 app.post("/booking", function (request, response) {
   const newBooking = request.body;
   bookings.push(newBooking);
   response.send(newBooking);
 });
 
-  //Delete a booking by ID
+//Delete a booking by ID
 app.delete("/booking/:id", function (request, response) {
   const id = parseInt(request.params.id);
   const booking = bookings.find((booking) => booking.id === id);
@@ -42,14 +45,13 @@ app.delete("/booking/:id", function (request, response) {
   } else {
     response.status(404).send("Booking not found");
   }
-}); 
+});
 // Search for bookings
 app.get("/booking/search", function (request, response) {
   const term = request.query.term;
   if (term) {
     const filteredBookings = bookings.filter(
       (booking) =>
-
         booking.firstName.toLowerCase().includes(term.toLowerCase()) ||
         booking.surname.toLowerCase().includes(term.toLowerCase()) ||
         booking.email.toLowerCase().includes(term.toLowerCase()) ||
@@ -62,11 +64,6 @@ app.get("/booking/search", function (request, response) {
     response.send(bookings);
   }
 });
-
-
-
-  
-
 
 // TODO add your routes and helper functions here
 
