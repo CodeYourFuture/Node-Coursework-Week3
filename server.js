@@ -44,6 +44,9 @@ app.post("/bookings",(req,res)=>{
   // bookings.push(obj)
   if( !title || !firstName || !surname || !email || !roomId || !checkInDate || !checkOutDate){
   res.status(400).send("PLEASE FILL THE FORM COMPLETELY");
+  if(!validator.validate(email)){
+     res.status(400).send(`Please check your email,${email } is not valid. `)
+  }
   }else{
   res.status(201).json({bookings})}
 })
