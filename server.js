@@ -20,6 +20,14 @@ app.get("/bookings",(req,res)=>{
   res.json({bookings})
 })
 app.get('/bookings/search',(req,res)=>{
+  const term=req.query.term.toLocaleLowerCase()
+const filterterm=booking.filter(item=>item.firstName.toLocaleLowerCase().includes(term)||
+item.surname.toLocaleLowerCase().includes(term)||item.email.toLocaleLowerCase().includes(term))
+if(filterterm.length!==0){
+  res.status(200).send(filterterm)
+}else{
+  res.status(400).send('No thing Matched')
+}
   const searchitem=req.query.date
   let checkDiff = (InDate, OutDate) => {
     const checkInDate = moment(InDate, "YYYY-MM-DD");
@@ -36,20 +44,35 @@ else{res.status(400).send('no one found')}
 })
 
 app.post("/bookings",(req,res)=>{
+  let checkDiff = (InDate, OutDate) => {
+    const checkInDate = moment(InDate, "YYYY-MM-DD");
+    const checkOutDate = moment(OutDate, "YYYY-MM-DD");
+    const diff = checkOutDate.diff(checkInDate, "days");
+    return diff;
+  };
+
   const newId=bookings[bookings.length-1].id+1
   const {title, firstName,surname,email,roomId,checkInDate,checkOutDate}=req.body
+  let diff2=(checkDiff(req.body.checkInDate,req.body.checkOutDate))
+  if (diff2<0){
+     res.status(400).send({
+      msg: `checkoutDate ${checkOutDate} must be after checkinDate ${checkInDate} `,
+    });
+  } 
   const obj={
     id:newId,
     ...req.body
   }
-  // bookings.push(obj)
+  bookings.push(obj)
   if( !title || !firstName || !surname || !email || !roomId || !checkInDate || !checkOutDate){
   res.status(400).send("PLEASE FILL THE FORM COMPLETELY");
+
   if(!validator.validate(email)){
      res.status(400).send(`Please check your email,${email } is not valid. `)
   }
-  }else{
+//  else{
   res.status(201).json({bookings})}
+// }
 })
 
 app.get("/bookings/:id",(req,res)=>{
