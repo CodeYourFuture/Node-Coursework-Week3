@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const moment = require("moment");
+const validator = require("email-validator");
 
 const app = express();
 
@@ -24,17 +26,6 @@ app.post("/bookings", function (req, res) {
   const newbooking = req.body;
 
   // Level 2 - simple validation
-  const booking = {
-    id: idCount++,
-    roomId: newbooking.roomId,
-    title: newbooking.title,
-    firstName: newbooking.firstName,
-    surname: newbooking.surname,
-    email: newbooking.email,
-    checkInDate: newbooking.checkInDate,
-    checkOutDate: newbooking.checkOutDate,
-  };
-
   if (
     !newbooking.roomId ||
     !newbooking.title ||
@@ -45,11 +36,27 @@ app.post("/bookings", function (req, res) {
     !newbooking.checkOutDate
   ) {
     res.status(400).send("Rejected: empty or missing property.");
+    // Level 4 (Optional, advanced) - advanced validation
+  } else if (!validator.validate(newbooking.email)) {
+    res.status(400).send("Rejected: invalid email address.");
+  } else if (moment(newbooking.checkInDate).isAfter(newbooking.checkOutDate)) {
+    res.status(400).send("Rejected: checkInDate must be before checkOutDate.");
   } else {
+    const booking = {
+      id: idCount++,
+      roomId: newbooking.roomId,
+      title: newbooking.title,
+      firstName: newbooking.firstName,
+      surname: newbooking.surname,
+      email: newbooking.email,
+      checkInDate: newbooking.checkInDate,
+      checkOutDate: newbooking.checkOutDate,
+    };
     bookings.push(booking);
     res.redirect("/");
   }
 });
+
 
 //  Read all bookings
 app.get("/bookings", function (req, res) {
@@ -76,7 +83,6 @@ function search(word) {
       booking.checkOutDate.includes(word)
   );
 }
-
 
 //  get one booking by id
 app.get("/bookings/:id", function (req, res) {
