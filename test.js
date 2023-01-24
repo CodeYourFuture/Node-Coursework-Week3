@@ -14,4 +14,4 @@ console.log(moment()
       console.log(checkDiff('2020-09-06','2021-09-06'));
 
 
-      console.log(![])
+      

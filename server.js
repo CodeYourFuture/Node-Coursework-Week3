@@ -12,6 +12,14 @@ app.get('/booking',(req,res)=>{
     res.json(booking)
 })
 app.get('/bookings/search',(req,res)=>{
+  const term=req.query.term.toLocaleLowerCase()
+const filterterm=booking.filter(item=>item.firstName.toLocaleLowerCase().includes(term)||
+item.surname.toLocaleLowerCase().includes(term)||item.email.toLocaleLowerCase().includes(term))
+if(filterterm.length!==0){
+  res.status(200).send(filterterm)
+}else{
+  res.status(400).send('No thing Matched')
+}
   const searchitem=req.query.date
   let checkDiff = (InDate, OutDate) => {
     const checkInDate = moment(InDate, "YYYY-MM-DD");
@@ -27,6 +35,7 @@ app.get('/bookings/search',(req,res)=>{
 if(filterbooking.length!==0)
 {res.status(200).send(filterbooking)}
 else{res.status(400).send('no one found')}
+
 
 })
 
@@ -44,6 +53,7 @@ app.delete('/booking/:id',(req,res)=>{
     res.send(notDeleteditem)
 })
 app.post("/booking",(req,res)=>{
+  
     const newId=booking[booking.length-1].id+1
     const {title, firstName,surname,email,roomId,checkInDate,checkOutDate}=req.body
     const obj={
@@ -57,6 +67,7 @@ app.post("/booking",(req,res)=>{
     if(!validator.validate(email)){
       return res.status(400).send(`Please check your email,${email } is not valid. `)
     } 
+   
     else{
       booking.push(obj)
     res.status(201).json(booking)}
