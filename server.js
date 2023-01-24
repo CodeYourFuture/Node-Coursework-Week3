@@ -6,6 +6,8 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+
+
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
