@@ -18,18 +18,38 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 
-// Search bookings by date
+// Search bookings by date or by name in the email , firstName or surname
 
 app.get("/bookings/search", (req, res) => {
-  const dateFrom = moment(req.query.date, "YYYY-MM-DD");
-  const dateSearchResult = bookings.filter(
-    (booking) =>
-      moment(booking.checkInDate, "YYYY-MM-DD").diff(dateFrom, "days") === 0
-  );
-  if (!dateSearchResult)
-    return res.status(400).send({ error: "No Data Found" });
+  if (req.query.date) {
+    const dateFrom = moment(req.query.date, "YYYY-MM-DD");
+    const dateSearchResult = bookings.filter(
+      (booking) =>
+        moment(booking.checkInDate, "YYYY-MM-DD").diff(dateFrom, "days") === 0
+    );
+    if (!dateSearchResult)
+      return res.status(400).send({ error: "No Data Found" });
 
-  res.status(200).send(dateSearchResult);
+    res.status(200).send(dateSearchResult);
+  }
+  if (req.query.term) {
+    let searchTerm = req.query.term.toLowerCase();
+    var searchResult = bookings.filter(
+      (booking) =>
+        booking.firstName.includes(searchTerm) ||
+        booking.surname.includes(searchTerm) ||
+        booking.email.includes(searchTerm)
+    );
+  }
+
+  console.log(!searchResult, "Search Result");
+
+  if (!searchResult.length) {
+    console.log("falsy result");
+    return res.status(400).send({ Error: "No Data Found" });
+  }
+
+  res.status(200).send(searchResult);
 });
 
 //get a single booking using Id
