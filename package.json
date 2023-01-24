@@ -12,6 +12,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.16.4",
+    "isemail": "^3.2.0",
     "moment": "^2.29.4"
   },
   "engines": {

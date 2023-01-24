@@ -4,6 +4,8 @@ const port = process.env.PORT || 9090;
 const app = express();
 const moment = require("moment");
 
+var isEmail = require("isemail");
+
 app.use(express.json());
 app.use(cors());
 
@@ -85,6 +87,23 @@ app.post("/bookings", (req, res) => {
       .status(400)
       .send({ error: "All field must be present and valid!" });
   }
+
+  console.log(
+    isEmail.validate(email, { errorLevel: true }),
+    "<====Email Validation"
+  );
+
+  if (isEmail.validate(email, { errorLevel: true }))
+    return res.status(400).send({ error: "Please Enter a Valid Email!" });
+
+  if (
+    moment(checkInDate, "YYYY-DD-MM").isAfter(
+      moment(checkOutDate, "YYYY-DD-MM")
+    )
+  )
+    return res
+      .status(400)
+      .send({ error: "Check-out date should be after check-in date" });
 
   const bookingID = { id: newBookingNumber() + 1 };
   const newBooking = { ...bookingID, ...req.body };
