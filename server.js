@@ -1,5 +1,6 @@
 const express = require('express')
 const cors = require('cors')
+const uuid = require('uuid')
 
 const app = express()
 
@@ -29,8 +30,30 @@ app.get('/bookings/:id', (req, res) => {
 app.post(
   ('/bookings',
   (req, res) => {
-    const body = req.body
-    console.log(body)
+    const newBooking = {
+      id: uuid.v4(),
+      title: req.body.title,
+      firstName: req.body.firstName,
+      surname: req.body.surname,
+      email: req.body.email,
+      roomId: req.body.roomId,
+      checkInDate: req.body.checkInDate,
+      checkOutDate: req.body.checkOutDate,
+    }
+
+    // if(
+    //   !req.body.title ||
+    //     !req.body.firstName ||
+    //     !req.body.surname ||
+    //     !req.body.email ||
+    //     !req.body.roomId ||
+    //     !req.body.checkInDate ||
+    //     !req.body.checkOutDate
+    // ){res.status(404).json({ msg: 'Please fill all fields' })}
+
+    bookings.push(newBooking)
+    console.log(bookings)
+    res.json(newBooking)
   })
 )
 
