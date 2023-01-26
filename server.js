@@ -1,20 +1,47 @@
 const express = require("express");
-const cors = require("cors");
-
 const app = express();
+const cors = require("cors");
+const PORT = process.env.PORT || 3001;
+
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
 //Use this array as your (in-memory) data store.
-const bookings = require("./bookings.json");
+let bookings = require("./bookings.json");
 
+// Home Route
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
 });
 
-// TODO add your routes and helper functions here
+// Reading all the bookings
+app.get("/bookings", (req, res) => {
+  console.log('Reading all the bookings in /bookings Route');
+  res.json(bookings);
+});
 
-const listener = app.listen(process.env.PORT, function () {
-  console.log("Your app is listening on port " + listener.address().port);
+//Creating a new Bookings
+app.post('/bookings', (req, res) => {
+  const newBooking = {
+    id: parseInt(_.uniqueId()),
+    title: req.body.title,
+    firstName: req.body.firstName,
+    surname: req.body.surname,
+    email: req.body.email,
+    roomId: parseInt(_.uniqueId()),
+    checkInDate: req.body.checkInDate,
+    checkOutDate: req.body.checkOutDate
+  };
+
+  bookings.push(newBooking);
+  res.json(bookings);
+});
+
+
+
+
+app.listen(PORT, () => {
+  console.log(`You Server is Listening on port ${PORT}`);
 });
