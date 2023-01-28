@@ -48,5 +48,36 @@
     "roomId": 3,
     "checkInDate": "2017-08-30",
     "checkOutDate": "2017-10-02"
+  },
+
+   {
+    "id": 6,
+    "title": "Mrs",
+    "firstName": "Amy",
+    "surname": "Marshall",
+    "email": "AmyMarshall@example.com",
+    "roomId": 3,
+    "checkInDate": "2018-02-20",
+    "checkOutDate": "2018-04-20"
+  },
+  {
+    "id": 7,
+    "title": "Mr",
+    "firstName": "Andrew",
+    "surname": "Kane",
+    "email": "Andrew_Kane@example.com",
+    "roomId": 1,
+    "checkInDate": "2019-07-15",
+    "checkOutDate": "2019-09-28"
+  },
+  {
+    "id": 8,
+    "title": "Mr",
+    "firstName": "Frank",
+    "surname": "Matthews",
+    "email": "FrankyMatt@example.com",
+    "roomId": 5,
+    "checkInDate": "2019-01-06",
+    "checkOutDate": "2019-04-09"
   }
 ]
