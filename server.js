@@ -36,17 +36,9 @@ app.get("/bookings/:id", function (req, res) {
 app.post("/bookings", function (req, res) {
   const newBooking = req.body;
   newBooking.id = bookings.length + 1;
-  const { title, firstName, surname, email, roomId, checkInDate, checkOutDate } = newBooking;
-  const valid =
-    !!title &&
-    !!firstName &&
-    !!surname &&
-    !!email &&
-    (roomId === 0 || !!roomId) &&
-    !!checkInDate &&
-    !!checkOutDate &&
-    emailValidation(email) &&
-    dateValidation(dateToNumber(checkInDate), dateToNumber(checkOutDate));
+  const arrayOfValues = Object.values(newBooking);
+  const checkValues = arrayOfValues.every((value) => value !== "" && value !== undefined);
+  const valid = checkValues && emailValidation(newBooking.email) && dateValidation(dateToNumber(newBooking.checkInDate), dateToNumber(newBooking.checkOutDate));
   if (!valid) return res.status(400).send("missing or incorrect information");
   bookings.push(newBooking);
   res.send(bookings);
