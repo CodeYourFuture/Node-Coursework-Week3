@@ -54,11 +54,11 @@ app.post("/bookings", (req, res) => {
     !newBooking.checkInDate ||
     !newBooking.checkOutDate
   ) {
-    return res.status(400).send("All fields are required");
+    return res.status(400).send("Please ensure all fields are completed");
   } else {
   bookings.push(newBooking);
   save();
-  res.send("Booking completed");
+  res.send("Booking has been completed");
   }
 });
 
@@ -66,16 +66,16 @@ app.delete("/bookings/:id", (req, res) => {
   let bookingID = parseInt(req.params.id);
   let bookingIndex = bookings.findIndex((c) => c.id === bookingID);
   if (bookingIndex < 0) {
-    res.status(404).send("Booking not found");
+    res.status(404).send("Booking cannot be found");
   }
   bookings.splice(bookingIndex, 1);
   save();
-  res.send("Booking deleted");
+  res.send("Booking has been deleted");
 });
 
 const save = () => {
   fs.writeFileSync("bookings.json", JSON.stringify(bookings, null, 2));
 };
 
-app.listen(3002, () => console.log("listening on port 3002"));
+app.listen(3000, () => console.log("listening on port 3000"));
 
