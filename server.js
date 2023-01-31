@@ -82,10 +82,6 @@ app.delete('/bookings/:id', (req, res) => {
 	res.send(bookings);
 });
 
-const listener = app.listen(5000 || process.env.PORT, function () {
-	console.log('Your app is listening on port ' + listener.address().port);
-});
-
 const dateToNumber = (date) => {
 	return +date.replaceAll('-', '');
 };
@@ -97,3 +93,9 @@ const dateValidation = (checkIn, checkOut) => {
 const emailValidation = (email) => {
 	return /\w+@[a-zA-Z_]+?\.[a-zA-Z]{1,6}/.test(email);
 };
+
+
+const listener = app.listen(5000 || process.env.PORT, function () {
+	console.log('Your app is listening on port ' + listener.address().port);
+});
+
