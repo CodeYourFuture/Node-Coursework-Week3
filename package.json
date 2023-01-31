@@ -14,7 +14,7 @@
     "cors": "^2.8.5"
   },
   "engines": {
-    "node": "8.x"
+    "node": "18.x"
   },
   "repository": {
     "url": "https://glitch.com/edit/#!/hello-express"
