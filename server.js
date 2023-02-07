@@ -27,7 +27,7 @@ app.get("/bookings", (request, response) => {
 
 // returning one booking by ID 
 app.get("/booking/:id", (request, response) => {
-  const id = +request.params.id; 
+  const id = parseInt(request.params.id); 
   console.log(id); 
   const booking = bookings.find((booking) => booking.id === id);
 
@@ -67,7 +67,24 @@ app.post("/bookings", (request, response) => {
     return response.status(400).send("Please fill all fields");
   } else {
   bookings.push(newBooking);
-  response.send("Booking added successfully", newBooking);
+  response.send("Booking added successfully");
   }
 
 }); 
+
+//delete booking by ID 
+
+app.delete("/booking/:id", (request, response) => {
+  const id = parseInt(request.params.id);
+  console.log(id);
+  const bookingIndex = bookings.findIndex((booking) => booking.id === id);
+
+  // validation
+
+  if (bookingIndex < 0) {
+    response.status(404).send("404 Not Found");
+  } else {
+    bookings.splice(bookingIndex, 1);
+    response.json(bookings);
+  }
+})
