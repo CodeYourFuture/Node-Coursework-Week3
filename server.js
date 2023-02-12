@@ -1,5 +1,5 @@
 // FIRST COMMIT
-onst express = require("express");
+const express = require("express");
 const cors = require("cors");
 
 const app = express();
@@ -11,11 +11,18 @@ app.use(cors());
 const bookings = require("./bookings.json");
 
 app.get("/", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
+  response.send(bookings);
 });
+
+// GET SPECIFIC
+app.get("/:id", function (request, response) {
+  response.send(bookings.filter(booking => booking.id==request.params.id));
+});
+
+
 
 // TODO add your routes and helper functions here
 
-const listener = app.listen(process.env.PORT, function () {
+const listener = app.listen(3000, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
