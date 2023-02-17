@@ -11,12 +11,12 @@ app.use(cors());
 let bookings = require("./bookings.json");
 
 app.get("/", function (request, response) {
-  response.send(bookings);
+  response.json(bookings);
 });
 
 // GET SPECIFIC
 app.get("/:id", function (request, response) {
-  response.send(bookings.filter((booking) => booking.id == request.params.id));
+  response.json(bookings.filter((booking) => booking.id == request.params.id));
 });
 
 app.delete("/:id", function (requ, response) {
@@ -29,16 +29,13 @@ app.delete("/:id", function (requ, response) {
       console.log("Not executing");
     }
   });
-  // response.send(`DELETED USER ${request.params.id}`);
   response.json(bookings);
 });
 
 app.post("/", function (request, response) {
   const body = request.body;
   bookings.push(body);
-  console.log(body);
-  response.send(bookings);
-  // response.send(bookings);
+  response.json(bookings);
 });
 
 // TODO add your routes and helper functions here
