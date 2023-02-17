@@ -3,9 +3,10 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
+// app.engine("html", require("ejs").renderFile);
 
 app.use(express.json());
-// app.use(cors());
+app.use(cors());
 
 //Use this array as your (in-memory) data store.
 let bookings = require("./bookings.json");
@@ -14,11 +15,22 @@ app.get("/", function (request, response) {
   response.json(bookings);
 });
 
-
-// EXPERIMENTS
-app.get('/bigboss', function (request, response) {
-  response.redirect("/boss");
+// EXPERIMENT #1
+app.get("/littleboss", function (request, response) {
+  response.redirect("/bigboss");
 });
+
+
+// EXPERIMENT #2
+app.get("/big", function (request, response) {
+  response.sendFile(__dirname + "/bigboss.html");
+});
+
+// EXPERIMENT #3
+app.get("/boss", function (request, response) {
+  response.render(__dirname + "/bigboss.html");
+});
+
 
 // GET SPECIFIC
 app.get("/:id", function (request, response) {
@@ -43,7 +55,6 @@ app.post("/", function (request, response) {
   bookings.push(body);
   response.json(bookings);
 });
-
 
 
 
