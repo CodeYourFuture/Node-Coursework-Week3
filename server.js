@@ -5,13 +5,19 @@ const cors = require("cors");
 const app = express();
 
 app.use(express.json());
-app.use(cors());
+// app.use(cors());
 
 //Use this array as your (in-memory) data store.
 let bookings = require("./bookings.json");
 
 app.get("/", function (request, response) {
   response.json(bookings);
+});
+
+
+// EXPERIMENTS
+app.get('/bigboss', function (request, response) {
+  response.redirect("/boss");
 });
 
 // GET SPECIFIC
@@ -37,6 +43,10 @@ app.post("/", function (request, response) {
   bookings.push(body);
   response.json(bookings);
 });
+
+
+
+
 
 // TODO add your routes and helper functions here
 
