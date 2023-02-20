@@ -28,11 +28,6 @@ app.get("/bookings/:id", function (request, response) {
 });
 
 app.post("/bookings", function (request, response) {
-  /**your server must reject requests to create bookings if:
-
-- any property of the booking object is missing or empty.
-
-In this case your server should return a status code of 400, and should NOT store the booking in the bookings array. */
   const newBooking = request.body;
   if (
     !newBooking.title ||
