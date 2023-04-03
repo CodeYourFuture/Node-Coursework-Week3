@@ -14,6 +14,51 @@ app.get("/", function (request, response) {
 });
 
 // TODO add your routes and helper functions here
+// Helper function to find a booking by ID
+function findBookingById(id) {
+  return bookings.find((booking) => booking.id == id);
+}
+
+// Helper function to generate a new booking ID
+function generateBookingId() {
+  return Math.max(...bookings.map((booking) => booking.id), 0) + 1;
+}
+
+// Route to create a new booking
+app.post("/bookings", function (req, res) {
+  const newBooking = req.body;
+  newBooking.id = generateBookingId();
+  bookings.push(newBooking);
+  res.status(201).json(newBooking);
+});
+
+// Route to read all bookings
+app.get("/bookings", function (req, res) {
+  res.json(bookings);
+});
+
+// Route to read one booking by ID
+app.get("/bookings/:id", function (req, res) {
+  const bookingId = parseInt(req.params.id);
+  const booking = findBookingById(bookingId);
+  if (booking) {
+    res.json(booking);
+  } else {
+    res.status(404).send("Booking not found.");
+  }
+});
+
+// Route to delete a booking by ID
+app.delete("/bookings/:id", function (req, res) {
+  const bookingId = parseInt(req.params.id);
+  const bookingIndex = bookings.findIndex((booking) => booking.id == bookingId);
+  if (bookingIndex !== -1) {
+    bookings.splice(bookingIndex, 1);
+    res.sendStatus(204).json(bookings);
+  } else {
+    res.status(404).send("Booking not found.");
+  }
+});
 
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
