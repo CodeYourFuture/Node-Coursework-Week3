@@ -67,13 +67,20 @@ app.get("/bookings", function (req, res) {
 // Route to search bookings by date
 app.get("/bookings/search", function (req, res) {
   const date = moment(req.query.date, "YYYY-MM-DD");
+  const term = req.query.term;
   if (!date.isValid()) {
     res.status(400).send("Invalid date.");
   } else {
-    const matchingBookings = bookings.filter((booking) => {
+    let matchingBookings = bookings.filter((booking) => {
       const checkInDate = moment(booking.checkInDate, "YYYY-MM-DD");
       const checkOutDate = moment(booking.checkOutDate, "YYYY-MM-DD");
-      return date.isBetween(checkInDate, checkOutDate, null, "[]");
+      const isDateMatch = date.isBetween(checkInDate, checkOutDate, null, "[]");
+      const isTermMatch = term
+        ? booking.email.includes(term) ||
+          booking.firstName.includes(term) ||
+          booking.surname.includes(term)
+        : true;
+      return isDateMatch && isTermMatch;
     });
     res.json(matchingBookings);
   }
