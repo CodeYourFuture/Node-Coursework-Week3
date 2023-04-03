@@ -27,9 +27,22 @@ function generateBookingId() {
 // Route to create a new booking
 app.post("/bookings", function (req, res) {
   const newBooking = req.body;
-  newBooking.id = generateBookingId();
-  bookings.push(newBooking);
-  res.status(201).json(newBooking);
+  if (
+    !newBooking ||
+    !newBooking.roomId ||
+    !newBooking.title ||
+    !newBooking.firstName ||
+    !newBooking.surname ||
+    !newBooking.email ||
+    !newBooking.checkInDate ||
+    !newBooking.checkOutDate
+  ) {
+    res.status(400).send("Missing or empty booking property.");
+  } else {
+    newBooking.id = generateBookingId();
+    bookings.push(newBooking);
+    res.status(201).json(newBooking);
+  }
 });
 
 // Route to read all bookings
