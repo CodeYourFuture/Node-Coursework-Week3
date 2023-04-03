@@ -6,8 +6,6 @@ const app = express()
 app.use(express.json())
 app.use(cors())
 
-const port = 3000
-
 //Use this array as your (in-memory) data store.
 const bookings = require('./bookings.json')
 
@@ -16,6 +14,8 @@ app.get('/', function (request, response) {
 })
 
 // TODO add your routes and helper functions here
+
+let id = bookings.length
 
 // 1. Creat a new booking
 app.post('/bookings', (req, res) => {
@@ -28,15 +28,16 @@ app.post('/bookings', (req, res) => {
     checkInDate: '2018-04-12',
     checkOutDate: '2018-04-19',
   }
-  if (!booking) {
-    res.send('error 404')
+  if (!booking || Object.keys(booking).length !== 7) {
+    res.status(404).send('Error')
   } else {
-    booking.id = 6
+    booking.id = id
     bookings.push(booking)
     res.send(
       `Booking added for ${booking.title} ${booking.firstName} ${booking.surname}`
     )
   }
+  id++
   console.log(bookings)
 })
 
@@ -73,10 +74,6 @@ app.delete('/bookings/delete/:id', (req, res) => {
   }
 })
 
-// const listener = app.listen(process.env.PORT, function () {
-//   console.log('Your app is listening on port ' + listener.address().port)
-// })
-
-const listener = app.listen(port, function () {
-  console.log('Your app is listening on port ' + port)
+const listener = app.listen(process.env.PORT, function () {
+  console.log('Your app is listening on port ' + listener.address().port)
 })
