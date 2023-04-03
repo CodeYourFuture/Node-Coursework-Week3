@@ -22,7 +22,7 @@ app.get('/bookings', (req, res) => {
   res.send(bookings)
 })
 
-// 1. Read one booking, specified by an ID
+// 1. Read one booking, specified by ID
 app.get('/bookings/:id', (req, res) => {
   const id = req.params.id
   console.log(id)
@@ -30,6 +30,18 @@ app.get('/bookings/:id', (req, res) => {
     return mes.id.toString() === id
   })
   res.send(booking)
+})
+
+// 1. Delete one booking, specified by an ID
+app.delete('/bookings/delete/:id', (req, res) => {
+  console.log(bookings)
+  const id = req.params.id
+  const booking = bookings.find((mes) => {
+    return mes.id.toString() === id
+  })
+  bookings.splice(booking, 1)
+  console.log(bookings)
+  res.send(`Message with id: ${id} has been deleted`)
 })
 
 // const listener = app.listen(process.env.PORT, function () {
