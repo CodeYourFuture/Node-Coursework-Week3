@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
+const validator = require("validator");
 
 const app = express();
 
@@ -39,10 +40,22 @@ app.post("/bookings", function (req, res) {
     !newBooking.checkOutDate
   ) {
     res.status(400).send("Missing or empty booking property.");
+  } else if (!validator.isEmail(newBooking.email)) {
+    res.status(400).send("Invalid email address.");
   } else {
-    newBooking.id = generateBookingId();
-    bookings.push(newBooking);
-    res.status(201).json(newBooking);
+    const checkInDate = moment(newBooking.checkInDate, "YYYY-MM-DD");
+    const checkOutDate = moment(newBooking.checkOutDate, "YYYY-MM-DD");
+    if (
+      !checkInDate.isValid() ||
+      !checkOutDate.isValid() ||
+      !checkOutDate.isAfter(checkInDate)
+    ) {
+      res.status(400).send("Invalid date(s).");
+    } else {
+      newBooking.id = generateBookingId();
+      bookings.push(newBooking);
+      res.status(201).json(newBooking);
+    }
   }
 });
 
