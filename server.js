@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const validator = require("email-validator");
+const moment = require("moment");
 
 const app = express();
 const port = process.env.PORT || 3003;
@@ -35,6 +36,7 @@ app.post("/bookings", function (request, response) {
     checkInDate,
     checkOutDate,
   } = request.body;
+
   const newBooking = {
     id: bookings.length + 1,
     title,
@@ -63,6 +65,13 @@ app.post("/bookings", function (request, response) {
   if (!validator.validate(newBooking.email)) {
     return response.status(400).json({ message: "Please enter valid email" });
   }
+
+  if (moment(newBooking.checkOutDate).isBefore(newBooking.checkInDate)) {
+    return response
+      .status(400)
+      .json({ message: "Check Out Date has to be after Check In Date" });
+  }
+
   bookings.push(newBooking);
   response.status(201).json({ message: "New Booking added", bookings });
 });
