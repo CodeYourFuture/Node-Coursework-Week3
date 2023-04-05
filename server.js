@@ -66,7 +66,12 @@ app.post("/bookings", function (request, response) {
     return response.status(400).json({ message: "Please enter valid email" });
   }
 
-  if (moment(newBooking.checkOutDate).isBefore(newBooking.checkInDate)) {
+  if (
+    moment(newBooking.checkOutDate, "YYYY-MM-DD").isBefore(
+      newBooking.checkInDate,
+      "YYYY-MM-DD"
+    )
+  ) {
     return response
       .status(400)
       .json({ message: "Check Out Date has to be after Check In Date" });
@@ -78,7 +83,7 @@ app.post("/bookings", function (request, response) {
 
 // GET BOOKINGS BY SEARCH TERM
 app.get("/bookings/search", function (request, response) {
-  // const searchDate = request.query.date;
+  const searchDate = moment(request.query.date, "YYYY-MM-DD");
   const searchTerm = request.query.term;
 
   const filteredResults = bookings.filter(
@@ -88,7 +93,22 @@ app.get("/bookings/search", function (request, response) {
       eachBooking.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  response.json(filteredResults);
+  if (!searchDate.isValid()) {
+    return response.status(400).json({ message: "Please enter a valid date" });
+  }
+
+  const filteredDates = bookings.filter((eachBooking) =>
+    searchDate.isBetween(
+      eachBooking.checkInDate,
+      eachBooking.checkOutDate,
+      undefined,
+      "[]"
+    )
+  );
+  // filteredDates || filteredResults
+  //   ? response.json(filteredDates || filteredResults)
+  //   : null;
+  response.json(filteredDates) || response.json(filteredResults);
 });
 
 // FIND BOOKING BY ID
