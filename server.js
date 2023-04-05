@@ -8,8 +8,6 @@ const port = process.env.PORT || 3003;
 app.use(express.json());
 app.use(cors());
 
-validator.validate("test@email.com");
-
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
@@ -47,6 +45,7 @@ app.post("/bookings", function (request, response) {
     checkInDate,
     checkOutDate,
   };
+
   if (
     !newBooking.title ||
     !newBooking.firstName ||
@@ -56,12 +55,16 @@ app.post("/bookings", function (request, response) {
     !newBooking.checkInDate ||
     !newBooking.checkOutDate
   ) {
-    return response
-      .status(400)
-      .json({ message: "Please fill in all required sections" });
+    return response.status(400).json({
+      message: "Please fill in all required sections and enter valid email",
+    });
+  }
+
+  if (!validator.validate(newBooking.email)) {
+    return response.status(400).json({ message: "Please enter valid email" });
   }
   bookings.push(newBooking);
-  response.json(bookings);
+  response.status(201).json({ message: "New Booking added", bookings });
 });
 
 // GET BOOKINGS BY SEARCH TERM
