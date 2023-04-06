@@ -81,34 +81,38 @@ app.post("/bookings", function (request, response) {
   response.status(201).json({ message: "New Booking added", bookings });
 });
 
-// GET BOOKINGS BY SEARCH TERM
+// GET BOOKINGS BY SEARCH TERM AND DATE
 app.get("/bookings/search", function (request, response) {
-  const searchDate = moment(request.query.date, "YYYY-MM-DD");
-  const searchTerm = request.query.term;
+  const searchTerm = request.query.term || "";
 
-  const filteredResults = bookings.filter(
+  let filteredTerms = bookings.filter(
     (eachBooking) =>
       eachBooking.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       eachBooking.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
       eachBooking.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  if (!searchDate.isValid()) {
-    return response.status(400).json({ message: "Please enter a valid date" });
+  const searchDate =
+    request.query.date && moment(request.query.date, "YYYY-MM-DD");
+
+  if (searchDate) {
+    if (!searchDate.isValid()) {
+      return response
+        .status(400)
+        .json({ message: "Please enter a valid date" });
+    }
+
+    filteredTerms = filteredTerms.filter((eachBooking) =>
+      searchDate.isBetween(
+        eachBooking.checkInDate,
+        eachBooking.checkOutDate,
+        undefined,
+        "[]"
+      )
+    );
   }
 
-  const filteredDates = bookings.filter((eachBooking) =>
-    searchDate.isBetween(
-      eachBooking.checkInDate,
-      eachBooking.checkOutDate,
-      undefined,
-      "[]"
-    )
-  );
-  // filteredDates || filteredResults
-  //   ? response.json(filteredDates || filteredResults)
-  //   : null;
-  response.json(filteredDates) || response.json(filteredResults);
+  response.json(filteredTerms);
 });
 
 // FIND BOOKING BY ID
