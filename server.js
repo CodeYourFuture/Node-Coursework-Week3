@@ -96,6 +96,24 @@ app.get('/bookings/:id',(req,res)=>{
   res.send(bookings);
 });
 
+
+app.get('/bookings/search',(req,res)=>{
+  const date = req.query.date;
+
+  //Check if date is provided
+  if(!date) {
+      return res.status(400).send({
+          message: "Date is required"
+      });
+  }
+
+  //Filter the bookings array
+  const bookingsSpanDate = bookings.filter(b => b.date == date);
+
+  //Send the filtered bookings array as a response
+  res.send(bookingsSpanDate);
+});
+
 // const listener = app.listen(process.env.PORT, function () {
   // console.log("Your app is listening on port " + listener.address().port);
   
