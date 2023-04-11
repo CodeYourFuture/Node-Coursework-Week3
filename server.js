@@ -26,7 +26,17 @@ app.post("/bookings",(request,response)=>{
       return response.status(400).send({
           message: "Booking content can not be empty"
       });
-  }
+    }
+ //Check if any property of the booking object is missing or empty
+ if(!request.body.name || !request.body.date || !request.body.room) {
+  return response.status(400).send({
+      message: "Name, date, and room are required"
+  });
+
+ }
+  
+
+
   const booking = {
     "id": 12,
     "title": "Mr",
@@ -38,6 +48,7 @@ app.post("/bookings",(request,response)=>{
     "checkOutDate": "2023-11-23"
   };
   
+
         //Add the new booking to the array
         bookings.push(booking);
 
