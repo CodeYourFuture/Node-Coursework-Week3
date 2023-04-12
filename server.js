@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-
+const moment = require("moment");
 const app = express();
 
 app.use(express.json());
@@ -50,6 +50,20 @@ app.get("/bookings", function (req, res) {
   res.json(bookings);
 });
 
+// Route to search bookings by date
+app.get("/bookings/search", function (req, res) {
+  const date = moment(req.query.date, "YYYY-MM-DD");
+  if (!date.isValid()) {
+    res.status(400).send("Invalid date.");
+  } else {
+    const matchingBookings = bookings.filter((booking) => {
+      const checkInDate = moment(booking.checkInDate, "YYYY-MM-DD");
+      const checkOutDate = moment(booking.checkOutDate, "YYYY-MM-DD");
+      return date.isBetween(checkInDate, checkOutDate, null, "[]");
+    });
+    res.json(matchingBookings);
+  }
+});
 // Route to read one booking by ID
 app.get("/bookings/:id", function (req, res) {
   const bookingId = parseInt(req.params.id);
