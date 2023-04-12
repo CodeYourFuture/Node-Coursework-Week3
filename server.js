@@ -15,13 +15,49 @@ app.get("/", function (request, response) {
 
 //1.Create a new booking
 app.post("/bookings", function (request, response) {
-  const newBooking = request.body;
+  let id = bookings.length;
+  const {
+    roomId,
+    title,
+    firstName,
+    surname,
+    email,
+    checkInDate,
+    checkOutDate,
+  } = request.body;
+  const newBooking = {
+    id,
+    roomId,
+    title,
+    firstName,
+    surname,
+    email,
+    checkInDate,
+    checkOutDate,
+  };
   bookings.push(newBooking);
   response.send(bookings);
 });
 
 //2.Read all bookings
 app.get("/bookings", function (request, response) {
+  response.send(bookings);
+});
+
+//3. Read one booking, specified by an ID
+app.get("/bookings/:id", function (request, response) {
+  let booking = bookings.find((el) => el.id === Number(request.params.id));
+  booking
+    ? response.status(200).send(booking)
+    : response.status(404).send("Sorry, booking not found");
+});
+
+//4. Delete a booking, specified by an ID
+app.delete("/bookings/:id", function (request, response) {
+  let bookingToDelete = bookings.find(
+    (el) => el.id === Number(request.params.id)
+  );
+  bookings.splice(bookings.indexOf(bookingToDelete), 1);
   response.send(bookings);
 });
 
