@@ -25,12 +25,14 @@ function generateBookingId() {
   return Math.max(...bookings.map((booking) => booking.id), 0) + 1;
 }
 
+function generateBookingroomId() {
+  return Math.max(...bookings.map((booking) => booking.roomId), 0) + 1;
+}
+
 // Route to create a new booking
 app.post("/bookings", function (req, res) {
   const newBooking = req.body;
   if (
-    !newBooking ||
-    !newBooking.roomId ||
     !newBooking.title ||
     !newBooking.firstName ||
     !newBooking.surname ||
@@ -52,8 +54,9 @@ app.post("/bookings", function (req, res) {
       res.status(400).send("Invalid date(s).");
     } else {
       newBooking.id = generateBookingId();
+      newBooking.roomId = generateBookingroomId();
       bookings.push(newBooking);
-      res.status(201).json(newBooking);
+      res.status(201).send("you added new booking");
     }
   }
 });
