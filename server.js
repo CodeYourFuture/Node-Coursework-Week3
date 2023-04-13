@@ -11,11 +11,34 @@ const bookings = require("./bookings.json");
 
 //Create a new booking
 app.post("/bookings", (req, res) => {
-  const newBooking = req.body;
-  //creating id for the new booking
-  newBooking.id = Math.max(...bookings.map((booking) => booking.id), 0) + 1;
-  bookings.push(newBooking);
-  res.json(bookings);
+  const {
+    title,
+    firstName,
+    surname,
+    email,
+    roomId,
+    checkInDate,
+    checkOutDate,
+  } = req.body;
+
+  //check all field been filled up
+  if (
+    !title ||
+    !firstName ||
+    !surname ||
+    !email ||
+    !roomId ||
+    !checkInDate ||
+    !checkOutDate
+  ) {
+    res.send("newBooking has empty field");
+  } else {
+    //creating id for the new booking
+    const newBooking = req.body;
+    newBooking.id = Math.max(...bookings.map((booking) => booking.id), 0) + 1;
+    bookings.push(newBooking);
+    res.json(bookings);
+  }
 });
 //read all bookings
 app.get("/bookings", (req, res) => {
