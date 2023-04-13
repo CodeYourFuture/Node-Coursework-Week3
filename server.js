@@ -8,12 +8,20 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-//Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
-const { query } = require("express");
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
+});
+app.get("/bookings/search", function (request, response) {
+  const searchedTerm = request.query.term.toLowerCase();
+  const elementToMatch = bookings.filter(
+    (el) =>
+      el.email.toLowerCase().includes(searchedTerm) ||
+      el.firstName.toLowerCase().includes(searchedTerm) ||
+      el.surname.toLowerCase().includes(searchedTerm)
+  );
+  response.send(elementToMatch);
 });
 
 //Level 3
