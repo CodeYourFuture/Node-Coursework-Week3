@@ -25,7 +25,7 @@ app.post("/bookings", function (request, response) {
     checkInDate,
     checkOutDate,
   } = request.body;
-  const newBooking = {
+  let newBooking = {
     id,
     roomId,
     title,
@@ -35,8 +35,25 @@ app.post("/bookings", function (request, response) {
     checkInDate,
     checkOutDate,
   };
-  bookings.push(newBooking);
-  response.send(bookings);
+  if (
+    newBooking.roomId &&
+    newBooking.roomId > 0 &&
+    newBooking.title &&
+    newBooking.title.length > 0 &&
+    newBooking.firstName &&
+    newBooking.firstName.length > 0 &&
+    newBooking.surname &&
+    newBooking.surname.length > 0 &&
+    newBooking.email &&
+    newBooking.email.length > 0 &&
+    newBooking.checkInDate &&
+    newBooking.checkInDate.length > 0 &&
+    newBooking.checkOutDate &&
+    checkOutDate.length > 0
+  ) {
+    bookings.push(newBooking);
+    response.status(201).send(bookings);
+  } else response.status(400).send(`CHECK IF:\n\t1-->Object contains roomID, TITLE, firstName, surname, email, checkInDate, checkOutDate keys \n\t 2-->The above keys have values.`);
 });
 
 //2.Read all bookings
