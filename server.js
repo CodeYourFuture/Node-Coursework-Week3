@@ -40,32 +40,43 @@ app.post("/bookings", (req, res) => {
   } else if (!moment(checkOutDate).isAfter(checkInDate)) {
     res.status(400).json({ msg: "checkOutDate is after checkInDate" });
   } else {
-    //creating id for the new booking
     const newBooking = req.body;
+    //creating id for the new booking
+
     newBooking.id = Math.max(...bookings.map((booking) => booking.id), 0) + 1;
     bookings.push(newBooking);
     res.json(bookings);
   }
 });
-//search by date
-
+//search by date and term
 app.get("/bookings/search", (req, res) => {
-  const date = moment(req.query.date, "YYYY-MM-DD");
-  if (date.isValid()) {
-    res.json(
-      bookings.filter((booking) => {
-        return date.isBetween(
-          booking.checkInDate,
-          booking.checkOutDate,
-          null,
-          "[]"
-        );
-      })
-    );
+  if (!req.query.term && !req.query.date) return res.send("no date no term");
+  if (req.query.date) {
+    const date = moment(req.query.date, "YYYY-MM-DD");
+    if (date.isValid()) {
+      res.json(
+        bookings.filter((booking) => {
+          return date.isBetween(
+            booking.checkInDate,
+            booking.checkOutDate,
+            null,
+            "[]"
+          );
+        })
+      );
+    } else {
+      res
+        .status(400)
+        .json({ msg: "please enter the date format correctly YYYY-MM-DD" });
+    }
   } else {
-    res
-      .status(400)
-      .json({ msg: "please enter the date format correctly YYYY-MM-DD" });
+    const term = req.query.term;
+    filteredBooking = bookings.filter((booking) =>
+      (booking.firstName || booking.surname || booking.email)
+        .toLowerCase()
+        .includes(term)
+    );
+    res.json({ matchedBooking: filteredBooking });
   }
 });
 
