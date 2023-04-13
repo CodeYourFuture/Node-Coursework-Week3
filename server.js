@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
+const emailValidator = require("email-validator");
 
 const app = express();
 
@@ -33,6 +34,11 @@ app.post("/bookings", (req, res) => {
     !checkOutDate
   ) {
     res.send("newBooking has empty field");
+  } //validate email
+  else if (!emailValidator.validate(email)) {
+    res.status(400).json({ msg: "please enter the valid email" });
+  } else if (!moment(checkOutDate).isAfter(checkInDate)) {
+    res.status(400).json({ msg: "checkOutDate is after checkInDate" });
   } else {
     //creating id for the new booking
     const newBooking = req.body;
