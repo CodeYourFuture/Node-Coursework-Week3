@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
-var moment = require("moment"); // require
+const emailValidator = require("deep-email-validator");
+const date = require("date-and-time");
 
 const app = express();
 
@@ -24,8 +25,12 @@ app.get("/bookings/search", function (request, response) {
   response.send(elementToFind);
 });
 
+async function isEmailValid(email) {
+  return emailValidator.validate(email);
+}
+
 //1.Create a new booking
-app.post("/bookings", function (request, response) {
+app.post("/bookings", async function (request, response) {
   let id = bookings.length;
   const {
     roomId,
@@ -46,7 +51,16 @@ app.post("/bookings", function (request, response) {
     checkInDate,
     checkOutDate,
   };
+
+  const { valid } = await isEmailValid(newBooking.email); //email validation
+
+  const date2 = new Date(newBooking.checkOutDate);
+  const date1 = new Date(newBooking.checkInDate);
+  const difference = date.subtract(date2, date1);
+
   if (
+    valid &&
+    difference.toDays() > 0 &&
     newBooking.roomId &&
     newBooking.roomId > 0 &&
     newBooking.title &&
@@ -64,7 +78,7 @@ app.post("/bookings", function (request, response) {
   ) {
     bookings.push(newBooking);
     response.status(201).send(bookings);
-  } else response.status(400).send(`CHECK IF:\n\t1-->Object contains roomID, TITLE, firstName, surname, email, checkInDate, checkOutDate keys \n\t 2-->The above keys have values.`);
+  } else response.status(400).send(`CHECK IF:\n\t1-->Object contains roomID, TITLE, firstName, surname, email, checkInDate, checkOutDate keys \n\t 2-->The above keys have values. \n\t 3-->The email address is valid. \n\t 4-->The checkOutDate is after checkInDate.`);
 });
 
 //2.Read all bookings
