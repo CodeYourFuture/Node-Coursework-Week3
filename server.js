@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 
 const app = express();
 
@@ -40,6 +41,28 @@ app.post("/bookings", (req, res) => {
     res.json(bookings);
   }
 });
+//search by date
+
+app.get("/bookings/search", (req, res) => {
+  const date = moment(req.query.date, "YYYY-MM-DD");
+  if (date.isValid()) {
+    res.json(
+      bookings.filter((booking) => {
+        return date.isBetween(
+          booking.checkInDate,
+          booking.checkOutDate,
+          null,
+          "[]"
+        );
+      })
+    );
+  } else {
+    res
+      .status(400)
+      .json({ msg: "please enter the date format correctly YYYY-MM-DD" });
+  }
+});
+
 //read all bookings
 app.get("/bookings", (req, res) => {
   res.json(bookings);
