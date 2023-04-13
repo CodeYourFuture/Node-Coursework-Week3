@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+var moment = require("moment"); // require
 
 const app = express();
 
@@ -8,9 +9,19 @@ app.use(cors());
 
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
+const { query } = require("express");
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
+});
+
+//Level 3
+app.get("/bookings/search", function (request, response) {
+  let searchedDate = request.query.date;
+  const elementToFind = bookings.find(
+    (el) => el.checkInDate === searchedDate || el.checkOutDate === searchedDate
+  );
+  response.send(elementToFind);
 });
 
 //1.Create a new booking
