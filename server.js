@@ -1,16 +1,14 @@
 const express = require("express");
 const cors = require("cors");
-const bodyParser=require("body-parser")
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json())
+
 
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
-const { response } = require("express");
 
 app.get("/", function (request, response) {
   response.send("Hotel booking server.  Ask for /bookings, etc.");
@@ -47,8 +45,19 @@ app.get("/", function (request, response) {
  });
 
 app.post("/bookings", (request, response) =>{
-  //const { id, title, firstName, surname, email, roomId, checkInDate, checkOutDate} = request.body;
-  bookings.push(request.body)
+  const { id, title, firstName, surname, email, roomId, checkInDate, checkOutDate} = request.body;
+  const newBooking = {
+    id: bookings.length + 1,
+    title,
+    firstName,
+    surname,
+    email,
+    roomId,
+    checkInDate,
+    checkOutDate,
+  };
+  
+  bookings.push(newBooking)
   response.status(200).json({success:true , data: bookings})
 })
 
