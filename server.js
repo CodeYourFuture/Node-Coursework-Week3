@@ -18,7 +18,7 @@ app.post("/bookings", (req, res) => {
     bookings.push(newBookings);
     res.status(201).json({ message: "Booking created successfully" });
   } else {
-    res.status(400).json({ message: "Ivalid booking data" });
+    res.status(400).json({ message: "Invalid booking data" });
   }
 });
 
@@ -28,8 +28,28 @@ app.get("/bookings", (req, res) => {
 });
 
 // Read one Bookings by an ID
-app.get("/", (req, res) => {
-  res.send("Hotel booking server.  Ask for /bookings, etc.");
+app.get("/bookings/:id", (req, res) => {
+  const bookingId = parseInt(req.params.id);
+  const bookingsById = bookings.find((booking) => booking.id === bookingId);
+  if (bookingsById) {
+    res.json(bookingsById);
+  } else {
+    res.status(404).json({ message: "Booking not found" });
+  }
+});
+
+// Delete a message, by ID
+app.delete("/bookings/:id", (req, res) => {
+  const bookingId = parseInt(req.params.id);
+  const bookingIndex = bookings.findIndex(
+    (booking) => booking.id === bookingId
+  );
+  if (bookingIndex !== -1) {
+    bookings.splice(bookingIndex, 1);
+    res.json({ message: "Booking deleted successfully" });
+  } else {
+    res.status(404).json({ message: "Booking not found" });
+  }
 });
 
 // TODO add your routes and helper functions here
