@@ -33,7 +33,7 @@ app.post("/bookings", (req, res) => {
     !checkInDate ||
     !checkOutDate
   ) {
-    res.send("newBooking has empty field");
+    res.json({ msg: "newBooking has empty field" });
   } //validate email
   else if (!emailValidator.validate(email)) {
     res.status(400).json({ msg: "please enter the valid email" });
@@ -50,20 +50,20 @@ app.post("/bookings", (req, res) => {
 });
 //search by date and term
 app.get("/bookings/search", (req, res) => {
-  if (!req.query.term && !req.query.date) return res.send("no date no term");
+  if (!req.query.term && !req.query.date)
+    return res.status(422).send("no date no term");
   if (req.query.date) {
     const date = moment(req.query.date, "YYYY-MM-DD");
     if (date.isValid()) {
-      res.json(
-        bookings.filter((booking) => {
-          return date.isBetween(
-            booking.checkInDate,
-            booking.checkOutDate,
-            null,
-            "[]"
-          );
-        })
-      );
+      const filteredBooking = bookings.filter((booking) => {
+        return date.isBetween(
+          booking.checkInDate,
+          booking.checkOutDate,
+          null,
+          "[]"
+        );
+      });
+      res.json(filteredBooking);
     } else {
       res
         .status(400)
@@ -87,9 +87,9 @@ app.get("/bookings", (req, res) => {
 // Read one booking, specified by an ID
 app.get("/bookings/:id", (req, res) => {
   const bookingId = Number(req.params.id);
-  let filtered = bookings.find((booking) => booking.id === bookingId);
-  if (filtered) {
-    res.json(filtered);
+  let booking = bookings.find((booking) => booking.id === bookingId);
+  if (booking) {
+    res.json(booking);
   } else {
     res.status(404).send("the booking to be read cannot be found by id");
   }
