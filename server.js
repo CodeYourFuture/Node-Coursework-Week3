@@ -10,15 +10,54 @@ app.use(cors());
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
-// Creating a new Booking
+// Creating a new Booking + Level 2 simple validation
 app.post("/bookings", (req, res) => {
-  const newBookings = req.body;
+  const newBooking = req.body;
 
-  if (newBookings) {
-    bookings.push(newBookings);
-    res.status(201).json({ message: "Booking created successfully" });
+  // if (newBookings) {
+  //   bookings.push(newBookings);
+  //   res.status(201).json({ message: "Booking created successfully" });
+  // } else {
+  //   res.status(400).json({ message: "Invalid booking data" });
+  // }
+  // Deconstructing the bookings
+  const {
+    title,
+    firstName,
+    surname,
+    email,
+    roomId,
+    checkInDate,
+    checkOutDate,
+  } = newBooking;
+
+  // Validation functions
+  const isEmpty = (value) =>
+    typeof value === "string" ? !value.trim() : !value;
+  const isInvalidRoomId = (roomId) => isNaN(parseInt(roomId));
+  // const isInvalidRoomId = (roomId) =>
+  //   isNaN(parseInt(roomId.toString())) || typeof roomId !== "number";
+  const isInvalidDate = (date) => new Date(date).toString() === "Invalid Date";
+
+  // check if the properties
+  if (
+    [
+      isEmpty(title),
+      isEmpty(firstName),
+      isEmpty(surname),
+      isEmpty(email),
+      isEmpty(roomId),
+      isEmpty(checkInDate),
+      isEmpty(checkOutDate),
+      isInvalidRoomId(roomId),
+      isInvalidDate(checkInDate),
+      isInvalidDate(checkOutDate),
+    ].some(Boolean)
+  ) {
+    res.status(400).json({ message: "Booking data is invalid ⛔️" });
   } else {
-    res.status(400).json({ message: "Invalid booking data" });
+    bookings.push(newBooking);
+    res.status(201).json({ message: "Booking created successfully 😅 👍🏼" });
   }
 });
 
@@ -34,7 +73,7 @@ app.get("/bookings/:id", (req, res) => {
   if (bookingsById) {
     res.json(bookingsById);
   } else {
-    res.status(404).json({ message: "Booking not found" });
+    res.status(404).json({ message: "Booking not found ⛔️" });
   }
 });
 
@@ -46,9 +85,9 @@ app.delete("/bookings/:id", (req, res) => {
   );
   if (bookingIndex !== -1) {
     bookings.splice(bookingIndex, 1);
-    res.json({ message: "Booking deleted successfully" });
+    res.json({ message: "Booking deleted successfully 😅 👍🏼" });
   } else {
-    res.status(404).json({ message: "Booking not found" });
+    res.status(404).json({ message: "Booking not found ⛔️" });
   }
 });
 
