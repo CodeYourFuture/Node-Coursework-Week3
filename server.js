@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const validator = require("email-validator");
 
 const app = express();
 
@@ -31,6 +32,8 @@ app.post("/bookings", (req, res) => {
     checkOutDate: req.body.checkOutDate,
   };
 
+  console.log(validator.validate(req.body.email));
+
   if (
     !req.body.title ||
     !req.body.firstName ||
@@ -43,6 +46,8 @@ app.post("/bookings", (req, res) => {
     res
       .status(404)
       .json({ success: false, error: "Please provide all fields" });
+  } else if (validator.validate(req.body.email) === false) {
+    res.status(404).json({ success: false, error: "Email is invalid" });
   } else {
     bookings.push(newBooking);
     res.status(200).json(newBooking);
@@ -78,6 +83,12 @@ app.get("/bookings/search", (req, res) => {
       bkng.checkInDate.includes(dateQuery) ||
       bkng.checkOutDate.includes(dateQuery)
   );
+
+  res.status(200).json({
+    success: true,
+    message: "Showing all matched bookings",
+    matchedBookings,
+  });
 });
 
 app.get("/bookings/:id", (req, res) => {
