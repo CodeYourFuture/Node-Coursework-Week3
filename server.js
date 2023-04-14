@@ -49,10 +49,36 @@ app.post("/bookings", (req, res) => {
   }
 });
 
-app.get("/booking/search", (req, res) => {});
+app.get("/bookings/search", (req, res) => {
+  const searchQuery = req.query.term;
+
+  const matchedBookings = bookings.filter(
+    (bkng) =>
+      bkng.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bkng.surname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bkng.email.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  res.status(200).json({
+    success: true,
+    message: "showing all matched bookings",
+    matchedBookings,
+  });
+});
 
 //does this go in the other "search"?
-app.get("/bookings/search", (req, res) => {});
+app.get("/bookings/search", (req, res) => {
+  const dateQuery = req.query.date;
+
+  const fromDate = moment(new Date(checkInDate));
+  const toDate = moment(new Date(checkOutDate));
+
+  const matchedBookings = bookings.filter(
+    (bkng) =>
+      bkng.checkInDate.includes(dateQuery) ||
+      bkng.checkOutDate.includes(dateQuery)
+  );
+});
 
 app.get("/bookings/:id", (req, res) => {
   const idToFind = Number(req.params.id);
