@@ -150,7 +150,7 @@ app.get("/bookings/:id", function (request, response) {
 
 app.post("/bookings", function (request, response) {
   const booking = request.body;
-
+  console.log(booking);
   if (
     !booking.title ||
     !booking.firstName ||
