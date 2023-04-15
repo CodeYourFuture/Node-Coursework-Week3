@@ -140,14 +140,35 @@ app.get("/bookings/:id", function (request, response) {
   const booking = bookings.find((value) => {
     return value.id === id;
   });
-   
+
   if (!booking) {
-    response.status(404).json({ message : "booking not found"});
-  }else {
+    response.status(404).json({ message: "booking not found" });
+  } else {
     response.json(booking);
   }
+});
 
-  
+app.post("/bookings", function (request, response) {
+  const booking = request.body;
+
+  if (
+    !booking.title ||
+    !booking.firstName ||
+    !booking.surname ||
+    !booking.email ||
+    !booking.roomId ||
+    !booking.checkInDate ||
+    !booking.checkOutDate
+  ) {
+    response.status(400).json({ message: "invalid booking" });
+    return;
+  }
+
+  booking.id = bookings.length + 1;
+
+  bookings.push(request.body);
+
+  response.json(bookings);
 });
 
 //to get all ids respectively:
