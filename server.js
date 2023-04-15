@@ -147,7 +147,13 @@ app.get("/bookings/:id", function (request, response) {
   }
 });
 
+app.post("/booking", function (request, responds){
+// console.log(request.body);
+bookings.push(request.body);
 
+
+  responds.json(bookings);
+})
 
 
 
