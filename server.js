@@ -11,11 +11,19 @@ app.use(cors());
 const bookings = require("./bookings.json");
 
 app.get("/", (req, res) => res.json({ message: "Hello App" }));
+
 //Creating new booking
 app.post("/bookings", (req, res) => {
   const newBookings = req.body;
 
-  if (newBookings) {
+  if (
+    newBookings.title &&
+    newBookings.firstName &&
+    newBookings.surname &&
+    newBookings.roomId &&
+    checkInDate &&
+    checkOutDate
+  ) {
     bookings.push(newBookings);
     res.status(201).json({ message: "Booking created successfully" });
   } else {
