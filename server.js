@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 const validator = require("email-validator");
 
 const app = express();
@@ -32,8 +33,6 @@ app.post("/bookings", (req, res) => {
     checkOutDate: req.body.checkOutDate,
   };
 
-  console.log(validator.validate(req.body.email));
-
   if (
     !req.body.title ||
     !req.body.firstName ||
@@ -47,48 +46,81 @@ app.post("/bookings", (req, res) => {
       .status(404)
       .json({ success: false, error: "Please provide all fields" });
   } else if (validator.validate(req.body.email) === false) {
-    res.status(404).json({ success: false, error: "Email is invalid" });
+    res.status(404).json({ success: false, error: "Email is not valid" });
   } else {
     bookings.push(newBooking);
-    res.status(200).json(newBooking);
+    res.status(200).json({
+      success: true,
+      message: "New booking created successfully",
+      newBooking,
+    });
   }
 });
 
 app.get("/bookings/search", (req, res) => {
   const searchQuery = req.query.term;
+  const dateQuery = req.query.date;
+  console.log(searchQuery);
 
-  const matchedBookings = bookings.filter(
-    (bkng) =>
+  if (!dateQuery) {
+    const matchedBookings = bookings.filter(matchedSearchQueries);
+    res.status(200).json({
+      success: true,
+      message: "showing all matched bookings",
+      matchedBookings,
+    });
+  } else if (!searchQuery) {
+    const matchedBookings = bookings.filter(matchedDateQueries);
+    res.status(200).json({
+      success: true,
+      message: "showing all matched bookings",
+      matchedBookings,
+    });
+  } else {
+    const matchedBookings = bookings.filter(allMatchedQueries);
+    res.status(200).json({
+      success: true,
+      message: "showing all matched bookings",
+      matchedBookings,
+    });
+  }
+
+  function matchedSearchQueries(bkng) {
+    return (
       bkng.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       bkng.surname.toLowerCase().includes(searchQuery.toLowerCase()) ||
       bkng.email.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+    );
+  }
 
-  res.status(200).json({
-    success: true,
-    message: "showing all matched bookings",
-    matchedBookings,
-  });
-});
+  function matchedDateQueries(bkng) {
+    const dateToFind = moment(new Date(dateQuery));
+    const fromDate = moment(new Date(bkng.checkInDate));
+    const toDate = moment(new Date(bkng.checkOutDate));
+    const isDateBetween = dateToFind.isBetween(fromDate, toDate);
 
-//does this go in the other "search"?
-app.get("/bookings/search", (req, res) => {
-  const dateQuery = req.query.date;
-
-  const fromDate = moment(new Date(checkInDate));
-  const toDate = moment(new Date(checkOutDate));
-
-  const matchedBookings = bookings.filter(
-    (bkng) =>
+    return (
       bkng.checkInDate.includes(dateQuery) ||
-      bkng.checkOutDate.includes(dateQuery)
-  );
+      bkng.checkOutDate.includes(dateQuery) ||
+      isDateBetween === true
+    );
+  }
 
-  res.status(200).json({
-    success: true,
-    message: "Showing all matched bookings",
-    matchedBookings,
-  });
+  function allMatchedQueries(bkng) {
+    const dateToFind = moment(new Date(dateQuery));
+    const fromDate = moment(new Date(bkng.checkInDate));
+    const toDate = moment(new Date(bkng.checkOutDate));
+    const isDateBetween = dateToFind.isBetween(fromDate, toDate);
+
+    return (
+      bkng.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bkng.surname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bkng.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bkng.checkInDate.includes(dateQuery) ||
+      bkng.checkOutDate.includes(dateQuery) ||
+      isDateBetween === true
+    );
+  }
 });
 
 app.get("/bookings/:id", (req, res) => {
