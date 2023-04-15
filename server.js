@@ -1,23 +1,29 @@
 const express = require("express");
 const cors = require("cors");
 
+
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static("public")); // connect the index.html file to the server 
 
-//Use this array as your (in-memory) data store.
+// (in-memory) data store
 const bookings = require("./bookings.json");
 
 app.get("/", function (request, response) {
-  response.send("Hotel booking server.  Ask for /bookings, etc.");
+  response.send(
+    "Hotel booking server created by Natalie Zablotska.  Ask for /bookings, etc."
+  );
 });
 
 app.get("/bookings", function (request, response) {
+  //get all bookings
   response.status(200).send({ bookings });
 });
 
 app.get("/bookings/search", function (request, response) {
+  //search for a booking by first name, surname, email, room ID and dates
   const searchTerm = request.query.term.toLowerCase();
   const matchingBookings = bookings.filter((booking) => {
     return (
@@ -37,6 +43,7 @@ app.get("/bookings/search", function (request, response) {
 });
 
 app.get("/bookings/:id", function (request, response) {
+  //find a booking by id
   const idToFind = Number(request.params.id);
   const booking = bookings.find((booking) => booking.id === idToFind);
   if (!booking) {
@@ -49,6 +56,7 @@ app.get("/bookings/:id", function (request, response) {
 });
 
 app.delete("/bookings/:id", function (req, res) {
+  //delete a booking by id
   const idToDelete = parseInt(req.params.id);
   const bookingIndex = bookings.findIndex(
     (booking) => booking.id === idToDelete
@@ -61,6 +69,7 @@ app.delete("/bookings/:id", function (req, res) {
 });
 
 app.post("/bookings", function (request, response) {
+  //create a new booking
   const newBooking = {
     id: bookings.length + 1, // a unique ID for the new booking
     firstName: request.body.firstName,
@@ -71,7 +80,7 @@ app.post("/bookings", function (request, response) {
     checkOutDate: request.body.checkOutDate,
   };
 
-  // Validating the request body
+  // reject requests to create bookings if any property of the booking object is missing
   if (
     !newBooking.firstName ||
     !newBooking.surname ||
@@ -82,20 +91,6 @@ app.post("/bookings", function (request, response) {
   ) {
     return response.status(400).send({ error: "Invalid booking data" });
   }
-  // // Checking if the room is available for the requested dates
-  // const overlappingBookings = bookings.filter((booking) => {
-  //   const isOverlapping =
-  //     newBooking.roomId === booking.roomId &&
-  //     newBooking.checkInDate < booking.checkOutDate &&
-  //     newBooking.checkOutDate > booking.checkInDate;
-  //   return isOverlapping;
-  // });
-
-  // if (overlappingBookings.length > 0) {
-  //   return response
-  //     .status(409)
-  //     .send({ error: "Room not available for the selected dates" });
-  // }
 
   // Adding the new booking to the bookings array
   bookings.push(newBooking);
@@ -103,6 +98,6 @@ app.post("/bookings", function (request, response) {
 });
 
 const port = 3000;
-const listener = app.listen(port, function () {
-  console.log("Your app is listening on port " + port);
+const listener = app.listen(process.env.PORT || port, function () {
+  console.log("Your app is listening on port " + listener.address().port);
 });
