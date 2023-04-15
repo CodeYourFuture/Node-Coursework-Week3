@@ -10,6 +10,7 @@ app.use(cors());
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
+app.get("/", (req, res) => res.json({ message: "Hello App" }));
 //Creating new booking
 app.post("/bookings", (req, res) => {
   const newBookings = req.body;
