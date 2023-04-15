@@ -23,7 +23,7 @@ app.get("/", function (request, response) {
  app.get("/bookings/:id", (request,response) => {
   let bookingId= request.params.id
 
-  if(bookingId){
+  if(!bookingId){
     return response.status(400).json({error:true, message:"there is an error!"})
   };
 
