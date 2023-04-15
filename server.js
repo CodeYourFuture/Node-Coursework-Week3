@@ -124,7 +124,7 @@ app.use(express.json());
 app.use(cors());
 
 //Use this array as your (in-memory) data store.
-const bookings = require("./bookings.json");
+let bookings = require("./bookings.json");
 
 app.get("/", function (request, response) {
   response.send("Welcome to my API. Try /bookings");
@@ -169,6 +169,23 @@ app.post("/bookings", function (request, response) {
   bookings.push(request.body);
 
   response.json(bookings);
+});
+
+app.delete("/bookings/:id", function (request, response) {
+  const id = Number(request.params.id);
+  //delete a booking  from bookings array by id:
+  const booking = bookings.find((value) => {
+    return value.id === id;
+  });
+
+  if (!booking) {
+    response.status(404).json({ message: "booking not found" });
+  } else {
+    const index = bookings.indexOf(booking);
+    bookings.splice(index, 1);
+
+    response.json(bookings);
+  }
 });
 
 //to get all ids respectively:
