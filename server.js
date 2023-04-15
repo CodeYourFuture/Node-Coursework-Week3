@@ -1,4 +1,5 @@
 const express = require("express");
+const moment = require("moment");
 const cors = require("cors");
 
 const app = express();
@@ -10,6 +11,7 @@ app.use(cors());
 //Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
+// main route:
 app.get("/", (req, res) => res.json({ message: "Hello App" }));
 
 //Creating new booking
@@ -44,6 +46,20 @@ app.get("/bookings/:id", (req, res) => {
     res.send(bookingByID);
   } else {
     res.status(404).json(`Booking not found`);
+  }
+});
+
+// Search by date:
+
+app.get("/bookings/search", (req, res) => {
+  const searchByDate = moment(req.query.date).isBetween(
+    bookings.checkInDate,
+    bookings.checkOutDate
+  );
+  if (searchByDate) {
+    res.json(`The booking exist`);
+  } else {
+    res.status(404).json(`Invalid Date`);
   }
 });
 
