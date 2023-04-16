@@ -130,10 +130,12 @@ app.get("/", function (request, response) {
   response.send("Welcome to my API. Try /bookings");
 });
 
+//get bookings:
 app.get("/bookings", function (request, response) {
   response.json(bookings);
 });
 
+//get by id:
 app.get("/bookings/:id", function (request, response) {
   const id = Number(request.params.id);
 
@@ -148,6 +150,7 @@ app.get("/bookings/:id", function (request, response) {
   }
 });
 
+//post:
 app.post("/bookings", function (request, response) {
   const booking = request.body;
   console.log(booking);
@@ -171,8 +174,10 @@ app.post("/bookings", function (request, response) {
   response.json(bookings);
 });
 
+//delete:
 app.delete("/bookings/:id", function (request, response) {
   const id = Number(request.params.id);
+
   //delete a booking  from bookings array by id:
   const booking = bookings.find((value) => {
     return value.id === id;
