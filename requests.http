@@ -1,0 +1,113 @@
+###
+
+
+# Root (index.html)
+get http://localhost:3001
+
+
+
+
+###
+
+
+# Get All Bookings
+get http://localhost:3001/bookings
+
+
+
+
+###
+
+
+# Get One Booking
+get http://localhost:3001/bookings/1
+
+
+
+
+###
+
+
+#Post A Booking
+post http://localhost:3001/bookings
+Content-Type: application/json
+
+
+{
+ "title": "Ms",
+ "firstName": "Farzaneh",
+ "surname": "Haghani",
+ "email": "farzaneh.haghani@gmail.com",
+ "checkInDate": "2023-06-25",
+ "checkOutDate": "2023-07-03"
+}
+
+
+
+
+###
+
+
+#Delete A Booking
+delete http://localhost:3001/bookings/8
+
+
+
+
+###
+
+
+# Update A Booking
+put http://localhost:3001/bookings/10
+Content-Type: application/json
+
+
+{
+ "title": "Ms",
+ "firstName": "Farzaneh",
+ "surname": "Haghani",
+ "email": "farzaneh.haghani@gmail.com",
+ "checkInDate": "2023-06-28",
+ "checkOutDate": "2023-07-03"
+}
+
+
+
+
+###
+
+
+#Validation for Post
+post http://localhost:3001/bookings
+Content-Type: application/json
+
+
+{
+ "title": "",
+ "firstName": "",
+ "surname": "Haghani",
+ "email": "farzaneh.haghani@gmail.com",
+ "checkInDate": "2023-06-25",
+ "checkOutDate": "2023-07-03"
+}
+
+
+
+
+###
+
+
+# Validation for Update
+put http://localhost:3001/bookings/8
+Content-Type: application/json
+
+
+{
+ "title": "Ms",
+ "firstName": "",
+ "surname": "",
+ "email": "farzaneh.haghani@gmail.com",
+ "checkInDate": "2023-06-27",
+ "checkOutDate": "2023-07-03"
+}
+

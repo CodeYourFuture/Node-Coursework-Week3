@@ -48,5 +48,15 @@
     "roomId": 3,
     "checkInDate": "2017-08-30",
     "checkOutDate": "2017-10-02"
+  },
+  {
+    "id": 6,
+    "title": "Ms",
+    "firstName": "Farzaneh",
+    "surname": "Haghani",
+    "email": "farzaneh.haghani@gmail.com",
+    "roomId": 1,
+    "checkInDate": "2023-06-25",
+    "checkOutDate": "2023-07-03"
   }
 ]
