@@ -24,17 +24,14 @@ const postBooking = (req, res) => {
     return;
   }
 
-
   else {
-    const id = parseInt(bookings[bookings.length - 1].id) + 1;
+    const id = bookings[bookings.length - 1].id + 1;
     const roomId = Math.floor(Math.random() * 10 + 1);
     const newBooking = {
       id, title, firstName, surname, email, roomId, checkInDate, checkOutDate
     };
 
-
     bookings.push(newBooking);
-
 
     fs.writeFile("./bookings.json", JSON.stringify(bookings, null, 2), (err) => {
       res.status(500).json({ message: "There is some Errors!" });
@@ -52,11 +49,18 @@ const getOneBooking = (req, res) => {
 
   const bookingFiltered = bookings.find(eachBook => eachBook.id === parseInt(id));
 
-  fs.readFile("./bookings.json", "utf8")
-    .then(bookings => {
-      res.status(200).json({ data: bookingFiltered })
-      return;
-    });
+  if (!bookingFiltered) {
+    res.status(400).json({ message: "Your Id is not valid!" });
+    return;
+  }
+
+  else {
+    fs.readFile("./bookings.json", "utf8")
+      .then(bookings => {
+        res.status(200).json({ data: bookingFiltered })
+        return;
+      });
+  }
 };
 
 
@@ -64,34 +68,53 @@ const getOneBooking = (req, res) => {
 const deleteBooking = (req, res) => {
   const { id } = req.params;
 
-
   const bookingIndex = bookings.findIndex(eachBooking => eachBooking.id === parseInt(id));
-  bookings.splice(bookingIndex, 1);
 
+  if (bookingIndex === -1) {
+    res.status(400).json({ message: "Your Id is not valid!" });
+    return;
+  }
 
-  fs.writeFile("./bookings.json", JSON.stringify(bookings, null, 2));
-  res.status(200).json({ message: "Booking deleted" });
-  return;
-};
+  else {
+    bookings.splice(bookingIndex, 1);
+
+    fs.writeFile("./bookings.json", JSON.stringify(bookings, null, 2));
+    res.status(200).json({ message: "Booking deleted" });
+    return;
+  };
+}
 
 
 // ----------- Update -----------
 const updateBooking = (req, res) => {
   let { title, firstName, surname, email, checkInDate, checkOutDate } = req.body;
+
   if (!title.trim() || !firstName.trim() || !surname.trim() || !email.trim() || !checkInDate.trim() || !checkOutDate.trim()) {
     res.status(400).json("Please Fill all the Fields!");
     return;
   }
+
   else {
     const id = parseInt(req.params.id);
-    roomId = Math.floor(Math.random() * 10 + 1);
-    const newBooking = { id, title, firstName, surname, email, roomId, checkInDate, checkOutDate };
-
     const bookingIndex = bookings.findIndex(eachBooking => eachBooking.id === parseInt(id));
-    bookings.splice(bookingIndex, 1, newBooking);
 
-    fs.writeFile("./bookings.json", JSON.stringify(bookings, null, 2));
-    res.status(200).json({ message: "message updated" });
+    if (bookingIndex === -1) {
+      res.status(400).json({ message: "Your Id is not valid!" });
+      return;
+    }
+
+    else {
+      roomId = Math.floor(Math.random() * 10 + 1);
+      const newBooking = { id, title, firstName, surname, email, roomId, checkInDate, checkOutDate };
+
+
+      bookings.splice(bookingIndex, 1, newBooking);
+
+      fs.writeFile("./bookings.json", JSON.stringify(bookings, null, 2));
+      res.status(200).json({ message: "message updated" });
+      return;
+
+    }
   }
 };
 

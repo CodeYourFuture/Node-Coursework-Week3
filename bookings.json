@@ -10,14 +10,14 @@
     "checkOutDate": "2017-11-23"
   },
   {
-    "id": "2",
-    "title": "Ms",
-    "firstName": "test",
-    "surname": "changed",
-    "email": "test@example.com",
-    "roomId": 2,
-    "checkInDate": "2017-11-21",
-    "checkOutDate": "2017-11-23"
+    "id": 2,
+    "title": "King",
+    "firstName": "James",
+    "surname": "Brown",
+    "email": "jamesbrown@example.com",
+    "roomId": 1,
+    "checkInDate": "2018-02-15",
+    "checkOutDate": "2018-02-28"
   },
   {
     "id": 3,
@@ -50,13 +50,13 @@
     "checkOutDate": "2017-10-02"
   },
   {
-    "id": 8,
+    "id": 6,
     "title": "Ms",
     "firstName": "Farzaneh",
     "surname": "Haghani",
     "email": "farzaneh.haghani@gmail.com",
-    "roomId": 6,
-    "checkInDate": "2023-06-28",
+    "roomId": 1,
+    "checkInDate": "2023-06-25",
     "checkOutDate": "2023-07-03"
   }
 ]

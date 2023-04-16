@@ -20,7 +20,7 @@ get http://localhost:3001/bookings
 
 
 # Get One Booking
-get http://localhost:3001/bookings/6
+get http://localhost:3001/bookings/1
 
 
 
@@ -49,7 +49,7 @@ Content-Type: application/json
 
 
 #Delete A Booking
-delete http://localhost:3001/bookings/6
+delete http://localhost:3001/bookings/8
 
 
 
@@ -58,7 +58,7 @@ delete http://localhost:3001/bookings/6
 
 
 # Update A Booking
-put http://localhost:3001/bookings/8
+put http://localhost:3001/bookings/10
 Content-Type: application/json
 
 
