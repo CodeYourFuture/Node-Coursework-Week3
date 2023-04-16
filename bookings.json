@@ -10,6 +10,16 @@
     "checkOutDate": "2017-11-23"
   },
   {
+    "id": 6,
+    "title": "Mr",
+    "firstName": "Greg",
+    "surname": "Joe",
+    "email": "greg@example.com",
+    "roomId": 2,
+    "checkInDate": "2017-11-21",
+    "checkOutDate": "2017-11-23"
+  },
+  {
     "id": 2,
     "title": "King",
     "firstName": "James",
