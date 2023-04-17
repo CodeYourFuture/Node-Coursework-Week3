@@ -69,12 +69,13 @@ app.get("/bookings/search", (req, res) => {
         .status(400)
         .json({ msg: "please enter the date format correctly YYYY-MM-DD" });
     }
-  } else if (req.query.term) {
+  } else {
     const term = req.query.term;
-    filteredBooking = bookings.filter((booking) =>
-      (booking.firstName || booking.surname || booking.email)
-        .toLowerCase()
-        .includes(term.toLowerCase())
+    filteredBooking = bookings.filter(
+      (booking) =>
+        booking.firstName.toLowerCase().includes(term.toLowerCase()) ||
+        booking.surname.toLowerCase().includes(term.toLowerCase()) ||
+        booking.email.toLowerCase().includes(term.toLowerCase())
     );
     res.json(filteredBooking);
   }
