@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const port = 3030;
 const moment = require("moment");
+const validator = require("validator");
 
 const app = express();
 
@@ -91,6 +92,16 @@ app.post("/bookings", function (req, res) {
     checkOutDate.trim() === ""
   ) {
     return res.status(400).send("Invalid request body");
+  }
+
+  //checking if email address is valid or not valid
+  if (!validator.isEmail(email)) {
+    return res.status(400).send("Invalid email address");
+  }
+
+  //checking if checkOutDate is after checkInDate
+  if (!moment(checkOutDate).isAfter(checkInDate)) {
+    return res.status(400).send("Check-out date must be after check-in date");
   }
 
   const newBooking = {
