@@ -10,8 +10,10 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "cors": "^2.8.5",
     "express": "^4.16.4",
-    "cors": "^2.8.5"
+    "moment": "^2.29.4",
+    "validator": "^13.9.0"
   },
   "engines": {
     "node": "8.x"
@@ -24,5 +26,8 @@
     "node",
     "glitch",
     "express"
-  ]
+  ],
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
 }
