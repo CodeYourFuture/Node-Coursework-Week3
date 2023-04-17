@@ -15,6 +15,9 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 
+//Level 1 Challenge - make the booking server
+//1. Created a new booking
+
 const listener = app.listen(process.env.PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
