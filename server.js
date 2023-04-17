@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const port = 3030;
+const moment = require("moment");
 
 const app = express();
 
@@ -22,6 +23,28 @@ function getNewUniqueId(array) {
 // Read all bookings
 app.get("/bookings", function (req, res) {
   res.status(200).send(bookings);
+});
+
+// Search for bookings which span a date
+app.get("/bookings/search", function (req, res) {
+  const searchDate = req.query.date;
+
+  if (!moment(searchDate, "YYYY-MM-DD", true).isValid()) {
+    return res.status(400).send("Invalid date format");
+  }
+
+  const bookingsWithSearchDate = bookings.filter(
+    (booking) =>
+      moment(booking.checkInDate).isSameOrBefore(searchDate) &&
+      moment(booking.checkOutDate).isSameOrAfter(searchDate)
+  );
+
+  if (bookingsWithSearchDate.length === 0) {
+    return res.status(404).send("No bookings found for the given date");
+  }
+
+  // If bookings are found, return them to the client
+  return res.status(200).send(bookingsWithSearchDate);
 });
 
 // Read one booking, specified by an ID
