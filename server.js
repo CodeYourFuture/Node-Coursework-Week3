@@ -27,7 +27,7 @@ app.get("/bookings", function (req, res) {
 });
 
 // Search for bookings which span a date
-app.get("/bookings/search", function (req, res) {
+app.get("/bookings/date/search", function (req, res) {
   const searchDate = req.query.date;
 
   if (!moment(searchDate, "YYYY-MM-DD", true).isValid()) {
@@ -46,6 +46,34 @@ app.get("/bookings/search", function (req, res) {
 
   // If bookings are found, return them to the client
   return res.status(200).send(bookingsWithSearchDate);
+});
+
+//Search for bookings which match a term
+app.get("/bookings/term/search", function (req, res) {
+  const searchTerm = req.query.term;
+  console.log(searchTerm);
+
+  const matchedBookings = bookings.filter((booking) => {
+    const emailMatched = booking.email
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    console.log(emailMatched);
+    const firstNameMatched = booking.firstName
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    console.log(firstNameMatched);
+    const surnameMatched = booking.surname
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+
+    return emailMatched || firstNameMatched || surnameMatched;
+  });
+
+  if (matchedBookings.length === 0) {
+    return res.status(404).send("No matching bookings found");
+  }
+
+  return res.status(200).send(matchedBookings);
 });
 
 // Read one booking, specified by an ID
@@ -67,7 +95,7 @@ app.get("/bookings/:id", function (req, res) {
 app.post("/bookings", function (req, res) {
   const {
     title,
-    firstname,
+    firstName,
     surname,
     email,
     roomId,
@@ -78,14 +106,14 @@ app.post("/bookings", function (req, res) {
   // Validate the incoming request body
   if (
     !title ||
-    !firstname ||
+    !firstName ||
     !surname ||
     !email ||
     !roomId ||
     !checkInDate ||
     !checkOutDate ||
     title.trim() === "" ||
-    firstname.trim() === "" ||
+    firstName.trim() === "" ||
     surname.trim() === "" ||
     email.trim() === "" ||
     checkInDate.trim() === "" ||
@@ -107,7 +135,7 @@ app.post("/bookings", function (req, res) {
   const newBooking = {
     id: getNewUniqueId(bookings),
     title: title,
-    firstname: firstname,
+    firstName: firstName,
     surname: surname,
     email: email,
     roomId: roomId,
