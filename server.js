@@ -51,6 +51,25 @@ app.post("/bookings", function (req, res) {
     checkOutDate,
   } = req.body;
 
+  // Validate the incoming request body
+  if (
+    !title ||
+    !firstname ||
+    !surname ||
+    !email ||
+    !roomId ||
+    !checkInDate ||
+    !checkOutDate ||
+    title.trim() === "" ||
+    firstname.trim() === "" ||
+    surname.trim() === "" ||
+    email.trim() === "" ||
+    checkInDate.trim() === "" ||
+    checkOutDate.trim() === ""
+  ) {
+    return res.status(400).send("Invalid request body");
+  }
+
   const newBooking = {
     id: getNewUniqueId(bookings),
     title: title,
