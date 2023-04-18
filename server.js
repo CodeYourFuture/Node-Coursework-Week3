@@ -42,6 +42,28 @@ app.post("/bookings", (req, res) => {
     res.status(400).json({ message: "Invalid booking data" });
   }
 });
+// Level 3  search bookings by date:
+app.get('/bookings/search', (req, res) => {
+  const date  = moment(req.query.date, "YYYY-MM-DD");
+  const term = req.query.term;
+  if(!date.isValid()){
+    res.status(400).send("Invalid date.");
+  }else{
+   let matchingBookings = bookings.filter((booking) => {
+    const checkInDate = moment(booking.checkInDate, "YYYY-MM-DD");
+    const checkOutDate = moment(booking.checkOutDate, "YYYY-MM-DD");
+    const isDateMatch = date.isBetween(checkInDate, checkOutDate, null, "[]");
+
+    const isTermMatch = term ? 
+    booking.email.includes(term) ||
+    booking.firstName.includes(term) ||
+    booking.surname.includes(term) : true;
+    return isDateMatch && isTermMatch;
+  });
+res.json(matchingBookings);
+  }
+  });
+
 
 //[2] read all bookings
 app.get("/bookings", function (request, response) {
@@ -90,27 +112,6 @@ function generateBookingroomId() {
   return Math.max(...bookings.map((booking) => booking.roomId), 0) + 1;
 }
 
-// Level 3  search bookings by date:
-app.get('/bookings/search', (req, res) => {
-  const date  = moment(req.query.date, "YYYY-MM-DD");
-  const term = req.query.term;
-  if(!date.isValid()){
-    res.status(400).send("Invalid date.");
-  }else{
-   let matchingBookings = bookings.filter((booking) => {
-    const checkInDate = moment(booking.checkInDate, "YYYY-MM-DD");
-    const checkOutDate = moment(booking.checkOutDate, "YYYY-MM-DD");
-    const isDateMatch = date.isBetween(checkInDate, checkOutDate, null, "[]");
-
-    const isTermMatch = term ? 
-    booking.email.includes(term) ||
-    booking.firstName.includes(term) ||
-    booking.surname.includes(term) : true;
-    return isDateMatch && isTermMatch;
-  });
-res.json(matchingBookings);
-  }
-  });
 
 
 const listener = app.listen(PORT, function () {
