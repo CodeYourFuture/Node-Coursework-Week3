@@ -42,7 +42,6 @@ app.post("/bookings", (req, res) => {
   } else {
     const newBooking = req.body;
     //creating id for the new booking
-
     newBooking.id = Math.max(...bookings.map((booking) => booking.id), 0) + 1;
     bookings.push(newBooking);
     res.json(bookings);
@@ -51,7 +50,7 @@ app.post("/bookings", (req, res) => {
 //search by date and term
 app.get("/bookings/search", (req, res) => {
   if (!req.query.term && !req.query.date)
-    return res.status(422).send("no date no term");
+    return res.status(422).json({ msg: "no date no term" });
   if (req.query.date) {
     const date = moment(req.query.date, "YYYY-MM-DD");
     if (date.isValid()) {
@@ -92,7 +91,9 @@ app.get("/bookings/:id", (req, res) => {
   if (booking) {
     res.json(booking);
   } else {
-    res.status(404).send("the booking to be read cannot be found by id");
+    res
+      .status(404)
+      .json({ msg: "the booking to be read cannot be found by id" });
   }
 });
 //Delete a booking, specified by an ID
@@ -102,7 +103,9 @@ app.delete("/bookings/:id", (req, res) => {
     (booking) => booking.id === bookingId
   );
   if (bookingIndex === -1) {
-    res.status(404).send("the booking to be delete cannot be found by id");
+    res
+      .status(404)
+      .json({ msg: "the booking to be delete cannot be found by id" });
   } else {
     bookings.splice(bookingIndex, 1);
     res.json(bookings);
