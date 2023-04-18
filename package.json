@@ -13,7 +13,9 @@
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "g": "^2.0.1",
-    "nodemon": "^2.0.22"
+    "moment": "^2.29.4",
+    "nodemon": "^2.0.22",
+    "validator": "^13.9.0"
   },
   "engines": {
     "node": "8.x"
