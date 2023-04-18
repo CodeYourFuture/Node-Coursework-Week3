@@ -16,8 +16,15 @@ app.get("/", function (request, response) {
 
 // TODO add your routes and helper functions here
 app.get("/bookings", (request, response) => {
+  console.log(request.query.data)
   !bookings ? response.status(400).json({ error: true, message: "there is an error!" }) :
     response.status(200).json({ success: true, data: bookings })
+});
+
+app.get("/bookings/search", (request, response) => {
+  const { date, term } = request.query
+  const filterBooking = bookings.filter(el => moment(el.checkInDate).isSame(date) && el.firstName === term);
+  response.status(200).json({ success: true, data: filterBooking });
 });
 
 app.get("/bookings/:id", (request, response) => {
@@ -29,7 +36,7 @@ app.get("/bookings/:id", (request, response) => {
 
   let findingBooking = bookings.find(booking => booking.id === +bookingId)
 
-  !findingBooking ? response.status(404).json({ success: false, message: "there is no booking with this id" }) ://which error status is correct for this kind of response??????
+  !findingBooking ? response.status(404).json({ success: false, message: "there is no booking with this id" }) :
     response.status(200).json({ success: true, data: findingBooking })
 });
 
@@ -68,9 +75,8 @@ app.post("/bookings", (request, response) => {
   ) {
     return response
       .status(400)
-      .json({ message: "Please fill in all required sections" });
+      .json({ success: false, message: "Please fill in all required sections" });
   }
-
   bookings.push(newBooking)
   response.status(200).json({ success: true, data: bookings })
 })
