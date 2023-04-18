@@ -1,0 +1,11 @@
+{
+    "name": "fast-email-validator",
+    "version": "1.0.0",
+    "description": "Fastest email validator package, optimized with JS intricacies in mind.",
+    "license": "MIT",
+    "repository": "FlareZ123/fast-email-validator",
+    "main": "index.js",
+    "keywords": [
+      "email", "validator", "fast"
+    ]
+}
