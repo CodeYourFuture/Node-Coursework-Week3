@@ -1,8 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
-const { v4: uuidv4 } = require("uuid");
-const validator = require("email-validator");
+const emailValidator = require("email-validator");
 
 const app = express();
 const PORT = process.env.PORT || 9090;
