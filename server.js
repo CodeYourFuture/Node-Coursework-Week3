@@ -1,6 +1,8 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
+const { v4: uuidv4 } = require("uuid");
+const validator = require("email-validator");
 
 const app = express();
 const PORT = process.env.PORT || 9090;
@@ -30,11 +32,22 @@ app.post("/bookings", (req, res) => {
   const isEmpty = (value) =>
     typeof value === "string" ? !value.trim() : !value;
   const isInvalidRoomId = (roomId) => isNaN(parseInt(roomId));
-  // const isInvalidRoomId = (roomId) =>
-  //   isNaN(parseInt(roomId.toString())) || typeof roomId !== "number";
   const isInvalidDate = (date) => new Date(date).toString() === "Invalid Date";
 
-  // check if the properties
+  // Level 4 (Optional, advanced) - advanced validation
+  // Email validation
+  if (!emailValidator.validate(email)) {
+    return res.status(400).json({ message: "Invalid email address ⛔️" });
+  }
+
+  // Check-in and check-out date validation
+  if (moment(checkOutDate).isBefore(checkInDate)) {
+    return res
+      .status(400)
+      .json({ message: "Checkout date should be after check-in date ⛔️" });
+  }
+  // Level 2
+  // Check if the properties are valid
   if (
     [
       isEmpty(title),
