@@ -66,6 +66,16 @@ app.post("/bookings", (req, res) => {
     bookings.push(newBooking);
     res.status(201).json({ message: "Booking created successfully 😅 👍🏼" });
   }
+
+  // Write the updated bookings to the JSON file
+  fs.writeFile("./bookings.json", JSON.stringify(bookings), (err) => {
+    if (err) {
+      return res.status(500).json({ error: "Unable to write to file" });
+    }
+    res
+      .status(201)
+      .json({ message: "Booking created successfully", booking: newBooking });
+  });
 });
 
 // Reeding all Bookings
@@ -73,29 +83,80 @@ app.get("/bookings", (req, res) => {
   res.json(bookings);
 });
 
-// Level 3 (Optional, advanced) - search by date
-app.get("/bookings/search", (req, res) => {
-  const date = req.query.date;
-  console.log(`Searching for bookings on date: ${date}`);
+// // Level 3 ----------------------- (Optional, advanced) - search by date
+// app.get("/bookings/search", (req, res) => {
+//   const date = req.query.date;
+//   console.log(`Searching for bookings on date: ${date}`);
 
-  if (!date) {
-    return res.status(400).send("Please provide a date");
+//   if (!date) {
+//     return res.status(400).send("Please provide a date");
+//   }
+
+//   const bookingsOnData = bookings.filter((booking) => {
+//     const startDate = moment(booking.checkInDate);
+//     const endDate = moment(booking.checkOutDate);
+
+//     const searchDate = moment(date);
+
+//     return searchDate.isBetween(startDate, endDate, null, "[]");
+//   });
+
+//   res.send({ results: bookingsOnData });
+// });
+
+// // Level 5 ----------------------- free-text search
+// app.get("/bookings/search-term", (req, res) => {
+//   const term = req.query.term;
+
+//   if (!term) {
+//     return res.status(400).send("Please provide a search term 😊");
+//   }
+//   console.log(`Searching for bookings with term: ${term}`);
+
+//   const bookingsWithTerm = bookings.filter((booking) => {
+//     const { email, firstName, surname } = booking;
+
+//     return (
+//       email.toLowerCase().includes(term.toLocaleLowerCase()) ||
+//       firstName.toLowerCase().includes(term.toLocaleLowerCase()) ||
+//       surname.toLowerCase().includes(term.toLocaleLowerCase())
+//     );
+//   });
+
+//   res.send({ results: bookingsWithTerm });
+// });
+
+app.get("/bookings/search", (req, res) => {
+  const { term, date } = req.query;
+
+  if (!term && !date) {
+    return res.status(400).send("Please provide a search term or date 😊");
   }
 
-  console.log(`All bookings: ${JSON.stringify(bookings)}`);
+  console.log(`Searching for bookings with term: ${term} or date: ${date}`);
 
-  const bookingsOnData = bookings.filter((booking) => {
-    const startDate = moment(booking.checkInDate);
-    const endDate = moment(booking.checkOutDate);
+  const filteredBookings = bookings.filter((booking) => {
+    const { email, firstName, surname, checkInDate } = booking;
+    const formattedCheckInDate = new Date(checkInDate)
+      .toISOString()
+      .split("T")[0];
 
-    const searchDate = moment(date);
-
-    return searchDate.isBetween(startDate, endDate, null, "[]");
+    if (term) {
+      return (
+        email.toLowerCase().includes(term.toLocaleLowerCase()) ||
+        firstName.toLowerCase().includes(term.toLocaleLowerCase()) ||
+        surname.toLowerCase().includes(term.toLocaleLowerCase())
+      );
+    } else if (date) {
+      return formattedCheckInDate === date;
+    }
   });
 
-  console.log(`Matching bookings: ${JSON.stringify(bookingsOnData)}`);
+  if (filteredBookings.length === 0) {
+    return res.status(404).send("No results found 😔");
+  }
 
-  res.send({ results: bookingsOnData });
+  res.send({ results: filteredBookings });
 });
 
 // Read one Bookings by an ID
