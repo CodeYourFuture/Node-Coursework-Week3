@@ -1,26 +1,21 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 
 const app = express();
-const PORT = 9090 || process.env.PORT;
+const PORT = process.env.PORT || 9090;
 
 app.use(express.json());
 app.use(cors());
 
-//Use this array as your (in-memory) data store.
+// Use this array as your (in-memory) data store.
 const bookings = require("./bookings.json");
 
 // Creating a new Booking + Level 2 simple validation
 app.post("/bookings", (req, res) => {
   const newBooking = req.body;
 
-  // if (newBookings) {
-  //   bookings.push(newBookings);
-  //   res.status(201).json({ message: "Booking created successfully" });
-  // } else {
-  //   res.status(400).json({ message: "Invalid booking data" });
-  // }
-  // Deconstructing the bookings
+  // Destructuring the bookings
   const {
     title,
     firstName,
@@ -31,7 +26,7 @@ app.post("/bookings", (req, res) => {
     checkOutDate,
   } = newBooking;
 
-  // Validation functions
+  // Validation helper functions
   const isEmpty = (value) =>
     typeof value === "string" ? !value.trim() : !value;
   const isInvalidRoomId = (roomId) => isNaN(parseInt(roomId));
@@ -64,6 +59,31 @@ app.post("/bookings", (req, res) => {
 // Reeding all Bookings
 app.get("/bookings", (req, res) => {
   res.json(bookings);
+});
+
+// Level 3 (Optional, advanced) - search by date
+app.get("/bookings/search", (req, res) => {
+  const date = req.query.date;
+  console.log(`Searching for bookings on date: ${date}`);
+
+  if (!date) {
+    return res.status(400).send("Please provide a date");
+  }
+
+  console.log(`All bookings: ${JSON.stringify(bookings)}`);
+
+  const bookingsOnData = bookings.filter((booking) => {
+    const startDate = moment(booking.checkInDate);
+    const endDate = moment(booking.checkOutDate);
+
+    const searchDate = moment(date);
+
+    return searchDate.isBetween(startDate, endDate, null, "[]");
+  });
+
+  console.log(`Matching bookings: ${JSON.stringify(bookingsOnData)}`);
+
+  res.send({ results: bookingsOnData });
 });
 
 // Read one Bookings by an ID
