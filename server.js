@@ -58,7 +58,7 @@ app.post("/bookings", (req, res) => {
 });
 
 app.get("/bookings/search", (req, res) => {
-  const searchQuery = req.query.term;
+  const searchQuery = req.query.term || "";
   const dateQuery = req.query.date;
   console.log(searchQuery);
 
@@ -86,22 +86,11 @@ app.get("/bookings/search", (req, res) => {
   }
 
   function matchedSearchQueries(bkng) {
-    if (
-      searchQuery !== bkng.email ||
-      searchQuery !== bkng.firstName ||
-      searchQuery !== bkng.surname
-    ) {
-      res.status(400).json({
-        success: false,
-        message: "No matched bookings found",
-      });
-    } else {
-      return (
-        bkng.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        bkng.surname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        bkng.email.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-    }
+    return (
+      bkng.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bkng.surname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bkng.email.toLowerCase().includes(searchQuery.toLowerCase())
+    );
   }
 
   function matchedDateQueries(bkng) {
@@ -110,22 +99,11 @@ app.get("/bookings/search", (req, res) => {
     const toDate = moment(new Date(bkng.checkOutDate));
     const isDateBetween = dateToFind.isBetween(fromDate, toDate);
 
-    if (
-      dateQuery !== fromDate ||
-      dateQuery !== toDate ||
-      isDateBetween === false
-    ) {
-      res.status(400).json({
-        success: false,
-        message: `No bookings with the date ${dateQuery} found`,
-      });
-    } else {
-      return (
-        bkng.checkInDate.includes(dateQuery) ||
-        bkng.checkOutDate.includes(dateQuery) ||
-        isDateBetween === true
-      );
-    }
+    return (
+      bkng.checkInDate.includes(dateQuery) ||
+      bkng.checkOutDate.includes(dateQuery) ||
+      isDateBetween === true
+    );
   }
 
   function allMatchedQueries(bkng) {
@@ -134,28 +112,14 @@ app.get("/bookings/search", (req, res) => {
     const toDate = moment(new Date(bkng.checkOutDate));
     const isDateBetween = dateToFind.isBetween(fromDate, toDate);
 
-    if (
-      searchQuery !== bkng.email ||
-      searchQuery !== bkng.firstName ||
-      searchQuery !== bkng.surname ||
-      dateQuery !== fromDate ||
-      dateQuery !== toDate ||
-      isDateBetween === false
-    ) {
-      res.status(400).json({
-        success: false,
-        message: "No matched bookings found",
-      });
-    } else {
-      return (
-        bkng.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        bkng.surname.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        bkng.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        bkng.checkInDate.includes(dateQuery) ||
-        bkng.checkOutDate.includes(dateQuery) ||
-        isDateBetween === true
-      );
-    }
+    return (
+      bkng.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bkng.surname.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bkng.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      bkng.checkInDate.includes(dateQuery) ||
+      bkng.checkOutDate.includes(dateQuery) ||
+      isDateBetween === true
+    );
   }
 });
 
