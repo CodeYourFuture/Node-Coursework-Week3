@@ -18,6 +18,20 @@ let idCounter = 6;
 
 //Create a new booking
 app.post("/bookings", function (request, response) {
+  //simple validation
+  if (
+    !request.body.title ||
+    !request.body.firstName ||
+    !request.body.surname ||
+    !request.body.email ||
+    !request.body.roomId ||
+    !request.body.checkInDate ||
+    !request.body.checkOutDate
+  ) {
+    return response.status(400).json({ error: "Missing or empty booking property" });
+   
+  }
+  
   const newBooking = {
     id: idCounter++,
     roomId: request.body.roomId,
@@ -28,10 +42,10 @@ app.post("/bookings", function (request, response) {
     checkInDate: request.body.checkInDate,
     checkOutDate: request.body.checkOutDate,
   };
-  console.log(request.body);
   response.json(newBooking);
   bookings.push(newBooking);
 });
+
 //Read all bookings
 app.get("/bookings", function (request, response) {
   response.json(bookings);
@@ -54,13 +68,13 @@ app.get("/bookings/:id", function (request, response) {
     response.status(404).end();
   }
 });
-
+//Delete a booking, specified by an ID
 app.delete("/bookings/:id", function (request, response) {
   let id = idFromRequest(request);
   let foundBooking = findBookingById(id);
   if (foundBooking) {
-   bookings = bookings.filter((e) => e.id !== id);
-   response.json(bookings)
+    bookings = bookings.filter((e) => e.id !== id);
+    response.json(bookings);
   } else {
     response.status(404).end();
   }
