@@ -23,25 +23,26 @@ app.get("/bookings/:id", function (request, response) {
     response.json(booking);
   }
 });
+
 app.post("/bookings", function (request, response) {
   const booking = request.body;
-  console.log(booking);
-  if (
-    !booking.title ||
-    !booking.firstName ||
-    !booking.surname ||
-    !booking.email ||
-    !booking.roomId ||
-    !booking.checkInDate ||
-    !booking.checkOutDate
-  ) {
-    response.status(400).json({ message: "invalid booking" });
-    return;
+
+  if(booking.firstName && booking.surname && booking.title && booking.email && booking.roomId && booking.checkInDate && booking.checkOutDate) {
+    bookings.push({...booking, id: bookings.length + 1 }) 
+    console.log('hello', )
+    response.json(bookings)
+  } else {
+    response.status(400).json({msg: 'invalid'})
   }
-  booking.id = bookings.length + 1;
-  bookings.push(request.body);
-  response.json(bookings);
+   
+
+
+  
+
+  
+
 });
+
 app.delete("/bookings/:id", function (request, response) {
   const id = Number(request.params.id);
   //delete a booking  from bookings array by id:
