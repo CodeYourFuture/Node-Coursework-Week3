@@ -5,7 +5,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use(express.static("public")); // connect the index.html file to the server 
+app.use(express.static("public")); // connect the index.html file to the server
 
 // (in-memory) data store
 const bookings = require("./bookings.json");
@@ -18,7 +18,7 @@ app.get("/", function (request, response) {
 
 app.get("/bookings", function (request, response) {
   //get all bookings
-  response.status(200).send({ bookings });
+  response.status(200).json({ bookings });
 });
 
 app.get("/bookings/search", function (request, response) {
@@ -50,7 +50,7 @@ app.get("/bookings/:id", function (request, response) {
       .status(404)
       .send(`Booking with id ${request.params.id} is not found`);
   } else {
-    response.status(200).send(booking);
+    response.status(200).json(booking);
   }
 });
 
