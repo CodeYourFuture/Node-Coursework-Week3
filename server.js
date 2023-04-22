@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const moment = require("moment");
 
 const app = express();
 
@@ -11,6 +12,8 @@ const bookings = require("./bookings.json");
 // Read all bookings
 app.get("/", function (request, response) {
   response.send({bookings});
+
+  // { bookings: [....]}
 });
 
 // TODO add your routes and helper functions here
@@ -68,13 +71,31 @@ app.post("/bookings", function (request, response) {
   }
 });
 
+// Level 3 (Optional, advanced) - search by date
+app.get("/bookings/search", function(request, response) {
+  const date = request.query.date;
+
+  if (moment(date, "YYYY-MM-DD").isValid()){
+    const searchResult = bookings.filter((booking) => {
+      moment(booking.checkInDate).isAfter(date) &&
+      moment(booking.checkOutDate).isSameOrAfter(date) 
+    })
+    response.status(200).send({searchResult});
+  } else {
+    response.status(400).send("Invalid date format.");
+  }
+
+
+});
+
 //Delete a booking, specified by an ID
 app.delete("/bookings/:id", function (request, response) {
   const bookingId = request.params.id;
   const findIndex = bookings.findIndex((booking) => booking.id === Number(bookingId));
+  const removedBooking = bookings[findIndex];
   if (findIndex !== -1) {
     bookings.splice(findIndex,1);
-    response.status(204).send();
+    response.status(200).send({removedBooking});
   } else {
     response.status(404).send("message not found");
   }
