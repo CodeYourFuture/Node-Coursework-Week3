@@ -1,10 +1,11 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
-const validator = require("validator");
+const emailValidator = require("email-validator");
+
 
 const app = express();
-const PORT = 59339;
+const PORT = 5000;
 
 app.use(express.json());
 app.use(cors());
@@ -13,15 +14,27 @@ app.use(cors());
 const bookings = require("./bookings.json");
 
 
-app.get("/", function (request, response) {
+app.get("/", function (req, res) {
   response.send("Hotel booking server, Ask for booking!");
 });
 
+
 //[1]create a new booking; Level [2] - simple validation
 
-app.post("/bookings", (req, res) => {
+app.post("/booking", (req, res) => {
   const newBookings = req.body;
-  //console.log(JSON.stringify(newBookings));
+
+  const checkInDate = moment(newBookings.checkInDate);
+  const checkOutDate = moment(newBookings.checkOutDate);
+
+    if (!emailValidator.validate(newBookings.email)) {
+      res.status(400).json({msg: "email address is not valid"});
+      return
+    } else if(!checkOutDate.isAfter(checkInDate)) {
+      res.status(400).json({msg: "checkoutdate is not after checkindate"});
+      return
+    }
+  
   if (
      !newBookings.id || 
      !newBookings.title || 
@@ -42,6 +55,7 @@ app.post("/bookings", (req, res) => {
     res.status(400).json({ message: "Invalid booking data" });
   }
 });
+
 // Level 3  search bookings by date:
 app.get('/bookings/search', (req, res) => {
   const date  = moment(req.query.date, "YYYY-MM-DD");
@@ -63,8 +77,7 @@ app.get('/bookings/search', (req, res) => {
 res.json(matchingBookings);
   }
   });
-
-
+  
 //[2] read all bookings
 app.get("/bookings", function (request, response) {
   response.json(bookings);
@@ -73,14 +86,14 @@ app.get("/bookings", function (request, response) {
 //[3] Read one booking, specified by an ID
 app.get("/bookings/:bookingId", (req, res) => {
   const bookingId = parseInt(req.params.bookingId);
-  const foundBooking = bookings.find((bookingItem) => {
+  const findBooking = bookings.find((bookingItem) => {
     return bookingItem.id === bookingId;
   });
   
-  if(foundBooking){
-    res.json(foundBooking)
+  if(findBooking){
+    res.json(findBooking)
   } else {
-    res.status(404).send("nothing found")
+    res.status(404).send("booking not found")
   }
 });
 
@@ -95,7 +108,7 @@ if(booking !== -1){
   bookings.splice(booking, 1);
   res.status(204).json(bookings);
 } else {
-  res.status(404).send("nothing found");
+  res.status(404).send("booking not found");
 }
 });
 
@@ -104,15 +117,6 @@ function findBookingById(id) {
   return bookings.find((booking) => booking.id == id);
 }
 // Helper function to generate a new booking ID
-function generateBookingId() {
-  return Math.max(...bookings.map((booking) => booking.id), 0) + 1;
-}
-
-function generateBookingroomId() {
-  return Math.max(...bookings.map((booking) => booking.roomId), 0) + 1;
-}
-
-
 
 const listener = app.listen(PORT, function () {
   console.log("Your app is listening on port " + listener.address().port);
