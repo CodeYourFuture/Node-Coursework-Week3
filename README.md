@@ -95,6 +95,7 @@ For this level, your server must reject requests to create bookings if:
 
 In this case your server should return a status code of 400, and should NOT store the booking in the bookings array.
 
+
 # Level 3 (Optional, advanced) - search by date
 
 For this level your API must also allow a client to:
