@@ -21,6 +21,29 @@ app.get("/", function (request, response) {
 
 app.post("/bookings", function (req, res) {
   const bookingData = req.body;
+  //validation
+  const {
+    title,
+    firstName,
+    surname,
+    email,
+    roomId,
+    checkInDate,
+    checkOutDate,
+  } = bookingData;
+
+  if (
+    !title ||
+    !firstName ||
+    !surname ||
+    !email ||
+    !roomId ||
+    !checkInDate ||
+    !checkOutDate
+  ) {
+    return res.status(400).json({ message: "something was wrong" });
+  }
+
   const newBooking = {
     ...bookingData,
     id: bookings.length + 1,
