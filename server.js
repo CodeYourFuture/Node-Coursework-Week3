@@ -8,7 +8,7 @@ app.use(cors());
 app.use(express.static("public")); // connect the index.html file to the server
 
 // (in-memory) data store
-const bookings = require("./bookings.json");
+let bookings = require("./bookings.json");
 
 app.get("/", function (request, response) {
   response.send(
@@ -22,16 +22,21 @@ app.get("/bookings", function (request, response) {
 });
 
 app.get("/bookings/search", function (request, response) {
+  //fix the error!!
   //search for a booking by first name, surname, email, room ID and dates
   const searchTerm = request.query.term.toLowerCase();
   const matchingBookings = bookings.filter((booking) => {
     return (
-      booking.firstName.toLowerCase().includes(searchTerm) ||
-      booking.surname.toLowerCase().includes(searchTerm) ||
-      booking.email.toLowerCase().includes(searchTerm) ||
-      booking.roomId.toString().toLowerCase().includes(searchTerm) ||
-      booking.checkInDate.toLowerCase().includes(searchTerm) ||
-      booking.checkOutDate.toLowerCase().includes(searchTerm)
+      (booking.firstName &&
+        booking.firstName.toLowerCase().includes(searchTerm)) ||
+      (booking.surname && booking.surname.toLowerCase().includes(searchTerm)) ||
+      (booking.email && booking.email.toLowerCase().includes(searchTerm)) ||
+      (booking.roomId &&
+        booking.roomId.toString().toLowerCase().includes(searchTerm)) ||
+      (booking.checkInDate &&
+        booking.checkInDate.toLowerCase().includes(searchTerm)) ||
+      (booking.checkOutDate &&
+        booking.checkOutDate.toLowerCase().includes(searchTerm))
     );
   });
 
@@ -69,6 +74,7 @@ app.delete("/bookings/:id", function (req, res) {
 
 app.post("/bookings", function (request, response) {
   //create a new booking
+  console.log(request.body);
   const newBooking = {
     id: bookings.length + 1, // a unique ID for the new booking
     firstName: request.body.firstName,
@@ -93,10 +99,11 @@ app.post("/bookings", function (request, response) {
 
   // Adding the new booking to the bookings array
   bookings.push(newBooking);
+  console.log(bookings);
   response.status(201).send({ booking: newBooking });
 });
 
-const port = 3000;
+const port = 3001;
 const listener = app.listen(process.env.PORT || port, function () {
   console.log("Your app is listening on port " + listener.address().port);
 });
