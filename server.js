@@ -13,7 +13,6 @@ app.get("/", function (request, response) {
   response.send("Hotel booking server.Ask for /bookings, etc.");
 });
 
-// 1. Create a new booking
 // Create a new booking like:
 /*
     "id": 5,
@@ -48,10 +47,34 @@ app.post("/booking", function (req, res) {
   ) {
     return res.status(400).json({ msg: "something in the input was falsey" });
   }
-// 1. Read all bookings
-app.get("/bookings", function(req, res) {
-  res.json({bookings})
-})
+
+  const newBooking = {
+    ...bookingData,
+    id: bookings.length + 1,
+  };
+
+  bookings.push(newBooking);
+
+  res.json({ newBooking });
+});
+
+// get bookings
+app.get("/booking/search", function (req, res) {
+  const dateString = req.query.date;
+  const dateObject = new Date(dateString);
+  const dateNumber = dateObject.getTime();
+
+  const filteredBookings = bookings.filter((booking) => {
+    const checkInDateAsNumber = new Date(booking.checkInDate).getTime();
+    const checkOutDateAsNumber = new Date(booking.checkOutDate).getTime();
+
+    return (
+      checkInDateAsNumber <= dateNumber && checkOutDateAsNumber >= dateNumber
+    );
+  });
+  res.json({ filteredBookings });
+});
+
 // 1. Read one booking, specified by an ID
 app.get("/booking/:id", function(req, res) {
   const findId = Number(req.params.id)
