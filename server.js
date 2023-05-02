@@ -77,6 +77,7 @@ app.post("/bookings", function (request, response) {
   console.log(request.body);
   const newBooking = {
     id: bookings.length + 1, // a unique ID for the new booking
+    title: request.body.title,
     firstName: request.body.firstName,
     surname: request.body.surname,
     email: request.body.email,
