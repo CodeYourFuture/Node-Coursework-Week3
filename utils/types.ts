@@ -7,5 +7,5 @@ export type bookingType = {
   roomId: string;
   checkInDate: string;
   checkOutDate: string;
-  [key: string]: string | number;
 };
+export type KeyType = "firstName" | "surname" | "email";
