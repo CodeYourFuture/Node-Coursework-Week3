@@ -27,7 +27,9 @@ export const getAllBookings = (req: Request, res: Response) => {
 };
 
 export const getBooking = (req: Request, res: Response) => {
-  const haveBooking = bookings.find(({ id }) => id === +req.params.bookingsId);
+  const haveBooking = bookings.find(
+    ({ id }) => id === Number(req.params.bookingsId)
+  );
   if (!haveBooking) {
     return res.status(404).json(`no booking with id ${req.params.bookingsId}`);
   }
@@ -42,16 +44,16 @@ export const searchBookings = (req: Request, res: Response) => {
       keys.some((key) =>
         booking[key]
           .toLowerCase()
-          .includes((<string>req.query.term).toLowerCase())
+          .includes(req.query.term!.toString().toLowerCase())
       )
     );
     return res.send(filtered);
   }
-  if (moment(<string>req.query.date, "YYYY-MM-DD").isValid()) {
+  if (moment(req.query.date as string, "YYYY-MM-DD").isValid()) {
     const filtered = bookings.filter(
       ({ checkInDate, checkOutDate }) =>
-        checkInDate <= <string>req.query.date &&
-        checkOutDate >= <string>req.query.date
+        checkInDate <= (req.query.date as string) &&
+        checkOutDate >= (req.query.date as string)
     );
     return res.send(filtered);
   }

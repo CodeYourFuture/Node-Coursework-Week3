@@ -15,7 +15,6 @@ app.get("/", function (req: Request, res: Response) {
 });
 
 app.use("/bookings", bookings);
-``;
 
 const listener = app.listen(process.env.PORT, function () {
   const { port } = listener.address() as AddressInfo;
