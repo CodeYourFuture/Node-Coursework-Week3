@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const moment = require("moment");
+const validator = require("validator");
 
 const app = express();
 
@@ -31,8 +32,8 @@ app.get("/bookings/:id", function (request, response) {
 });
 
 
-// Create a new booking with simple validation
-app.post("/bookings", function (request, response) {
+// Create a new booking with Level 4 (Optional, advanced) - advanced validation
+app.post("/booking", function (request, response) {
   const id = bookings.length + 1;
   const {
     roomId,
@@ -55,20 +56,42 @@ app.post("/bookings", function (request, response) {
     checkOutDate,
   };
 
+   // Validating required fields
   if (
-    !newBooking.title ||
-    !newBooking.firstName ||
-    !newBooking.surname ||
-    !newBooking.email ||
-    !newBooking.roomId ||
-    !newBooking.checkInDate ||
-    !newBooking.checkOutDate
+    !title ||
+    !firstName ||
+    !surname ||
+    !email ||
+    !roomId ||
+    !checkInDate ||
+    !checkOutDate
   ) {
-    response.status(404).send("fill in information");
-  } else {
-    bookings.push(newBooking);
-    response.status(201).send({ newBooking });
+    response.status(400).send("Please fill in all required information.");
+    return;
   }
+
+  // Validating email address
+  if (!validator.isEmail(email)) {
+    response.status(400).send("Invalid email address.");
+    return;
+  }
+
+  // Validating check-in and check-out dates
+  const checkInMoment = moment(checkInDate, "YYYY-MM-DD");
+  const checkOutMoment = moment(checkOutDate, "YYYY-MM-DD");
+
+  if (!checkInMoment.isValid() || !checkOutMoment.isValid()) {
+    response.status(400).send("Invalid date format.");
+    return;
+  }
+
+  if (!checkOutMoment.isAfter(checkInMoment)) {
+    response.status(400).send("Check-out date must be after check-in date.");
+    return;
+  }
+
+  bookings.push(newBooking);
+  response.status(201).send({ newBooking });
 });
 
 // Level 3 (Optional, advanced) - search by date

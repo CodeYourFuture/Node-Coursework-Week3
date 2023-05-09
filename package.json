@@ -12,7 +12,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.2",
-    "moment": "^2.29.4"
+    "moment": "^2.29.4",
+    "validator": "^13.9.0"
   },
   "engines": {
     "node": "8.x"
