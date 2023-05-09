@@ -32,23 +32,12 @@ app.get("/bookings/search", function (request, response) {
       item.surname.toLowerCase().includes(searchItems.toLowerCase()) ||
       item.email.toLowerCase().includes(searchItems.toLowerCase()) ||
       // dateAndTime.isBetween(item.checkInDate, item.checkOutDate)
-      searchDate.isBetween(item.checkInDate, item.checkOutDate)
-      
+      searchDate.isBetween(item.checkInDate, item.checkOutDate)   
   );
-  //   console.log(dateAndTime);
-  // const foundItems = bookings.filter((item) =>
-  //   dateAndTime.isBetween(item.checkInDate, item.checkOutDate)
-  // );
+  
  
   response.json(foundItems);
 });
-
-
-// var checkInDate = moment("12/01/2013", "DD/MM/YYYY");
-// var checkOutDate = moment("15/01/2013", "DD/MM/YYYY");
-// compareDate.isBetween(checkInDate, checkOutDate); //false in this case
-
-
 
 app.get("/bookings/:id", function (request, response) {
   const bookingsId = request.params.id;
