@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "express": "^4.16.4",
-    "cors": "^2.8.5"
+    "cors": "^2.8.5",
+    "uuid": "^8.3.2",
+    "date-fns": "^2.23.0"
   },
   "engines": {
     "node": "8.x"
