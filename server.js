@@ -2,7 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const PORT = process.env.PORT || 3000;
 const app = express();
-import { isAfter } from "date-fns";
+const { isAfter } = require("date-fns");
 const { v4: uuid } = require("uuid");
 app.use(express.json());
 app.use(cors());
