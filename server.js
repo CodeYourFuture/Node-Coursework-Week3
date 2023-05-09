@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 
 const validator = require("email-validator");
+const moment = require("moment");
+
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -23,14 +25,28 @@ app.get("/bookings", function (request, response) {
 
 app.get("/bookings/search", function (request, response) {
   const searchItems = request.query.text;
+  const searchDate = moment(request.query.date); 
   const foundItems = bookings.filter(
     (item) =>
       item.firstName.toLowerCase().includes(searchItems.toLowerCase()) ||
       item.surname.toLowerCase().includes(searchItems.toLowerCase()) ||
-      item.email.toLowerCase().includes(searchItems.toLowerCase())
+      item.email.toLowerCase().includes(searchItems.toLowerCase()) ||
+      // dateAndTime.isBetween(item.checkInDate, item.checkOutDate)
+      searchDate.isBetween(item.checkInDate, item.checkOutDate)
+      
   );
+  //   console.log(dateAndTime);
+  // const foundItems = bookings.filter((item) =>
+  //   dateAndTime.isBetween(item.checkInDate, item.checkOutDate)
+  // );
+ 
   response.json(foundItems);
 });
+
+
+// var checkInDate = moment("12/01/2013", "DD/MM/YYYY");
+// var checkOutDate = moment("15/01/2013", "DD/MM/YYYY");
+// compareDate.isBetween(checkInDate, checkOutDate); //false in this case
 
 
 
@@ -74,10 +90,10 @@ app.post("/bookings", function (request, response) {
     firstName: request.body.firstName,
     surname: request.body.surname,
     email: request.body.email,
-    roomId: Math.floor(Math.random() * 100),
+    roomId: Math.floor(Math.random() * 121),
     checkInDate: request.body.checkInDate,
     checkOutDate: request.body.checkOutDate,
-    BookedOn: request.body.timeStamp,
+    Booked_On: timeStamp
   };
 
   if (
@@ -86,7 +102,7 @@ app.post("/bookings", function (request, response) {
     !NewBooking.email ||
     !NewBooking.checkInDate ||
     !NewBooking.checkOutDate ||
-    !NewBooking.title
+    !NewBooking.title 
   ) {
     return response
       .status(400)
