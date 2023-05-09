@@ -100,17 +100,21 @@ app.get("/bookings/date/search", function(request, response) {
 
   if (moment(date, "YYYY-MM-DD").isValid()){
     const searchResult = bookings.filter((booking) => {
-      moment(booking.checkInDate).isAfter(date) &&
-      moment(booking.checkOutDate).isSameOrAfter(date) 
+      return moment(booking.checkInDate).isAfter(date) &&
+             moment(booking.checkOutDate).isSameOrAfter(date) 
     })
     response.status(200).send({searchResult});
   } else {
-    response.status(400).send("Invalid date format.");
+    response.status(404).send("Invalid date format.");
   }
 });
 
 // # Level 5 (Optional, easy) - free-text search
 // Search for bookings which match a given search term
+function includesTerm(string, term) {
+  return string.toLowerCase().includes(term.toLowerCase());
+}
+
 app.get("/bookings/term/search", function(request, response) {
   const term = request.query.term;
 
@@ -122,9 +126,9 @@ app.get("/bookings/term/search", function(request, response) {
   const searchResult = bookings.filter((booking) => {
     const { email, firstName, surname } = booking;
     return (
-      email.toLowerCase().includes(term.toLowerCase()) ||
-      firstName.toLowerCase().includes(term.toLowerCase()) ||
-      surname.toLowerCase().includes(term.toLowerCase())
+      includesTerm(email, term) ||
+      includesTerm(firstName, term) ||
+      includesTerm(surname, term)
     );
   });
 
