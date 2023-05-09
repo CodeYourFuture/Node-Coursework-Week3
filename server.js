@@ -21,7 +21,31 @@ app.post("/booking",(req, res)=>{
   bookings.push(newBooking)
   res.json({bookings})
 })
-
+/**********************************reed all Booking */
+app.get("/booking",(req, res)=>{
+  res.json({bookings})
+})
+/*********** Read one booking, specified by an ID */
+app.get("/booking/:id",(req,res)=>{
+  const bookingToReed =req.params.id;
+  const specificBooking = bookings.find(el =>el.id == bookingToReed)
+  if(specificBooking){
+    res.send({specificBooking})
+  }else{
+    res.json({error:"error"} ,404)
+  }
+})
+/*********************** Delete a booking, specified by an ID */
+app.delete("/booking/:id", (req, res) => {
+  const bookingToDelete = req.params.id;
+  const BookingToDeleteIndex = bookings.findIndex((el) => el.id == bookingToDelete);
+  if (BookingToDeleteIndex !== -1) {
+    bookings.splice(BookingToDeleteIndex,1)
+    res.send({ bookings });
+  } else {
+    res.json({ error: "error" }, 404);
+  }
+});
 
 // const listener = app.listen(process.env.PORT, function () {
 //   console.log("Your app is listening on port " + listener.address().port);
