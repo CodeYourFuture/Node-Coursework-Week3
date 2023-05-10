@@ -24,18 +24,21 @@ app.get("/bookings", function (request, response) {
 });
 
 app.get("/bookings/search", function (request, response) {
-  const searchItems = request.query.text;
-  const searchDate = moment(request.query.date); 
-  const foundItems = bookings.filter(
+  const searchItems = request.query.text || ""
+  let foundItems = bookings.filter(
     (item) =>
       item.firstName.toLowerCase().includes(searchItems.toLowerCase()) ||
       item.surname.toLowerCase().includes(searchItems.toLowerCase()) ||
-      item.email.toLowerCase().includes(searchItems.toLowerCase()) ||
-      // dateAndTime.isBetween(item.checkInDate, item.checkOutDate)
-      searchDate.isBetween(item.checkInDate, item.checkOutDate)   
+      item.email.toLowerCase().includes(searchItems.toLowerCase()) 
   );
+  console.log(foundItems);
+  const searchDate = moment(request.query.date); 
+  if(request.query.date){
+    foundItems = foundItems.filter(item => {
+      return searchDate.isBetween(item.checkInDate, item.checkOutDate, undefined, "[]");
+    })
+  }
   
- 
   response.json(foundItems);
 });
 
