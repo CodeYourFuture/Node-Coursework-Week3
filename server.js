@@ -1,16 +1,17 @@
-const express = require("express");
-const cors = require("cors");
-const validator = require("email-validator");
-const moment = require("moment");
-
+import express, { json, urlencoded } from "express";
 const app = express();
+import cors from "cors";
+import { validate } from "email-validator";
+import moment from "moment";
+
 const port = process.env.PORT || 3003;
 
-app.use(express.json());
+app.use(json());
+app.use(urlencoded({ extended: false }));
 app.use(cors());
 
 //Use this array as your (in-memory) data store.
-const bookings = require("./bookings.json");
+import bookings, { length, push, filter, find } from "./bookings.json";
 
 // const allBookings = [bookings];
 
@@ -38,7 +39,7 @@ app.post("/bookings", function (request, response) {
   } = request.body;
 
   const newBooking = {
-    id: bookings.length + 1,
+    id: length + 1,
     title,
     firstName,
     surname,
@@ -62,7 +63,7 @@ app.post("/bookings", function (request, response) {
     });
   }
 
-  if (!validator.validate(newBooking.email)) {
+  if (!validate(newBooking.email)) {
     return response.status(400).json({ message: "Please enter valid email" });
   }
 
@@ -77,7 +78,7 @@ app.post("/bookings", function (request, response) {
       .json({ message: "Check Out Date has to be after Check In Date" });
   }
 
-  bookings.push(newBooking);
+  push(newBooking);
   response.status(201).json({ message: "New Booking added", bookings });
 });
 
@@ -85,7 +86,7 @@ app.post("/bookings", function (request, response) {
 app.get("/bookings/search", function (request, response) {
   const searchTerm = request.query.term || "";
 
-  let filteredTerms = bookings.filter(
+  let filteredTerms = filter(
     (eachBooking) =>
       eachBooking.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       eachBooking.surname.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -117,7 +118,7 @@ app.get("/bookings/search", function (request, response) {
 
 // FIND BOOKING BY ID
 app.get("/bookings/:id", function (request, response) {
-  const foundBooking = bookings.find(
+  const foundBooking = find(
     (eachBooking) => eachBooking.id === parseInt(request.params.id)
   );
   foundBooking
@@ -129,13 +130,13 @@ app.get("/bookings/:id", function (request, response) {
 
 // DELETE BOOKINGS
 app.delete("/bookings/:id", function (request, response) {
-  const foundBooking = bookings.find(
+  const foundBooking = find(
     (eachBooking) => eachBooking.id === parseInt(request.params.id)
   );
   if (foundBooking) {
     response.json({
       message: `Customer ${request.params.id} deleted`,
-      customersRemaining: bookings.filter(
+      customersRemaining: filter(
         (eachBooking) => eachBooking.id !== parseInt(request.params.id)
       ),
     });
