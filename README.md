@@ -1,6 +1,6 @@
 # Challenge: A Hotel Booking Server
 
-### Overview: what is this challenge?
+## Overview: what is this challenge?
 
 In this challenge you must make an Express app which provides an API to manage a list of hotel bookings, in JSON format.
 
@@ -8,7 +8,7 @@ In the advanced part of this exercise you will modify your React hotel app which
 
 We also provide a basic React front-end to allow you to test some of the functionality.
 
-### Requirements
+## Requirements
 
 You should have completed at least Level 1-3 of the Chat Server challenge before attempting this challenge.
 
@@ -35,10 +35,10 @@ You should use the app "postman" to test creating and deleting bookings.
 
 You can also try with this ALPHA-version [hotel tester app: https://cyf-hotel-tester.netlify.com/](https://cyf-hotel-tester.netlify.com/).
 
-- Note that you'll have to click `set API` and enter your own base URL (e.g. https://alisina-hotel-server.glitch.me)
+- Note that you'll have to click `set API` and enter your own base URL (e.g. http://localhost:3000 or https://alisina-hotel-server.glitch.me)
 - Do not rely on this app for your testing. Be sure to check the javascript console if it misbehaves.
 
-## Data model
+### Data model
 
 Each booking is an object with the following properties:
 
@@ -57,19 +57,7 @@ Each booking is an object with the following properties:
 
 - The `id` field must be assigned on the server, not by the client.
 
-## Want to run your code on the internet?
-
-If you want to share your server with other people the easiest way to do this is to use Glitch
-
-- [ ] Make sure you're logged in to https://glitch.com/
-- [ ] Remix this server on glitch - https://glitch.com/~cyf-hotel-start
-- [ ] Name your new server `yourname-hotel-server`
-- [ ] Make sure you're logged in so that it saves
-- [ ] Check that it is working by making a request to `/`
-- [ ] Take time to read the comments
-- [ ] Copy the code you've written to Glitch
-
-# Go ahead!
+### Go ahead!
 
 If you think you know how to do that, go ahead!
 
@@ -77,7 +65,7 @@ Try to use what you know to do this challenge on your own. It does not require a
 
 You may find useful the [express cheatsheet](https://github.com/nbogie/express-notes/blob/master/express-cheatsheet.md)
 
-# End of Level 1 challenge!
+### End of Level 1 challenge!
 
 Well done!
 
@@ -87,7 +75,7 @@ Don't post on slack, unless there's a thread announced specifically for it.
 Instead, attach the URLs as links when you "mark done" your assignment in Google Classroom.
 You might want to download your project for safekeeping. (Tools: Git, Import, and Export: Download Project)
 
-# Level 2 - simple validation
+## Level 2 - simple validation
 
 For this level, your server must reject requests to create bookings if:
 
@@ -95,7 +83,7 @@ For this level, your server must reject requests to create bookings if:
 
 In this case your server should return a status code of 400, and should NOT store the booking in the bookings array.
 
-# Level 3 (Optional, advanced) - search by date
+## Level 3 (Optional, advanced) - search by date
 
 For this level your API must also allow a client to:
 
@@ -107,14 +95,14 @@ It should accept requests of the following format:
 
 Hint: use the `moment` library to make this easier.
 
-# Level 4 (Optional, advanced) - advanced validation
+## Level 4 (Optional, advanced) - advanced validation
 
 In this level, bookings should also be rejected if:
 
 - email address is not valid (hint: use a library to do this - [search here](https://www.npmjs.com/))
 - checkoutDate is not after checkinDate (hint: use the `moment` library to check this)
 
-# Level 5 (Optional, easy) - free-text search
+## Level 5 (Optional, easy) - free-text search
 
 For this level your API must also allow a client to:
 
@@ -126,7 +114,7 @@ It should accept requests of the following format:
 
 It should match if the term occurs in _any_ of `email`, `firstName`, or `surname` fields.
 
-# Level 6 (Optional) - make your React app use your new server
+## Level 6 (Optional) - make your React app use your new server
 
 For this level, change your react hotel front-end to use your own back-end API that you have designed here in this challenge. Adjust it so that all the functionality works.
 
@@ -140,3 +128,15 @@ For this level, change your react hotel front-end to use your own back-end API t
 | POST   | /bookings                        | create a new booking                        |
 | DELETE | /bookings/17                     | delete a booking by id                      |
 | GET    | /bookings/search?date=2019-05-20 | return all bookings spanning the given date |
+
+# Want to run your code on the internet?
+
+If you want to share your server with other people the easiest way to do this is to use Glitch
+
+- [ ] Make sure you're logged in to https://glitch.com/
+- [ ] Remix this server on glitch - https://glitch.com/~cyf-hotel-start
+- [ ] Name your new server `yourname-hotel-server`
+- [ ] Make sure you're logged in so that it saves
+- [ ] Check that it is working by making a request to `/`
+- [ ] Take time to read the comments
+- [ ] Copy the code you've written to Glitch
